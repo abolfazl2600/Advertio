@@ -146,15 +146,17 @@ Advertio will offer a paid **Independent Listing Inspection** service.
 
 This replaces the narrower working idea `Property checker` because the service must work across categories such as Housing, Vehicles, Electronics, Cargo-related listings, business/service locations, and future categories.
 
-- A requester can ask Advertio to coordinate an independent in-person inspection of the subject of a Listing.
+- The inspection can be requested by either the Listing owner/publisher or an interested/listing-seeking user.
+- The same operational service applies regardless of which side requested it; Backoffice records the requester role.
 - An inspector/operator may capture photos, video, visible-condition notes, basic tests/checks, issues found, checks performed/not performed, and inspection date.
-- A structured inspection report is prepared for the request.
+- The resulting inspection is attached to the **Listing as reusable trust information**, not treated only as a private requester report.
+- Backoffice distinguishes internal evidence from publication-safe evidence and tracks publication readiness for future listing-facing use.
 - Pricing is **not fixed globally** and may vary by Category, Location, travel distance, complexity, expertise, requested scope, and operational cost.
-- The first version is **Backoffice-only** so operations can manually manage intake, quote, payment, assignment, scheduling, evidence, and report delivery.
+- The first version remains **Backoffice-only**; the final public Mini App inspection-report UI is deferred.
 - See [Independent Listing Inspection](./independent-listing-inspection.md).
 - Implementation: GitHub issue #29.
 
-This adds a paid operational Trust service that can reduce the requester's need to travel for an initial inspection and creates a category-agnostic monetization path.
+This adds a paid operational Trust service that can reduce the need for users to travel for an initial inspection while producing reusable listing-level evidence that can later benefit other Advertio users.
 
 ## Revenue Loops
 
