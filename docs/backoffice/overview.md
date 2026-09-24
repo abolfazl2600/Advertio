@@ -26,9 +26,10 @@ The Backoffice sidebar currently contains:
 - Wallet actions
 - Your account
 
-Only the **Listings** and **Users** sections have been documented in detail so far. The remaining sections should be documented after their current UI/behavior has been reviewed.
+The **Listings**, **Users**, and **Channels** sections have been documented in detail so far. The remaining sections should be documented after their current UI/behavior has been reviewed.
 
 ## Detailed documentation
 
 - [Listings](./listings.md)
 - [Users](./users.md)
+- [Channels](./channels.md)
