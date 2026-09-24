@@ -1,6 +1,6 @@
 # Monetization Model
 
-این سند مدل درآمدی Advertio را فقط بر اساس Source Document اصلی Consolidate می‌کند.
+این سند مدل درآمدی Advertio را بر اساس Source Document اصلی Consolidate می‌کند. تصمیم‌های جدید Product/Business که بعداً تأیید شده‌اند، در بخش‌های جداگانه با برچسب **Product Decision** ثبت می‌شوند تا با Source اصلی مخلوط نشوند.
 
 ## Monetization Philosophy
 
@@ -114,6 +114,47 @@ Premium Accounts در Version 3.0 آمده‌اند. جزئیات در [Premium]
 ### Escrow — Future
 Escrow در Version 3.0 ذکر شده و Pricing Policy می‌گوید هزینه آن باید داینامیک و Admin-configurable باشد. Source جزئیات درآمدی یا Fee مشخصی برای Escrow ارائه نمی‌کند.
 
+
+## Approved Product Decisions — New Revenue Mechanisms
+
+> The following items are approved Product/Business decisions recorded on 24 Sep 2026. They are not claims extracted from the original Source Document.
+
+### Paid Identity Verification
+Status: Product Decision / Planned
+
+Advertio will offer a paid **Identity Verification** service.
+
+- User submits a supported identity document.
+- Advertio generates a randomized video/liveness challenge.
+- User submits a video completing that challenge.
+- An authorized Backoffice admin manually reviews the submission.
+- Only an approved request grants the explicit **Identity Verified** badge.
+- Initial price: **USD $8 equivalent**.
+- Payment can be made using Advertio Coins or other supported payment methods.
+- At the current documented reference of 10 Coin = $1, the initial reference amount is **80 Coin**.
+- Payment alone does not grant the badge.
+- See [Paid Identity Verification](./identity-verification.md).
+- Implementation: GitHub issue #28.
+
+This adds a direct Trust-Layer revenue stream: users pay for a stronger, manually reviewed identity signal.
+
+### Independent Listing Inspection
+Status: Product Decision / Planned Backoffice MVP
+
+Advertio will offer a paid **Independent Listing Inspection** service.
+
+This replaces the narrower working idea `Property checker` because the service must work across categories such as Housing, Vehicles, Electronics, Cargo-related listings, business/service locations, and future categories.
+
+- A requester can ask Advertio to coordinate an independent in-person inspection of the subject of a Listing.
+- An inspector/operator may capture photos, video, visible-condition notes, basic tests/checks, issues found, checks performed/not performed, and inspection date.
+- A structured inspection report is prepared for the request.
+- Pricing is **not fixed globally** and may vary by Category, Location, travel distance, complexity, expertise, requested scope, and operational cost.
+- The first version is **Backoffice-only** so operations can manually manage intake, quote, payment, assignment, scheduling, evidence, and report delivery.
+- See [Independent Listing Inspection](./independent-listing-inspection.md).
+- Implementation: GitHub issue #29.
+
+This adds a paid operational Trust service that can reduce the requester's need to travel for an initial inspection and creates a category-agnostic monetization path.
+
 ## Revenue Loops
 
 ### Loop 1 — Listing → Message → Payment
@@ -160,3 +201,5 @@ Source صراحتاً می‌گوید willingness-to-pay برای **مشاهده
 - [Coin Economy](./coin-economy.md)
 - [Wallet](./wallet.md)
 - [Unit Economics](./unit-economics.md)
+- [Paid Identity Verification](./identity-verification.md)
+- [Independent Listing Inspection](./independent-listing-inspection.md)
