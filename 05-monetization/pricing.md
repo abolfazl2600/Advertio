@@ -69,9 +69,8 @@ Initial price:
 
 **USD $8 equivalent**
 
-Payment paths:
-- Advertio Coins
-- other supported Advertio payment methods
+Payment method for the first version:
+- Advertio Coins only
 
 Using the currently documented reference **10 Coin = $1**, the initial reference amount is:
 
