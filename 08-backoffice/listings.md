@@ -92,9 +92,11 @@ Listing Entity این وضعیت‌ها را ثبت می‌کند:
 >
 > Workflow model B دقیقاً جهت معکوس را ثبت می‌کند: Day 1–3 رایگان و Day 4+ مشاهده Contact با 1 Coin.
 >
-> علاوه بر آن، model A عنوان «Day 1–3» دارد ولی دوره Early Access را 30 ساعت و Phase عمومی را «Day 2–30» تعریف می‌کند.
+> درباره Duration نیز Source یکدست نیست: در Lifecycle مقدار 30 ساعت آمده، در بخش مستقل Early Access عبارت «یک روزه» آمده، و عنوان Phase نیز «Day 1–3» است.
 >
-> این مورد نیازمند تصمیم نهایی Product/Business است.
+> Expiry هم در یک بخش از Day 31 شروع می‌شود، ولی Workflow دیگری Status = Expired را در Day 30 قرار می‌دهد.
+>
+> این موارد نیازمند تصمیم نهایی Product/Business هستند.
 
 ## Early Access contact behavior
 
