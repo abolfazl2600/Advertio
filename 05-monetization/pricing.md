@@ -58,6 +58,49 @@ Source در Coin Economy تعریف می‌کند:
 - Bonus را تعیین کند
 - Package را فعال یا غیرفعال کند
 
+
+## Approved Product Pricing Decisions
+
+> Product Decision — 24 Sep 2026. These values/rules were approved after the original Source Document and are intentionally separated from Source-defined example pricing.
+
+### Identity Verification
+
+Initial price:
+
+**USD $8 equivalent**
+
+Payment paths:
+- Advertio Coins
+- other supported Advertio payment methods
+
+Using the currently documented reference **10 Coin = $1**, the initial reference amount is:
+
+**80 Coin**
+
+The canonical pricing configuration should remain the source of truth. Frontends must not independently hardcode conversion logic.
+
+The fee pays for the identity-verification service/review process. Payment by itself does not grant **Identity Verified**; the badge requires successful admin approval.
+
+See [Paid Identity Verification](./identity-verification.md).
+
+### Independent Listing Inspection
+
+There is **no fixed global price** for the initial inspection service.
+
+Backoffice must support per-request quoting because cost can vary based on:
+- Category
+- Country / City / Location
+- Travel distance
+- Inspection complexity
+- Required expertise
+- Requested tests/evidence
+- Urgency
+- Operational cost
+
+The quote can be recorded in currency and, where applicable, as a Coin equivalent.
+
+See [Independent Listing Inspection](./independent-listing-inspection.md).
+
 ## Discounts / Incentives
 
 ### Full Verification → Extend discount
