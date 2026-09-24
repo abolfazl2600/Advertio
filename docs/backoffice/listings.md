@@ -135,6 +135,91 @@ Observed live listings include:
 - Submitted timestamp
 - `Take down` action
 
+### Active listing detail / performance drawer
+
+Selecting an Active listing opens a right-side detail drawer that extends the listing details with performance and monetization information.
+
+#### Header / listing context
+
+The reviewed Active listing drawer displays:
+- Listing title
+- Category and location/context line
+- Close action
+
+The reviewed example is an Active crawled housing listing.
+
+#### Listing/payment details visible in the reviewed state
+
+The visible portion of the drawer includes:
+- Contact cost in coins
+- Whether contact is free
+- Location
+- Submitted timestamp
+
+Observed example values:
+- Contact cost: `0 coins`
+- Contact is free: `Yes`
+- Location: `Toronto, Ontario, CA`
+- Submitted: `23 Sep 2026, 13:07`
+
+The upper portion of the drawer is not fully visible in the reviewed screenshot, so this documentation does not infer additional fields from it.
+
+#### Performance
+
+A dedicated **Performance** section is available with three summary cards:
+- **Opened** — observed UI labels this as the last 30 days
+- **Contacts**
+- **Coins earned** — also shows coins earned per unlock
+
+Observed example:
+- Opened: `0` — last 30 days
+- Contacts: `0` — `no traffic yet`
+- Coins earned: `0` — `0 per unlock`
+
+#### Who paid, and why the rest did not
+
+The drawer contains a conversion/failure breakdown labelled **WHO PAID, AND WHY THE REST DID NOT**.
+
+The UI states:
+- values represent **unique people, last 30 days**;
+- someone who opened the sheet twice counts once.
+
+Observed funnel/breakdown rows:
+- **Opened the listing**
+- **Opened the price sheet**
+- **Paid**
+- **Got it free** — annotated as `free phase`
+- **Never opened the sheet** — annotated as `the listing or the UI, not the price`
+- **Could not pay** — annotated as `a top-up problem`
+- **Would not pay** — annotated as `a price problem`
+
+The reviewed example shows `0` for all of these rows.
+
+#### Views per day
+
+A **VIEWS PER DAY** section is present.
+
+For the reviewed listing, the empty state says:
+- `Nobody has opened this listing in the last 31 days.`
+
+This indicates the UI has a per-day views area with a 31-day empty-state horizon in the reviewed implementation. Do not infer the exact chart behavior when data exists until that state is reviewed.
+
+#### Publication lifecycle
+
+The bottom of the Active listing drawer displays:
+- **Published** date
+- **Expires** date
+
+Observed example:
+- Published: `23 Sep 2026`
+- Expires: `23 Oct 2026`
+
+#### Moderation action
+
+The Active listing drawer provides a full-width **Take down** action.
+
+The reviewed UI does not show a take-down reason input in this state.
+
 ### Possible Duplicate queue
 
 A dedicated **Possible Duplicate** view is currently implemented.
