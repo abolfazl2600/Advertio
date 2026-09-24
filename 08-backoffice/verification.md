@@ -133,18 +133,22 @@ This verification remains separate from **Phone Verified** and other verificatio
 
 The first version is manual in Backoffice.
 
+The first version uses Telegram as the evidence/media surface and Backoffice as the operational queue and secondary approval surface.
+
 Backoffice must provide:
 - verification queue;
-- payment state/reference;
-- identity document review;
+- Coin payment state/reference;
 - assigned randomized challenge;
-- submitted video;
+- Telegram evidence/message references;
+- a safe View/Open in Telegram path where supported;
 - approve/reject actions;
 - reviewing admin;
 - review timestamp;
 - audit history.
 
-Initial service price is **$8 equivalent**, payable through Coins or other supported payment methods.
+Raw identity-document images/videos are not duplicated into Backoffice storage in v1. Admins review the original evidence in Telegram and may approve/reject from either Telegram or Backoffice.
+
+Initial service price is **$8 equivalent / 80 Coins at the current documented reference**, payable with Advertio Coins only in the first version.
 
 Detailed implementation is tracked in GitHub issue #28 and monetization documentation:
 [Paid Identity Verification](../05-monetization/identity-verification.md).
