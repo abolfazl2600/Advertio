@@ -51,11 +51,13 @@ The following current-state areas have been reviewed and documented:
 - Housing listing feed
 - Housing feed filters
 - Wallet and Telegram Stars coin purchase flow
+- Profile, My Listings, and Saved Listings
 
 ## Detailed documentation
 
 - [Housing](./housing.md)
 - [Wallet](./wallet.md)
+- [Profile](./profile.md)
 
 ## Source issues used during the UI review
 
