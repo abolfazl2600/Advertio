@@ -111,6 +111,44 @@ Social networks قابل قبول:
 >
 > هر دو مقدار در Source حفظ می‌شوند و مقدار نهایی نیازمند تصمیم Product/Business است. Pricing Policy نیز می‌گوید هزینه‌ها/مقادیر قابل بازنگری و تنظیم هستند.
 
+
+## Product Decision — Paid Identity Verification
+
+> Approved 24 Sep 2026. This section is a new Product/Business decision and is not extracted from the original Source Document.
+
+Advertio will add a manually reviewed paid **Identity Verification** flow.
+
+### Meaning of Identity Verified
+
+The explicit badge **Identity Verified** means:
+- the user submitted a supported identity document;
+- the system assigned a randomized video/liveness challenge;
+- the user submitted a video completing that challenge;
+- an authorized Backoffice admin reviewed the evidence;
+- the admin approved the verification.
+
+This verification remains separate from **Phone Verified** and other verification layers.
+
+### Initial operation
+
+The first version is manual in Backoffice.
+
+Backoffice must provide:
+- verification queue;
+- payment state/reference;
+- identity document review;
+- assigned randomized challenge;
+- submitted video;
+- approve/reject actions;
+- reviewing admin;
+- review timestamp;
+- audit history.
+
+Initial service price is **$8 equivalent**, payable through Coins or other supported payment methods.
+
+Detailed implementation is tracked in GitHub issue #28 and monetization documentation:
+[Paid Identity Verification](../05-monetization/identity-verification.md).
+
 ## Verified-user benefits / proposals
 
 ### Proposed / example
