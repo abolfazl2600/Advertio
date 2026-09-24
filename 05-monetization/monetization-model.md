@@ -124,13 +124,14 @@ Status: Product Decision / Planned
 
 Advertio will offer a paid **Identity Verification** service.
 
-- User submits a supported identity document.
-- Advertio generates a randomized video/liveness challenge.
-- User submits a video completing that challenge.
-- An authorized Backoffice admin manually reviews the submission.
+- User pays the verification fee with Advertio Coins.
+- User continues to the Advertio Telegram bot.
+- User submits a supported identity document, randomized-challenge video, and optional text in Telegram.
+- Telegram remains the media host in v1; Advertio stores operational Telegram references/metadata rather than duplicate raw media.
+- Authorized admins can review/approve/reject from Telegram or Backoffice.
 - Only an approved request grants the explicit **Identity Verified** badge.
 - Initial price: **USD $8 equivalent**.
-- Payment can be made using Advertio Coins or other supported payment methods.
+- Payment is made with Advertio Coins in the first version.
 - At the current documented reference of 10 Coin = $1, the initial reference amount is **80 Coin**.
 - Payment alone does not grant the badge.
 - See [Paid Identity Verification](./identity-verification.md).
