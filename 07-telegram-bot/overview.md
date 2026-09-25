@@ -49,6 +49,36 @@ Telegram Bot یکی از Channelهای اصلی تعامل Advertio است و د
 >
 > این مورد نیازمند تصمیم نهایی Product/Business است.
 
+## Current Implemented UI Baseline
+
+The current Telegram Bot UI has been verified from the live bot screenshots provided on **2026-09-25**.
+
+The currently visible Main Menu after `/start` is:
+
+- 🏠 Create Listing
+- 🔍 Search Listings
+- Your saved searches
+- ⚙️ Settings
+- ❓ Help
+
+The currently visible Settings menu is:
+
+- 🌐 Language
+- 📣 Marketing messages: 🔔 On
+- ↩️ Back
+
+The Language screen currently exposes:
+
+- 🇮🇷 فارسی
+- 🇬🇧 English
+- 🇫🇷 Français
+- 🇷🇺 Русский
+- 🇮🇳 हिन्दी
+
+This is an **implementation baseline**, not a specification of future behavior. The exact internal behavior of the individual flows is documented only when it has been tested or explicitly provided.
+
+See [Current Implementation](./current-implementation.md) for the detailed UI baseline and the list of behaviors that still need to be captured.
+
 ## Main Bot Journey
 
 Workflow اصلی ثبت‌شده در Source:
