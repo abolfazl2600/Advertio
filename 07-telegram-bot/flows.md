@@ -2,6 +2,38 @@
 
 این فایل Flowهای اصلی Telegram Bot را Consolidate می‌کند. جزئیات هر حوزه در فایل تخصصی همان موضوع نگهداری شده است.
 
+## Current UI Baseline — 2026-09-25
+
+The live bot screenshots show a Main Menu that currently differs from the older/source-level flow documented below.
+
+### Currently visible after /start
+
+- 🏠 Create Listing
+- 🔍 Search Listings
+- Your saved searches
+- ⚙️ Settings
+- ❓ Help
+
+### Currently visible under Settings
+
+- 🌐 Language
+- 📣 Marketing messages: 🔔 On
+- ↩️ Back
+
+### Currently visible under Language
+
+- 🇮🇷 فارسی
+- 🇬🇧 English
+- 🇫🇷 Français
+- 🇷🇺 Русский
+- 🇮🇳 हिन्दी
+
+### Important documentation rule
+
+The list above is the **currently observed UI**. The flows below describe previously documented product/source flows and should not be treated as proof that every step is currently implemented exactly as written.
+
+For the detailed current UI baseline, see [Current Implementation](./current-implementation.md).
+
 ## Flow 1 — Start → Registration
 
     Start
