@@ -2,11 +2,11 @@
 
 > Current-state documentation as of **25 Sep 2026**.
 >
-> This document records only behavior currently confirmed in the reviewed Telegram Bot UI. It is not a product specification and does not infer backend behavior.
+> This document records only behavior confirmed in the reviewed Telegram Bot UI.
 
 ## Entry point
 
-The current bot supports the Telegram `/start` command.
+The reviewed bot supports the Telegram `/start` command.
 
 ### Current response
 
@@ -14,7 +14,7 @@ After `/start`, the bot displays:
 
 > **What would you like to do?**
 
-The user is then presented with the Main Menu.
+The Main Menu is then visible.
 
 ## Main Menu
 
@@ -39,30 +39,39 @@ Main Menu
   └── Help
 ```
 
-## Confirmed behavior
+## Confirmed UI
 
-The following is confirmed from the current UI review:
+The supplied screenshot confirms:
 
-- `/start` is available as the bot entry command.
-- The Main Menu is displayed after entering the bot.
-- The five Main Menu entry points listed above are visible.
+- `/start` is shown as the user command.
+- **What would you like to do?** is displayed by the bot.
+- The five Main Menu options above are visible.
+- **Create Listing** opens the category-selection screen documented in [create-listing.md](./create-listing.md).
 
-## Not yet documented
+## Additional visible control
 
-The current UI review does not establish:
+A Telegram **Share my phone number** control is visible at the bottom of one supplied screenshot.
 
-- whether a new user is required to register before seeing the Main Menu;
+The screenshot does not establish:
+
+- what event caused this control to appear;
+- whether it is part of registration;
+- whether it is required for any Main Menu action;
+- what happens after it is selected.
+
+These points are **Not Verified**.
+
+## Not Verified
+
+The reviewed UI does not establish:
+
+- whether a new user must register before seeing the Main Menu;
 - whether phone verification is required;
-- whether an existing user and a new user receive different `/start` responses;
+- whether existing and new users receive different `/start` responses;
 - whether `/start` accepts or processes deep-link parameters;
 - whether the selected language changes the `/start` response;
 - what happens when `/start` is invoked repeatedly;
 - error handling around `/start`;
 - persistence or API calls triggered by `/start`.
 
-These behaviors should be documented only after the corresponding flow is reviewed.
-
-## Related current-state documents
-
-- [Current Bot Overview](./overview.md)
-- [Settings](./settings.md)
+No executable Telegram Bot source files are present in the reviewed branch, so handler/function names are also **Not Verified**.

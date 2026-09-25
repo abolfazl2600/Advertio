@@ -63,17 +63,6 @@ Choose your language
    └── 🇮🇳 हिन्दी
 ```
 
-### Not yet documented
-
-The current UI review does not establish:
-
-- language persistence;
-- what happens immediately after selecting a language;
-- whether the screen is refreshed;
-- whether the selected language affects `/start`;
-- fallback behavior for untranslated strings;
-- translation coverage across the remaining bot flows.
-
 ## Marketing messages
 
 The Settings screen currently displays:
@@ -82,23 +71,13 @@ The Settings screen currently displays:
 Marketing messages: 🔔 On
 ```
 
-This confirms that a marketing-message preference is exposed and that the currently displayed state is **On**.
-
-### Not yet documented
-
-The current UI review does not establish:
-
-- how the preference is toggled;
-- whether an **Off** state is available;
-- whether the preference is persisted;
-- what messages are classified as marketing;
-- how marketing messages differ from transactional/system notifications.
+This confirms that the preference is displayed with the current visible state **On**.
 
 ## Back navigation
 
 A **Back** control is visible on the Settings screen.
 
-The visible navigation is:
+The reviewed UI shows:
 
 ```text
 Settings
@@ -108,8 +87,19 @@ Back
 Main Menu
 ```
 
-The exact state-management and callback behavior should be verified from the implementation before being treated as a technical specification.
+## Not Verified
 
-## Current implementation boundary
+The screenshots do not establish:
 
-This document intentionally does not describe registration, listing creation, search, saved searches, Help, API contracts, persistence, or backend behavior. Those areas require their own current-state review.
+- language persistence;
+- what happens immediately after selecting a language;
+- whether the Settings screen is refreshed;
+- whether the selected language affects `/start`;
+- fallback behavior for untranslated strings;
+- how the marketing-message preference is toggled;
+- whether an **Off** state is available;
+- whether the marketing-message preference is persisted;
+- what messages are classified as marketing;
+- exact state-management or callback behavior for **Back**.
+
+No executable Telegram Bot source files are present in the reviewed branch, so implementation-level handler names and persistence/API behavior are **Not Verified**.
