@@ -225,9 +225,92 @@ The implemented Gate A dashboard currently answers these operational questions:
 
 ## Metric definition controls
 
-The reviewed 3 Oct 2026 Gate A UI visibly includes an information control (`ⓘ`) beside the primary KPI/metric labels.
+The current Gate A UI includes an information control (`ⓘ`) beside the primary KPI/metric labels.
 
-Confirmed visible definition controls include the current cards/sections for:
+Opening the control displays a dedicated metric-definition modal/popover with the canonical calculation metadata for the selected metric.
+
+The implemented definition pattern includes, where applicable:
+
+- metric name;
+- plain-language purpose/description;
+- formula;
+- numerator;
+- denominator;
+- inclusion criteria;
+- crawled-listing treatment;
+- time-window behavior;
+- zero-denominator / No-data behavior;
+- source data/events/fields.
+
+This is the implemented outcome of [Issue #14 — Add metric definitions and formulas to KPI cards](https://github.com/abolfazl2600/Advertio/issues/14).
+
+### Verified example — Photo coverage (now)
+
+The supplied 3 Oct 2026 UI shows the opened definition modal for **Photo coverage (now)**.
+
+#### Purpose
+
+```text
+How many live listings of each kind carry a photo.
+```
+
+#### Formula
+
+```text
+with photo ÷ live × 100, rounded to one decimal
+```
+
+#### Numerator
+
+```text
+Live listings in the cohort with at least one media key (MediaKeysJson isn't [] or null).
+```
+
+#### Denominator
+
+```text
+Live listings in the cohort.
+```
+
+#### Includes
+
+```text
+Status = Active. The user-generated column is SC-006's number.
+```
+
+#### Crawled listings
+
+```text
+One of the two columns.
+```
+
+The metric is explicitly presented as a comparison between **Crawled** and **User-generated** cohorts.
+
+#### Time window
+
+```text
+Not windowed: a snapshot of what is live right now. The window picker doesn't change it.
+```
+
+#### No-data behavior
+
+```text
+No live listings in the cohort: —.
+```
+
+#### Data source
+
+The modal identifies the current source as:
+
+```text
+lead.leads · MediaKeysJson, Status, SupplySource
+```
+
+This confirms that the definition UI is not generic explanatory copy only; it exposes implementation-level metric semantics and source fields.
+
+### Definition-control coverage
+
+The reviewed Gate A UI shows `ⓘ` controls across the primary dashboard metrics and sections, including:
 
 - Total users
 - New users
@@ -237,31 +320,13 @@ Confirmed visible definition controls include the current cards/sections for:
 - Real supply
 - Photo coverage
 - Is crawled supply eating demand?
-- Crawled vs user-generated section/metrics
+- Crawled vs user-generated metrics
 - Why they did not pay
 - C1 experiment — early vs late
 - Double charges
 - Instrumentation health
 
-This confirms that metric-definition entry points are present in the current dashboard UI.
-
-### Definition content verification status
-
-The supplied screenshots do **not** show any opened metric-definition tooltip/popover/drawer.
-
-Therefore, the current evidence does not yet establish that every info control exposes all of the definition content required by Issue #14, such as:
-
-- exact formula;
-- numerator;
-- denominator;
-- inclusion/exclusion criteria;
-- crawled-listing inclusion/exclusion;
-- time-window semantics;
-- canonical source events/data;
-- configured target source;
-- zero-denominator handling.
-
-The visible card copy and values documented elsewhere in this file are verified from the current UI. Exact hidden definition content must be verified separately before it is documented as implemented.
+The exact definition content varies by metric, but the current product pattern is to expose the metric's canonical meaning/calculation through these controls.
 
 ## Metric semantics confirmed by the current UI
 
@@ -308,14 +373,14 @@ They document what the dashboard currently exposes and how metrics are presented
 
 The reviewed UI does not establish:
 
-- backend/source-table implementation for every Gate A metric;
-- exact canonical user-ID query implementation used to deduplicate user counts;
-- treatment of admin/system/test accounts beyond what the UI explicitly states;
+- the complete opened definition text for every individual Gate A metric;
+- exact canonical user-ID query implementation used to deduplicate user counts beyond the displayed metric definitions;
+- treatment of admin/system/test accounts where a metric definition does not explicitly state it;
 - complete C1 experiment assignment rules;
 - complete list of payment-failure attribution reasons;
-- whether every card supports drill-down;
+- whether every card supports drill-down beyond its metric-definition control;
 - alerting/notification behavior;
 - exact refresh/caching behavior;
-- configuration location for target thresholds.
+- configuration location for target thresholds where the definition modal does not expose it.
 
-Do not infer these implementation details from the UI alone.
+Do not infer undocumented implementation details beyond the metric-definition UI and observed dashboard state.
