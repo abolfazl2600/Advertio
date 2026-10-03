@@ -2,18 +2,11 @@
 
 AI features are primarily Future product capabilities. Version 2.0 is the main Smart & AI milestone; Version 2.5 adds AI Translation.
 
-## Product decision: no Smart Matching
+## Discovery assistance principle
 
-Advertio does not require:
+Structured Search, Active Filters, Saved Filters and normal Ranking are the product discovery model.
 
-- Smart Matching;
-- Compatibility Score;
-- Match Score;
-- match percentages.
-
-Structured Search, Active Filters, Saved Filters and normal Ranking remain the product discovery model.
-
-AI can assist users in building searches/filters, but it does not create a separate matching system.
+AI can assist users by translating natural-language intent into a Search query and editable Active Filters.
 
 ## Version 2.0
 
@@ -66,16 +59,9 @@ The user should be able to edit/remove the generated filters.
 - query clarification when required
 - save the resulting filter state for future notifications
 
-### No hidden compatibility score
+### Result presentation
 
-AI Search Assistant must not display:
-
-- 98% Match;
-- 85% compatibility;
-- hidden personality similarity;
-- a fuzzy matching threshold.
-
-Search relevance/ranking can still order text-search results, but it is not presented as a person/listing compatibility score.
+AI Search Assistant shows the Search query, generated Active Filters and the normal result set. Users can inspect, edit or remove generated filters before or after running the search.
 
 ## Price Suggestion — Future
 
