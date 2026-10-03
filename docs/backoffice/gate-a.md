@@ -223,6 +223,46 @@ The implemented Gate A dashboard currently answers these operational questions:
 12. Are duplicate charges occurring?
 13. Are key analytics events still being recorded?
 
+## Metric definition controls
+
+The reviewed 3 Oct 2026 Gate A UI visibly includes an information control (`ⓘ`) beside the primary KPI/metric labels.
+
+Confirmed visible definition controls include the current cards/sections for:
+
+- Total users
+- New users
+- Active users
+- Gate A paid-contact conversion
+- Failure attribution
+- Real supply
+- Photo coverage
+- Is crawled supply eating demand?
+- Crawled vs user-generated section/metrics
+- Why they did not pay
+- C1 experiment — early vs late
+- Double charges
+- Instrumentation health
+
+This confirms that metric-definition entry points are present in the current dashboard UI.
+
+### Definition content verification status
+
+The supplied screenshots do **not** show any opened metric-definition tooltip/popover/drawer.
+
+Therefore, the current evidence does not yet establish that every info control exposes all of the definition content required by Issue #14, such as:
+
+- exact formula;
+- numerator;
+- denominator;
+- inclusion/exclusion criteria;
+- crawled-listing inclusion/exclusion;
+- time-window semantics;
+- canonical source events/data;
+- configured target source;
+- zero-denominator handling.
+
+The visible card copy and values documented elsewhere in this file are verified from the current UI. Exact hidden definition content must be verified separately before it is documented as implemented.
+
 ## Metric semantics confirmed by the current UI
 
 ### Total users
