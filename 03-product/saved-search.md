@@ -1,86 +1,114 @@
-# Saved Search
+# Saved Search / Saved Filter
 
 ## Version scope
 
 Roadmap:
+
 - Version 1.2: Saved Search + Alerts
 
 Feature prioritization:
+
 - Saved Filters in Phase 2
+
+## Product decision
+
+Advertio uses **Saved Filters**, not fuzzy matching.
+
+A Saved Filter stores the user's structured Search/Filter state.
+
+New Listing alert eligibility is determined by whether the Listing satisfies the saved filter conditions.
+
+There is:
+
+- no 70% threshold;
+- no Compatibility Score;
+- no Match percentage.
 
 ## Core behavior
 
 User:
-1. builds Search with desired Filters in Web App
-2. saves the Search / Filter
-3. enables Telegram notification
-4. receives notification when new Listing matches
 
-Source also describes:
-- one daily summary containing links to matching Listings.
+1. builds Search with desired Filters;
+2. saves the Search / Filter state;
+3. enables Telegram notification;
+4. receives notification when a new Active Listing satisfies the Saved Filter.
+
+A daily summary can contain links to Listings satisfying the Saved Filter.
 
 ## Example
 
-- Toronto housing
-- under $1,500
-- roommate gender = Female
+```text
+Category = Housing
+City = Toronto
+Monthly Rent <= 1500
+Gender Preference = Female
+```
 
-## Match threshold
+A new Listing must satisfy the active conditions according to the category's filter semantics.
 
-Source:
-- if Listing is approximately 70% close to User Filter, it can be sent.
+## Filter semantics
 
-User-configurable threshold:
-- planned for Future
-- not available in Current version
+Each category owns its structured filter semantics.
+
+General rule:
+
+- independent filter dimensions combine with AND;
+- multi-select behavior is defined by that filter;
+- Any/unset does not constrain;
+- Ranking orders eligible results but does not bypass hard filters.
 
 ## No-result behavior
 
-If no Listing is sent:
-- System recommends reducing/loosening Filters to receive more results.
+If no new Listing satisfies the Saved Filter:
 
-Example:
-- Toronto housing between $1,000 and $1,500
+- do not send invented/loosely related results as if they satisfied it;
+- UI may recommend loosening Filters;
+- user chooses whether to change the Saved Filter.
 
 ## Notification channels
 
-Current Saved Search flow:
+Current Saved Search/Filter flow:
+
 - Telegram Bot message
 
 Future:
+
 - User can add Email for alerts
 
 ## Admin visibility
 
 - Active Saved Filters are visible in Admin Panel.
 
-## AI Recommendation relationship — Future
+## AI Search relationship — Future
 
-AI Recommendation Assistant can:
-- understand natural-language request
-- extract Attributes
-- save request
-- notify User about new matching Listings later
+AI Search Assistant can:
 
-This is a Future AI extension of Saved Search behavior.
+- understand a natural-language request;
+- extract structured Attributes;
+- create/edit Active Filters;
+- save the resulting filter state.
+
+AI does not create a separate compatibility score.
 
 ## Product purpose
 
 Version 1.2 goal:
-- improve experience
-- increase engagement
 
-Source does not provide actual Saved Search conversion/retention results.
+- improve experience;
+- increase engagement;
+- reduce repeated manual searching.
+
+Source does not provide actual Saved Filter conversion/retention results.
 
 ## Missing rules
 
 > اطلاعات کافی برای این بخش در Source Document فعلی وجود ندارد.
 
 Source does not define:
-- max Saved Searches per User
-- expiry
-- delete/edit behavior
-- duplicate filter behavior
-- notification deduplication
-- exact 70% matching formula
-- frequency override by User
+
+- max Saved Filters per User;
+- expiry;
+- delete/edit behavior;
+- duplicate filter behavior;
+- notification deduplication;
+- frequency override by User.

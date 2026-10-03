@@ -31,7 +31,7 @@ The current Search screen includes:
 
 - free-text keyword input;
 - clear-input control;
-- matching result count;
+- result count;
 - listing result cards;
 - persistent bottom navigation.
 

@@ -7,12 +7,12 @@ Version 1.0:
 
 Version 1.2:
 - Smart Notifications
-- Saved Search + Alerts
+- Saved Search / Saved Filter + Alerts
 
 Version 2.5:
 - WhatsApp Integration
 
-Saved Search:
+Saved Filter:
 - Email alerts in Future
 
 ## Notification channels named by Source
@@ -31,9 +31,10 @@ Saved Search:
 
 ## Notification triggers
 
-Source defines:
+Source/product behavior includes:
+
 - Payment/contact request from applicant to Advertiser when User lacks Coin and asks Advertiser
-- New Listing matching active Filter
+- New Listing satisfying an active Saved Filter
 - Listing performance report
 - Expiry warning
 - Admin-to-user message
@@ -44,11 +45,13 @@ Source defines:
 ## Listing performance notifications
 
 Cadence names:
+
 - Daily
 - Weekly
 - Total
 
 Metrics in Source:
+
 - Views
 - Contact info views
 - Contact Requests
@@ -63,6 +66,7 @@ Listing Entity says metrics are sent daily even after Expiry for up to one month
 - sent every day
 
 Another workflow:
+
 - Telegram Extend notifications up to 15 days after Expiry
 
 > ⚠️ Source Conflict
@@ -73,45 +77,69 @@ Another workflow:
 >
 > Source does not say whether these are different streams or inconsistent durations.
 
-## Saved Search notifications
+## Saved Filter notifications
+
+Product decision:
+
+- notification eligibility is based on deterministic Saved Filter conditions;
+- no 70% matching threshold;
+- no Compatibility Score;
+- no Match percentage.
+
+Current/future channels:
 
 - Telegram Bot
-- Daily summary with links
-- new matching Listings
-- ~70% matching threshold
+- daily summary when configured
 - Future Email option
+
+Example:
+
+```text
+Saved Filter:
+City = Toronto
+Category = Housing
+Price <= 1500
+
+A new active Listing satisfying all active filter conditions
+→ eligible for alert
+```
 
 See [Saved Search](./saved-search.md).
 
 ## Admin notifications
 
 Admin can:
-- send message to User
+
+- send message to User;
 - send targeted advertising/message by:
   - Region
   - Category
   - City
   - Country
-- Fee is agreed with Admin
+- Fee is agreed with Admin.
 
 ## Low Wallet balance
 
 Condition:
+
 ```text
 Balance < Required Coins
 ```
 
 Message:
+
 `Your wallet balance is low. Recharge your wallet to continue.`
 
 Action:
+
 - View Packages
 
 ## Early Access lifecycle
 
 Advertiser is informed:
-- Listing will enter public/free phase after Early Access
-- Boost can be used to maintain visibility
+
+- Listing will enter public/free phase after Early Access;
+- Boost can be used to maintain visibility.
 
 Lifecycle timing conflicts are documented in [Listing Lifecycle](./listing-lifecycle.md).
 
@@ -120,9 +148,10 @@ Lifecycle timing conflicts are documented in [Listing Lifecycle](./listing-lifec
 > اطلاعات کافی برای این بخش در Source Document فعلی وجود ندارد.
 
 Source does not define:
-- opt-in/out model
-- rate limits
-- quiet hours
-- delivery retry
-- read/unread states
-- channel preference hierarchy
+
+- opt-in/out model;
+- rate limits;
+- quiet hours;
+- delivery retry;
+- read/unread states;
+- channel preference hierarchy.

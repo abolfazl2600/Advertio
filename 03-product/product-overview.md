@@ -1,6 +1,6 @@
 # Product Overview
 
-Advertio یک Marketplace هوشمند مبتنی بر Trust است که Userها را برای نیازهای واقعی مانند Housing، Jobs، Services، Cargo و Social connections به یکدیگر متصل می‌کند.
+Advertio یک Marketplace هوشمند مبتنی بر Trust است که Userها را برای نیازهای واقعی مانند Housing، Jobs، Services، Cargo، Human Connections و Social connections به یکدیگر متصل می‌کند.
 
 ## Core product structure
 
@@ -24,7 +24,8 @@ Source این اجزای اصلی را برای Product تعریف می‌کند
 ### Structured marketplace
 - Category-specific Attributes
 - Hard/Soft Filters
-- Saved Search
+- Active Filters
+- Saved Filters
 - Ranking
 - Listing lifecycle
 - Contact-access rules
@@ -36,9 +37,33 @@ Source این اجزای اصلی را برای Product تعریف می‌کند
 - Future WhatsApp
 - Future multi-language
 
+## Product discovery decision
+
+Advertio uses:
+
+```text
+Search
++ Active Filters
++ Saved Filters
++ Ranking
+```
+
+Advertio does **not** require a category-level Matching Engine.
+
+The following concepts are removed from the target product specification:
+
+- Smart Matching
+- Compatibility Score
+- percentage Match Score
+- fuzzy 70% Saved Filter threshold
+- Human Matching as a category name
+
+Ranking can order results after Search/Filters, but it does not replace or bypass active hard filters.
+
 ## Product roadmap
 
 ### Version 1.0 — Minimum Viable Marketplace
+
 Focus:
 - Housing (Rental & Roommate)
 - Telegram Bot: Post + View Listing
@@ -59,6 +84,7 @@ Success criteria:
 - حداقل 200 Registered Users
 
 ### Version 1.1 — Wallet & Monetization Base
+
 - Wallet + Coin System
 - Boost
 - Extend
@@ -71,7 +97,8 @@ Goal:
 - فعال‌سازی Revenue flow
 
 ### Version 1.2 — Core Experience & Ranking
-- Saved Search + Alerts
+
+- Saved Filters + Alerts
 - Basic Ranking
 - Smart Notifications
 - Response Metrics
@@ -81,6 +108,7 @@ Goal:
 - افزایش Engagement و بهبود User experience
 
 ### Version 1.5 — Trust Foundation
+
 - Manual Video Verification
 - Review + Rating + Badges
 - Manual Verification Workflow
@@ -91,26 +119,28 @@ Goal:
 - Trust foundation و کاهش Fraud risk
 
 ### Version 2.0 — Smart & AI Features
-- AI Recommendation Assistant
-- AI Search + Smart Matching
+
+- AI Search Assistant
 - AI Question Generator
 - Price Suggestion
-- Compatibility Score
+- Listing-quality assistance
 
 Goal:
-- Smart experience و افزایش Conversion
+- کاهش friction در Search/Filter و بهبود کیفیت Listing
 
 ### Version 2.5 — International Expansion
+
 - Multi-language + AI Translation
 - Germany + Italy
 - WhatsApp Integration
 - Cargo
-- Human Matching + Social Categories
+- Human Connections + Social Categories
 
 Goal:
 - ورود به Marketهای جدید و Expansion دسته‌ها
 
 ### Version 3.0 — Business Platform
+
 - Business Landing Pages
 - Premium Accounts
 - Business Analytics + Enterprise Dashboard
@@ -175,11 +205,25 @@ It must **not** be split into `Passenger Cargo`, `Ride Sharing`, `Logistics / Sh
 
 Advertio does not use a Cargo `role` field. A Cargo listing is simply a Cargo listing.
 
-Whether the source text describes a traveler carrying cargo or a person looking to send cargo is preserved in the listing content/provenance, not represented as a separate Product role.
+Whether source text describes a traveler carrying cargo or a person looking to send cargo is preserved in listing content/provenance, not represented as a separate Product role.
 
 All Cargo listings use the same feed, route fields, filters and moderation model.
 
 Ride-sharing for transporting passengers and commercial logistics/shipping remain outside Cargo V1 unless designed later as separate products.
+
+## Human Connections taxonomy decision
+
+The legacy source name **Human Matching** is replaced by:
+
+```text
+Human Connections
+```
+
+Human Connections uses structured Attributes + Active Filters.
+
+It does not implement automatic matching or compatibility scoring.
+
+See [Human Connections](../04-categories/human-connections/overview.md).
 
 ## Cold-start boundary
 
@@ -197,6 +241,6 @@ Telegram Crawler:
 - [Verification](./verification.md)
 - [Reviews & Ratings](./reviews-ratings.md)
 - [Ranking](./ranking.md)
-- [Saved Search](./saved-search.md)
+- [Saved Search / Saved Filter](./saved-search.md)
 - [Notifications](./notifications.md)
 - [AI Features](./ai-features.md)

@@ -2,124 +2,118 @@
 
 AI features are primarily Future product capabilities. Version 2.0 is the main Smart & AI milestone; Version 2.5 adds AI Translation.
 
+## Product decision: no Smart Matching
+
+Advertio does not require:
+
+- Smart Matching;
+- Compatibility Score;
+- Match Score;
+- match percentages.
+
+Structured Search, Active Filters, Saved Filters and normal Ranking remain the product discovery model.
+
+AI can assist users in building searches/filters, but it does not create a separate matching system.
+
 ## Version 2.0
 
-- AI Recommendation Assistant
-- AI Search + Smart Matching
+- AI Search Assistant
 - AI Question Generator
 - Price Suggestion
-- Compatibility Score
+- Listing-quality assistance
 
 Goal:
-- smarter user experience
-- significant conversion improvement
+- smarter search/input experience
+- reduce friction in building Filters
+- improve Listing quality
 
-## AI Recommendation Assistant
+## AI Search Assistant
 
 Status: Future
 
 ### Goal
-User describes need in natural language instead of selecting many Filters.
+
+User describes a need in natural language instead of manually selecting every filter.
 
 UI concept:
-- `Describe what you're looking for`
+
+`Describe what you're looking for`
 
 Examples:
+
 - furnished room in Toronto under $1,200 near subway
 - part-time warehouse job in Mississauga
-- passenger cargo Toronto → Tehran next week
+- Cargo Toronto → Tehran next week
+- tennis partner in North York this weekend
 
 ### Processing
-AI:
-1. detects Category
-2. extracts required Attributes
-3. ranks relevant Listings by match
-4. shows close alternatives when exact results are insufficient
+
+AI can:
+
+1. detect Category;
+2. extract structured Attributes;
+3. translate supported attributes into Active Filters;
+4. execute normal Search + Filter behavior;
+5. show the resulting filter state to the User.
+
+The user should be able to edit/remove the generated filters.
 
 ### Capabilities
+
 - Natural Language Search
 - automatic Attribute extraction
-- AI Match Score
-- similar Listing suggestions
-- save request for future notifications
+- Active Filter generation
+- query clarification when required
+- save the resulting filter state for future notifications
 
-### Example
-Input:
-- female roommate
-- North York
-- budget ≤ $900
+### No hidden compatibility score
 
-Extracted:
-- Category: Housing
-- City: North York
-- Listing Type: Roommate
-- Gender Preference: Female
-- Budget: ≤ $900
+AI Search Assistant must not display:
 
-Example output:
-- 98% Match
-- 95% Match
-- 90% Match
+- 98% Match;
+- 85% compatibility;
+- hidden personality similarity;
+- a fuzzy matching threshold.
 
-These percentages are examples, not validated performance.
-
-## AI Search + Smart Matching
-
-Benefits stated:
-- fewer manual Filters
-- faster discovery
-- natural search
-- discovery of alternatives
-
-Platform goals:
-- higher engagement
-- higher Listing clicks
-- better search quality
-- collect data to improve recommendation algorithms
+Search relevance/ranking can still order text-search results, but it is not presented as a person/listing compatibility score.
 
 ## Price Suggestion — Future
 
 Source proposes:
-- recommend Listing price based on similar Listings in same Area/Category
-- detect unrealistic/outlier prices
+
+- recommend Listing price based on similar Listings in same Area/Category;
+- detect unrealistic/outlier prices.
 
 No algorithm or validation result is provided.
 
 ## Listing-quality assistance — Future
 
 Source proposes:
-- suggestions to improve Listing text/quality
-- Category/Tag suggestions during Listing creation
+
+- suggestions to improve Listing text/quality;
+- Category/Tag suggestions during Listing creation.
 
 ## AI Question Generator — Future
 
 Before Contact:
+
 - AI suggests questions User should ask seller/advertiser.
 
 Source example:
 - «این سؤال‌ها را از فروشنده بپرس.»
 
-## Compatibility Score — Future
-
-Status: Proposed
-
-- Example: 85% Match
-- based on Search/request
-- fuzzy suggestion behavior
-- Source notes possible conflict with Urgent Listings
-
-See [Ranking](./ranking.md).
-
 ## AI Listing Translation — Version 2.5 / Future
 
 After Listing create/edit:
-- AI analyzes text
-- translates Title
-- translates Description
-- translates text Attributes/Tags
-- User sees Listing in selected language
+
+- AI analyzes text;
+- translates Title;
+- translates Description;
+- translates text Attributes/Tags;
+- User sees Listing in selected language.
 
 Future:
+
 - Chat Translation
 - Review translation
 - Profile translation
@@ -128,12 +122,9 @@ Future:
 
 ### Translation storage conflict
 
-One Source section says:
-- translated versions are stored alongside original.
+One Source section says translated versions are stored alongside original.
 
-Another note says:
-- after first translation, translation is cached as needed
-- multiple translations are not permanently stored per Listing.
+Another note says after first translation, translation is cached as needed and multiple translations are not permanently stored per Listing.
 
 > ⚠️ Source Conflict
 >
@@ -146,14 +137,16 @@ Another note says:
 ## AI and Operations — Future
 
 Manual:
-- Listing approval
-- Verification
-- Document review
+
+- Listing approval;
+- Verification;
+- Document review.
 
 are intended to become increasingly automated via:
-- AI Moderation
-- Fraud Detection
-- external Verification services
+
+- AI Moderation;
+- Fraud Detection;
+- external Verification services;
 
 after predefined Operational KPIs.
 
@@ -162,9 +155,9 @@ after predefined Operational KPIs.
 Status: Proposed / Future
 
 Source does not provide actual production results for:
-- Match accuracy
-- Search conversion uplift
-- Price Suggestion accuracy
-- Compatibility Score accuracy
-- AI Question usefulness
-- Translation quality
+
+- natural-language filter extraction accuracy;
+- Search conversion uplift;
+- Price Suggestion accuracy;
+- AI Question usefulness;
+- Translation quality.
