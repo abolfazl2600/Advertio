@@ -1,6 +1,6 @@
 # Product Overview
 
-Advertio یک Marketplace هوشمند مبتنی بر Trust است که Userها را برای نیازهای واقعی مانند Housing، Jobs، Services، Passenger Cargo و Social connections به یکدیگر متصل می‌کند.
+Advertio یک Marketplace هوشمند مبتنی بر Trust است که Userها را برای نیازهای واقعی مانند Housing، Jobs، Services، Cargo و Social connections به یکدیگر متصل می‌کند.
 
 ## Core product structure
 
@@ -104,7 +104,7 @@ Goal:
 - Multi-language + AI Translation
 - Germany + Italy
 - WhatsApp Integration
-- Passenger Cargo
+- Cargo
 - Human Matching + Social Categories
 
 Goal:
@@ -166,6 +166,21 @@ Phase 3:
 - Fraud Detection
 
 به‌تدریج جایگزین Manual work می‌شوند و Human operator به Exceptionها محدود خواهد شد.
+
+## Cargo taxonomy decision
+
+Cargo is one top-level marketplace category.
+
+It must **not** be split into `Passenger Cargo`, `Ride Sharing`, or `Logistics / Shipping` subcategories.
+
+The two sides of the Cargo marketplace are represented by a listing-level `role`:
+
+- `carrier` — a traveler who has capacity to carry cargo;
+- `sender` — a person who needs cargo transported.
+
+Both roles use the same Cargo feed, route model, filters, moderation model and matching system.
+
+Ride-sharing for transporting passengers and commercial logistics/shipping are outside the Cargo V1 scope unless they are designed later as separate products.
 
 ## Cold-start boundary
 
