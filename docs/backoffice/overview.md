@@ -28,6 +28,26 @@ The Backoffice sidebar currently contains:
 
 The **Gate A**, **Listings**, **Users**, and **Channels** sections have been documented in detail so far. The remaining sections should be documented after their current UI/behavior has been reviewed.
 
+### Current Gate A capability note
+
+Gate A provides current product-validation and marketplace-health metrics including:
+
+- **Total Users · all time**;
+- **New Users · current window**;
+- **Active Users · current window**;
+- paid-contact conversion and failure attribution;
+- real/user-generated supply and photo coverage;
+- crawled-demand concentration;
+- detailed **Crawled vs user-generated** views/contact/payment comparison;
+- payment-reason visibility;
+- C1 early-vs-late experiment monitoring;
+- double-charge monitoring;
+- all-time instrumentation health.
+
+In the reviewed 3 Oct 2026 state, Active Users are defined in the UI as accounts that **viewed, contacted, signed in, or posted** during the window.
+
+See [Gate A](./gate-a.md) for the current metric definitions and observed UI state.
+
 ### Current Listings capability note
 
 The Backoffice **Possible Duplicate** workflow includes admin-controlled duplicate resolution: the admin explicitly selects which listing in a duplicate pair should be removed, while the other listing remains unchanged. The `Not a duplicate` action resolves the review item without removing either listing.
