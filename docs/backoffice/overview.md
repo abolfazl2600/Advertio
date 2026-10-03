@@ -1,6 +1,6 @@
 # Advertio Backoffice — Current State
 
-> Last documented from the current production/backoffice UI review on 23 Sep 2026.
+> Last documented from the current production/backoffice state on 3 Oct 2026.
 
 This documentation records **what is currently visible/implemented in the Advertio Backoffice**. It is intended to be a development reference alongside the codebase.
 
@@ -27,6 +27,12 @@ The Backoffice sidebar currently contains:
 - Your account
 
 The **Gate A**, **Listings**, **Users**, and **Channels** sections have been documented in detail so far. The remaining sections should be documented after their current UI/behavior has been reviewed.
+
+### Current Listings capability note
+
+The Backoffice **Possible Duplicate** workflow includes admin-controlled duplicate resolution: the admin explicitly selects which listing in a duplicate pair should be removed, while the other listing remains unchanged. The `Not a duplicate` action resolves the review item without removing either listing.
+
+See [Listings](./listings.md) for the current behavior.
 
 ## Detailed documentation
 
