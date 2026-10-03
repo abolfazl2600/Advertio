@@ -1,8 +1,6 @@
 # Human Connections — Category Rules
 
-> Human Connections replaces the legacy Human Matching category concept.
->
-> The category uses Search + Active Filters. It has no matching engine.
+> Human Connections uses Search + Active Filters for structured discovery.
 
 ## 1. Category identity
 
@@ -12,21 +10,15 @@ Canonical name:
 Human Connections
 ```
 
-Do not use **Human Matching** as the canonical product name.
 
-## 2. No-matching rule
+## 2. Discovery rule
 
-Human Connections must not implement:
+Human Connections discovery uses:
 
-- automatic person-to-person pairing;
-- Compatibility Score;
-- Match Score;
-- 70%/85%/95% match percentages;
-- AI Smart Matching;
-- swipe-style compatibility;
-- hidden personality matching.
-
-Normal Search, Active Filters, Saved Filters and Ranking are sufficient.
+- Search;
+- Active Filters;
+- Saved Filters;
+- normal platform Ranking.
 
 ## 3. Listing intent
 
@@ -91,7 +83,7 @@ They require a separate product/safety decision before public activation.
 
 Verification can be displayed or filtered only when backed by a real platform verification state.
 
-Do not derive "compatible", "trusted", or "safe" from filter similarity.
+Trust and safety labels must come only from actual platform verification/moderation states.
 
 ## 9. Ranking
 
@@ -102,13 +94,13 @@ Human Connections may use normal platform Ranking such as:
 - verified-user signal where defined;
 - other platform ranking signals.
 
-Ranking must not be represented as a compatibility score.
+Ranking remains a normal result-ordering mechanism.
 
 ## 10. Saved Filters
 
 Users may save their Active Filter state and receive alerts for new listings satisfying it.
 
-Saved Filter behavior must not use a fuzzy match threshold unless a future explicit product decision reintroduces such behavior.
+Saved Filter behavior uses the category's deterministic filter semantics.
 
 ## 11. Human Connections vs Social & Events
 
@@ -119,8 +111,6 @@ Avoid duplicating the same listing across both categories automatically.
 
 ## 12. Acceptance criteria
 
-- [ ] Human Matching terminology is removed from canonical category docs.
-- [ ] No matching/compatibility engine is specified.
 - [ ] Active Filters are the structured discovery mechanism.
 - [ ] Time/location/remote constraints are represented.
 - [ ] Safety concerns for real-world connections are explicit.
