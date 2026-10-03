@@ -5,6 +5,8 @@
 > Product decision: this category replaces the old `Travel / Transport` planning section.
 >
 > Cargo is **one top-level category**. It has no Passenger Cargo / Ride Sharing / Logistics & Shipping subcategories.
+>
+> Crawler reference: [Telclaw transferlist @ 63fbc01](https://github.com/abolfazl260/Telclaw/commit/63fbc01555f01345bb92124c9112db63f1395e92).
 
 ## 1. Core product model
 
@@ -26,6 +28,8 @@ Toronto → Tehran
 Travel date: 20 Oct
 Available capacity: 12 kg
 Allowed: documents, clothes
+Airline: optional
+Flight number: optional
 Price: $20/kg
 ```
 
@@ -37,7 +41,7 @@ Example:
 
 ```text
 Toronto → Tehran
-Need to send before: 20 Oct
+Need to send around: 20 Oct
 Weight: 4 kg
 Item: documents
 Budget: negotiable
@@ -58,9 +62,9 @@ TRAVEL_TRANSPORT
 - logistics_shipping
 ```
 
-That taxonomy is superseded for the Cargo product specification.
+That taxonomy is superseded.
 
-New model:
+Canonical model:
 
 ```text
 CARGO
@@ -73,13 +77,111 @@ There is:
 
 - one category;
 - one feed;
-- one set of route fields;
-- one filter/search model;
+- one route model;
+- one filtering/search model;
 - one detail model;
 - one moderation system;
 - one matching system.
 
-## 3. What Cargo V1 is
+## 3. Telclaw Transfer relationship
+
+Telclaw currently classifies this supply as:
+
+```text
+transferlist
+```
+
+Its classifier describes `transferlist` as air-cargo / passenger-baggage / parcel shipping involving a traveler/passenger.
+
+The current extraction schema includes substantially more data than the original Advertio Passenger Cargo notes.
+
+### Telclaw AI-extracted fields
+
+Current `ai/category_schemas.py` + `ai/prompts/transferlist.txt` support:
+
+- title
+- description
+- origin_city
+- origin_province
+- origin_country
+- destination_city
+- destination_province
+- destination_country
+- airline
+- flight_number
+- departure_date
+- departure_time
+- arrival_date
+- arrival_time
+- cargo_type
+- weight
+- weight_unit
+- quantity
+- volume
+- volume_unit
+- price
+- currency
+- contact
+- features
+
+These fields must be considered when defining Cargo ingestion and native Cargo fields.
+
+See [crawler-mapping.md](./crawler-mapping.md).
+
+## 4. Telclaw role mapping
+
+Telclaw terminology:
+
+```text
+passenger
+shipper
+```
+
+Advertio terminology:
+
+```text
+passenger → carrier
+shipper   → sender
+```
+
+Advertio should persist its canonical role values:
+
+```text
+carrier
+sender
+```
+
+and retain raw crawler terminology only as source/provenance if needed.
+
+## 5. Known Telclaw integration gap
+
+The current Telclaw repository has a schema inconsistency that Advertio integration must not hide.
+
+### Present in Telclaw storage/publisher
+
+- `transfer_role`
+- `transport_type`
+
+### Current AI allow-list/prompt output
+
+The current fetched `ai/category_schemas.py` and transfer output schema do **not** include those two fields.
+
+At the same time:
+
+- the Transfer prompt conceptually distinguishes PASSENGER vs SHIPPER;
+- `storage/__init__.py` injects `transfer_role` into the transfer table;
+- the Telegram transfer publisher reads `transfer_role`;
+- the transfer publisher also reads `transport_type`.
+
+Therefore, Advertio must not assume those two values are reliably AI-extracted from every current Telclaw record.
+
+Until Telclaw is aligned, role should be:
+
+- mapped when a trustworthy source value exists;
+- otherwise treated as unknown/review-required;
+- never guessed merely to satisfy Advertio requiredness.
+
+## 6. What Cargo V1 is
 
 Cargo V1 is a **traveler-assisted cargo marketplace**.
 
@@ -88,7 +190,7 @@ It is designed for matching:
 - travelers with unused baggage/carrying capacity;
 - people who want to send eligible items along the same route.
 
-## 4. What Cargo V1 is not
+## 7. What Cargo V1 is not
 
 Cargo V1 is not:
 
@@ -100,26 +202,9 @@ Cargo V1 is not:
 - warehouse/freight forwarding;
 - escrow/shipping insurance platform.
 
-These can be separate future products if needed.
+These can be separate future products.
 
-## 5. Source-defined core fields
-
-The original product source explicitly defines for the old Passenger Cargo concept:
-
-- `role` — carrier / sender;
-- `origin_country`;
-- `origin_city`;
-- `destination_country`;
-- `destination_city`;
-- `date`;
-- `max_weight_kg`;
-- `allowed_items` — documents, electronics, clothes, personal_items;
-- `price`;
-- `currency` — CAD, USD, EUR.
-
-This Cargo specification preserves that core model but removes the subcategory split.
-
-## 6. Core user flows
+## 8. Core user flows
 
 ### Carrier flow
 
@@ -128,9 +213,11 @@ Post
 → Cargo
 → I can carry cargo
 → Route
-→ Travel date
+→ Airline / flight info (optional)
+→ Departure / arrival date & time
 → Available capacity
-→ Allowed item types
+→ Allowed cargo/item types
+→ Quantity / volume constraints (optional)
 → Price
 → Contact / verification
 → Preview
@@ -146,9 +233,9 @@ Post
 → Cargo
 → I need to send cargo
 → Route
-→ Preferred date / deadline
-→ Cargo weight
-→ Item type
+→ Preferred shipment date/window
+→ Cargo type
+→ Weight / quantity / volume
 → Budget / price preference
 → Contact
 → Preview
@@ -157,7 +244,7 @@ Post
 → Active
 ```
 
-## 7. Unified discovery
+## 9. Unified discovery
 
 The Cargo feed can contain both roles.
 
@@ -172,7 +259,7 @@ Examples:
 
 Users can filter by role, but role selection does not move them into another category.
 
-## 8. Matching model
+## 10. Matching model
 
 Cargo matching pairs complementary roles:
 
@@ -186,17 +273,32 @@ Core compatibility:
 - same route direction;
 - compatible date/date range;
 - carrier capacity >= sender cargo weight;
-- sender item type allowed by carrier.
+- sender cargo type/item compatible with carrier;
+- optional quantity/volume constraints when supplied.
+
+Airline/flight information is useful for trust, detail and ranking but should not be a mandatory match constraint unless the user explicitly filters for it.
 
 See [matching.md](./matching.md).
 
-## 9. Trust and verification
+## 11. Location normalization
+
+Telclaw already maintains a transfer-specific canonical-location layer:
+
+```text
+transfer_locations
+```
+
+with canonical origin/destination city keys and ISO-2 countries.
+
+Advertio should reuse canonical normalized locations rather than parsing route strings during every search.
+
+Do not store country flags as data; flags are presentation only.
+
+## 12. Trust and verification
 
 Cargo has higher trust requirements than a normal classified listing because a traveler may physically carry another person's property.
 
-Advertio's source mentions a future/manual **Cargo ticket Verified** verification.
-
-This should be treated as a trust signal for a carrier/trip, not as proof that a cargo item is legal or safe.
+Advertio source mentions future/manual **Cargo ticket Verified** verification.
 
 Potential trust layers:
 
@@ -206,11 +308,11 @@ Potential trust layers:
 - Member since;
 - Reviews/history when available.
 
-Do not label unverified trip data as verified.
+Airline and flight number can support trip review but do not themselves prove verification.
 
-## 10. Safety boundary
+## 13. Safety boundary
 
-Advertio should require item declaration and prohibit illegal/restricted goods according to applicable law and carrier/travel rules.
+Advertio should require item declaration and prohibit illegal/restricted goods according to applicable law and airline/carrier rules.
 
 The platform must not encourage:
 
@@ -219,35 +321,37 @@ The platform must not encourage:
 - illegal/restricted goods;
 - bypassing customs/airline rules.
 
-Exact legal/prohibited-item policy requires a dedicated compliance policy before public launch.
+Exact prohibited/restricted-item policy requires dedicated compliance work before public launch.
 
-## 11. Current implementation boundary
+## 14. Current implementation boundary
 
-The current Telegram Bot documentation still shows the UI label **Passenger Cargo** in category selection.
+Current Telegram Bot documentation still shows **Passenger Cargo** as the UI label.
 
-That is a current-state UI observation, not the new product taxonomy.
+That is a current-state observation, not the new product taxonomy.
 
-The product target is now:
+Target:
 
 ```text
 Cargo
 ```
 
-A separate implementation task is required to rename current UI/runtime labels if they still use Passenger Cargo.
+A runtime/UI implementation change is still required where the old label exists.
 
-## 12. Documentation map
+## 15. Documentation map
 
-- [attributes.md](./attributes.md) — unified Cargo data contract
-- [filters.md](./filters.md) — unified filtering/search
+- [attributes.md](./attributes.md) — unified Cargo + Telclaw-aligned data contract
+- [filters.md](./filters.md) — filtering/search
 - [matching.md](./matching.md) — sender ↔ carrier matching
+- [crawler-mapping.md](./crawler-mapping.md) — exact Telclaw → Advertio mapping
 - [rules.md](./rules.md) — category invariants and safety rules
 
-## 13. Acceptance criteria
+## 16. Acceptance criteria
 
 - [ ] Cargo exists as one top-level category.
-- [ ] Carrier and Sender are listing roles, not categories/subcategories.
-- [ ] No new Cargo flow asks the user to choose Passenger Cargo / Ride Sharing / Logistics Shipping.
-- [ ] Both roles share one route model and one feed.
-- [ ] Role is visible on Cargo listing cards/details.
-- [ ] Matching pairs Sender with Carrier using route/date/capacity/item compatibility.
-- [ ] Ride-sharing and commercial logistics are not silently included in Cargo V1.
+- [ ] Carrier and Sender are listing roles, not subcategories.
+- [ ] Telclaw transfer fields are represented in the Cargo integration contract.
+- [ ] Passenger maps to Carrier; Shipper maps to Sender.
+- [ ] Unknown crawler role is never silently guessed.
+- [ ] Route date/time, airline/flight, cargo type, weight, quantity, volume, price and contact can survive ingestion where present.
+- [ ] Both roles share one feed and route model.
+- [ ] Ride-sharing and commercial logistics remain outside Cargo V1.

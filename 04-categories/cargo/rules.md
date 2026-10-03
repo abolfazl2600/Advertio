@@ -1,6 +1,8 @@
 # Cargo — Category Rules
 
 > Cargo is one category with two listing roles: Carrier and Sender.
+>
+> Telclaw `transferlist` is an upstream crawler source for this category.
 
 ## 1. Category identity
 
@@ -22,27 +24,70 @@ Carrier and Sender are roles.
 
 ## 2. Role rule
 
-Every Cargo listing must have exactly one role:
+Advertio role:
 
 ```text
 carrier
 sender
 ```
 
-Role can influence form requiredness and matching, but not category identity.
+Telclaw mapping:
 
-## 3. Scope rule
+```text
+passenger → carrier
+shipper → sender
+```
+
+Unknown crawler role stays unknown/review-required.
+
+## 3. Telclaw extraction boundary
+
+Telclaw current AI extraction supports:
+
+- route city/province/country;
+- airline;
+- flight number;
+- departure/arrival date;
+- departure/arrival time;
+- cargo type;
+- weight + unit;
+- quantity;
+- volume + unit;
+- price + currency;
+- contact;
+- features;
+- title/description.
+
+Do not discard these fields during Cargo ingestion merely because the original Advertio Cargo notes had a smaller schema.
+
+## 4. Telclaw schema-gap rule
+
+Current Telclaw storage/publisher contains:
+
+- `transfer_role`
+- `transport_type`
+
+but the reviewed current AI allow-list/output does not reliably include them.
+
+Advertio must:
+
+- accept them when a trustworthy upstream path supplies them;
+- never assume they are populated;
+- never invent them to make an import valid;
+- retain review visibility for records missing required role.
+
+## 5. Scope rule
 
 Cargo V1 is traveler-assisted cargo transport.
 
-### Included
+Included:
 
 - traveler with spare baggage/carrying capacity;
-- sender seeking a traveler for an eligible item.
+- sender seeking a traveler.
 
-### Excluded from Cargo V1
+Excluded:
 
-- transporting passengers;
+- passenger transportation;
 - ride-sharing/carpooling;
 - taxi;
 - commercial freight brokerage;
@@ -51,141 +96,151 @@ Cargo V1 is traveler-assisted cargo transport.
 - warehousing;
 - freight forwarding.
 
-## 4. Route rule
+A Telclaw `transport_type` value must not automatically expand this product scope.
 
-Every Cargo listing must have:
+## 6. Route rule
 
-- origin country;
-- origin city;
-- destination country;
-- destination city.
+Every public Cargo listing needs a usable directional route.
 
-Direction matters.
+Crawler route data may be incomplete; incomplete records may require review rather than fabricated locations.
 
-## 5. Carrier rule
+## 7. Airline / flight rule
 
-Carrier must provide:
+Airline and flight number:
 
-- travel/departure date;
-- available cargo weight;
-- accepted item types;
-- pricing state;
-- contact method.
+- are optional;
+- may support moderation/verification;
+- do not imply Ticket Verified;
+- must reflect source/native user input accurately.
 
-Carrier should not be treated as trip-verified unless the verification system marks the trip verified.
+## 8. Date/time rule
 
-## 6. Sender rule
+Crawler dates/times must be preserved as extracted.
 
-Sender must provide:
+Do not substitute Telegram message date for trip/shipment date.
 
-- acceptable send date window;
-- cargo weight;
-- declared item type(s);
-- pricing/budget state;
-- contact method.
+Telclaw explicitly forbids that behavior.
 
-## 7. Item declaration rule
+## 9. Weight/unit rule
 
-Sender must declare the item type.
+Never drop the source unit.
 
-Do not encourage carrying:
+Store source value + unit and derive a canonical matching value separately when safe.
+
+Do not interpret raw crawler weight as Carrier capacity until role/context supports that meaning.
+
+## 10. Quantity/volume rule
+
+Quantity and volume extracted by Telclaw are legitimate Cargo data.
+
+Preserve them.
+
+Do not force them into hard matching until their role semantics and units are normalized.
+
+## 11. Cargo type rule
+
+Preserve raw `cargo_type`.
+
+Normalize into Advertio canonical item types only when confident.
+
+Unknown/ambiguous types remain raw/reviewable.
+
+## 12. Price rule
+
+Telclaw extracts price/currency but not a dedicated reliable price-type field.
+
+Therefore:
+
+- preserve amount/currency;
+- do not assume per-kg;
+- do not assume total;
+- classify price semantics only when established.
+
+## 13. Contact rule
+
+Crawler contact stays external/source contact.
+
+It does not create native Advertio ownership or verification.
+
+## 14. Item declaration and safety
+
+Sender must declare item type.
+
+Do not encourage:
 
 - unknown sealed packages;
-- undeclared items;
-- illegal/restricted items.
+- undeclared goods;
+- illegal/restricted goods.
 
-A dedicated prohibited/restricted-items compliance policy is required before public Cargo launch.
+A dedicated compliance policy is required before public Cargo launch.
 
-## 8. Verification
+## 15. Verification
 
-The source mentions **Cargo ticket Verified** as a future/manual verification.
+Source mentions Cargo ticket verification.
 
-Rules:
+Verification is system/admin controlled.
 
-- verification is system/admin-controlled;
-- user cannot self-assign it;
-- it verifies trip/ticket evidence only;
-- it does not certify item legality or customs compliance.
+Airline + flight number alone are not verification.
 
-## 9. Listing moderation
+## 16. Moderation
 
-Cargo should require moderation before publication under the current general Advertio listing rule.
+Review should expose:
 
-Moderation should inspect:
-
+- role/source role;
 - route;
-- dates;
-- weight;
-- item declaration;
-- suspicious description/contact behavior;
-- prohibited-item signals;
-- duplicate route/listing spam;
-- trust/verification claims.
+- airline;
+- flight number;
+- departure/arrival date/time;
+- cargo type;
+- weight/unit;
+- quantity;
+- volume/unit;
+- price/currency;
+- contact;
+- features;
+- crawler provenance.
 
-## 10. One-active-listing conflict
+## 17. One-active-listing conflict
 
-Advertio's generic source says one active listing per user per category.
+Multiple legitimate Cargo listings may be required for:
 
-Cargo may legitimately need multiple simultaneous listings:
+- multiple trips;
+- multiple sender routes.
 
-- multiple upcoming trips;
-- multiple sender requests/routes.
-
-Therefore the generic rule should not be blindly applied to Cargo.
-
-Recommended Cargo rule:
+Recommended:
 
 ```text
 allow multiple active Cargo listings
-but prevent near-identical duplicate listings
-and apply rate limits/moderation
++ duplicate/rate-limit controls
 ```
 
-A uniqueness heuristic can consider:
-
-- owner;
-- role;
-- origin;
-- destination;
-- date/date window.
-
-This is a product decision to implement explicitly.
-
-## 11. Crawled Cargo
+## 18. Crawled Cargo
 
 Crawled Cargo must:
 
-- remain marked crawled;
+- remain crawled;
 - preserve source identity;
-- use external/source contact;
-- remain non-monetized under existing crawler rules;
-- not pretend the source user is a native verified Cargo user.
+- preserve raw extracted fields;
+- use source/external contact;
+- remain non-monetized under crawler rules;
+- never impersonate a native verified user.
 
-## 12. Contact and deal boundary
+## 19. Current UI rename
 
-Advertio provides discovery/contact.
+Current Telegram Bot docs still record **Passenger Cargo** as current UI copy.
 
-Unless a future escrow/booking system is explicitly implemented, the platform must not imply:
+Target product taxonomy is **Cargo**.
 
-- shipment booking guarantee;
-- insurance;
-- customs clearance;
-- delivery guarantee.
+Current-state docs should change only when runtime UI actually changes.
 
-## 13. Current UI rename
+## 20. Acceptance criteria
 
-The current Telegram Bot documentation records **Passenger Cargo** as the visible label.
-
-The target taxonomy is now **Cargo**.
-
-Do not rewrite current-state documentation to claim the UI has already changed until the runtime UI is actually updated.
-
-## 14. Acceptance criteria
-
-- [ ] Cargo is the only category name in new product/category specifications.
-- [ ] Carrier/Sender are roles.
-- [ ] Old Travel/Transport subcategory files are removed.
-- [ ] Ride-sharing and commercial logistics are outside Cargo V1.
-- [ ] Moderation includes Cargo-specific safety checks.
-- [ ] Cargo trip verification is system-controlled.
-- [ ] Multiple legitimate Cargo listings can be supported without allowing duplicate spam.
+- [ ] Cargo remains a single category.
+- [ ] Telclaw's full current transfer field set can survive ingestion.
+- [ ] Role mapping is explicit.
+- [ ] Telclaw role/transport schema gap is documented and safely handled.
+- [ ] Airline/flight/date/time are preserved.
+- [ ] Weight/unit, quantity and volume/unit are preserved.
+- [ ] Raw cargo type/features are not silently discarded.
+- [ ] Raw price is not misinterpreted.
+- [ ] Crawled data never grants native verification.
