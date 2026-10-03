@@ -46,16 +46,9 @@ Explicit metric:
 
 However, Source does not define a formula that adds Response Metrics to Listing ranking.
 
-## Product decision: Ranking is not Matching
+## Ranking after Active Filters
 
-Advertio does not use:
-
-- Smart Matching;
-- Compatibility Score;
-- Match Score;
-- percentage compatibility.
-
-Ranking may order the result set after Search/Active Filters are applied.
+Ranking orders the result set after Search and Active Filters are applied.
 
 It must not silently override an active hard Filter.
 
@@ -70,15 +63,7 @@ Active Filters determine eligible results
 
 Free-text Search can use relevance to order textual search results.
 
-Relevance means:
-
-- how well a Listing satisfies the search query;
-
-not:
-
-- compatibility between two people;
-- an 85% Match Score;
-- a fuzzy Saved Filter threshold.
+Relevance means how well a Listing satisfies the free-text search query. Structured constraints remain owned by Active Filters.
 
 ## Advanced Ranking — Future
 
