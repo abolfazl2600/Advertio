@@ -42,6 +42,16 @@ The current UI provides a **Send message** composer with the selected user's ide
 
 See [Users](./users.md) for the current behavior.
 
+### Current Channels capability note
+
+The Backoffice Channels area supports automatic filtered publishing to configured Telegram destinations, per-channel Publish History, and manual recovery of failed deliveries.
+
+Eligible failed Publish History records can be manually retried through the existing publishing pipeline, with Attempts representing actual delivery attempts.
+
+Channels also expose **Historical matches** with **Not sent yet**, **Already sent**, and **All matching** views. Admins can select matching live listings and use **Send selected**, while the table exposes per-listing **Sent here** and **Latest delivery** state.
+
+See [Channels](./channels.md) for the current behavior.
+
 ## Detailed documentation
 
 - [Gate A](./gate-a.md)
