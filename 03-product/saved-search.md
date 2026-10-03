@@ -12,17 +12,9 @@ Feature prioritization:
 
 ## Product decision
 
-Advertio uses **Saved Filters**, not fuzzy matching.
-
 A Saved Filter stores the user's structured Search/Filter state.
 
 New Listing alert eligibility is determined by whether the Listing satisfies the saved filter conditions.
-
-There is:
-
-- no 70% threshold;
-- no Compatibility Score;
-- no Match percentage.
 
 ## Core behavior
 
@@ -88,7 +80,6 @@ AI Search Assistant can:
 - create/edit Active Filters;
 - save the resulting filter state.
 
-AI does not create a separate compatibility score.
 
 ## Product purpose
 
