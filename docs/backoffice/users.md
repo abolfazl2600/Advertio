@@ -16,6 +16,33 @@ The Users section currently provides:
 
 The supplied 3 Oct 2026 UI confirms all five filter tabs are visible.
 
+#### Verified filter
+
+The **Verified** filter is implemented and uses the system's existing/canonical verification state rather than a Backoffice-only flag.
+
+Current behavior:
+
+- Selecting **Verified** limits the Users list to users considered verified by the existing Advertio verification model.
+- The filter works with the existing Users search.
+- Existing All / Active / Disabled / Posted filters remain available.
+- No separate verification definition is introduced by Backoffice.
+
+This is the implemented outcome of [Issue #12 — Add Verified user filter](https://github.com/abolfazl2600/Advertio/issues/12).
+
+#### Posted filter
+
+The **Posted** filter is implemented for identifying users who have created at least one Advertio listing.
+
+Current behavior:
+
+- Selecting **Posted** limits the Users list to users with at least one listing linked through the canonical listing creator/owner relationship.
+- Crawled/unowned listings do not make an unrelated user appear as Posted.
+- The filter works with the existing Users search.
+- Existing All / Active / Disabled / Verified filters remain available.
+- Listing lifecycle behavior is not changed by this filter.
+
+This is the implemented outcome of [Issue #13 — Add Posted user filter](https://github.com/abolfazl2600/Advertio/issues/13).
+
 ### Search
 
 The current search field explicitly supports:
@@ -117,6 +144,8 @@ The currently documented Users capabilities include:
 
 - [Issue #3 — Add username column to Users table](https://github.com/abolfazl2600/Advertio/issues/3)
 - [Issue #4 — Send direct Telegram message to a user](https://github.com/abolfazl2600/Advertio/issues/4)
+- [Issue #12 — Add Verified user filter](https://github.com/abolfazl2600/Advertio/issues/12)
+- [Issue #13 — Add Posted user filter](https://github.com/abolfazl2600/Advertio/issues/13)
 
 ## Not yet documented
 
