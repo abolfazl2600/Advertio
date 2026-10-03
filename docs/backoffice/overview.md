@@ -40,6 +40,8 @@ The Backoffice Users table includes a dedicated **Username** column alongside di
 
 The current Users UI also exposes **All**, **Active**, **Disabled**, **Verified**, and **Posted** filters, with search by name, username, phone, or ID.
 
+**Verified** uses the canonical Advertio verification state. **Posted** identifies users who have created at least one listing through the canonical listing ownership/creator relationship.
+
 Backoffice admins can also send a direct plain-text Telegram message to an individual Advertio user from the **Users** section using the existing Advertio bot integration.
 
 See [Users](./users.md) for the current behavior.
