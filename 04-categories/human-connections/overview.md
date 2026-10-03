@@ -100,8 +100,6 @@ The user can:
 6. contact through the normal Advertio contact flow;
 7. optionally save the filter state for future alerts.
 
-No compatibility percentage is calculated.
-
 ## 5. Active Filters principle
 
 Active Filters are the canonical narrowing mechanism.

@@ -125,7 +125,7 @@ Do **not** block V1 on:
 - interview scheduling;
 - employer inbox/CRM;
 - AI candidate ranking;
-- AI CV matching;
+- automated CV screening;
 - skill assessment;
 - employer subscription plans;
 - company landing pages;
@@ -269,7 +269,7 @@ Before public Jobs launch:
 ### Phase J3 — retention
 
 - Saved Search;
-- new matching Jobs alerts;
+- new Jobs satisfying Saved Filters alerts;
 - employer performance reporting.
 
 ### Phase J4 — monetization

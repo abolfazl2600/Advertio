@@ -26,7 +26,7 @@ General Jobs fits Advertio's current strengths:
 - Telegram supply discovery;
 - newcomer/community user base;
 - frequent job-post turnover;
-- location-sensitive matching;
+- location-sensitive discovery;
 - relatively simple contact/application flows;
 - lower need for complex professional-profile features;
 - suitable for structured filters and Saved Search alerts.
@@ -74,7 +74,7 @@ Do not build special workflows yet for:
 - gig-task bidding;
 - commission-only marketplace;
 - job-seeker resumes/profiles;
-- immigration sponsorship matching.
+- immigration sponsorship workflows.
 
 Listings from some of these categories can potentially exist later, but V1 should not promise specialized product support.
 
@@ -431,7 +431,7 @@ Add profession-specific workflows only when:
 - meaningful volume exists;
 - current shared schema is insufficient;
 - users repeatedly need profession-specific filters;
-- a new field materially improves matching/conversion.
+- a new field materially improves filtering/conversion.
 
 Example:
 

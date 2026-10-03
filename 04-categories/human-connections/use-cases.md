@@ -2,7 +2,7 @@
 
 > The original source presents many of these as **ideas for possible subareas**, not as implemented features.
 >
-> In the current product direction, they should be represented by structured `connection_type` / `activity_type` values and Active Filters rather than separate matching systems.
+> In the current product direction, they are represented by structured `connection_type` / `activity_type` values and Active Filters.
 
 ## 1. Travel
 
@@ -50,7 +50,6 @@ Source ideas:
 
 These should remain ordinary listings discoverable by filters.
 
-No automatic pairing is required.
 
 ## 4. Health & Fitness
 
@@ -92,7 +91,7 @@ Recommended Active Filters:
 - availability;
 - group size where relevant.
 
-Avoid skill-level compatibility scores. If Skill Level is later added, it should be a transparent structured filter.
+If Skill Level is later added, it should be a transparent structured filter.
 
 ## 6. Social & Activities
 
@@ -132,7 +131,7 @@ Good remote examples:
 - accountability;
 - book club.
 
-Remote is a normal filter state, not a matching mechanism.
+Remote is a normal filter state.
 
 ## 9. Future expansion rule
 
@@ -143,12 +142,11 @@ A new use case should be added when:
 - Active Filters can support discovery;
 - moderation/safety requirements are understood.
 
-Do not create a new matching algorithm for each use case.
+New use cases should reuse the shared Search and Active Filter architecture.
 
 ## 10. Acceptance criteria
 
 - [ ] Source-derived use cases are preserved as ideas.
 - [ ] Use cases are expressed through structured attributes/filters.
-- [ ] No use case requires automated matching.
 - [ ] Social & Events boundary is clear.
 - [ ] Higher-risk family/kids ideas remain gated.

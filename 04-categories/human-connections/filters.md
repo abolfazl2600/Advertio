@@ -81,7 +81,7 @@ Sports & Outdoor
 ...
 ```
 
-Activity is a normal filter, not a match signal.
+Activity is a normal structured filter.
 
 ## 6. More Filters
 
@@ -157,8 +157,6 @@ Search handles text relevance.
 
 Filters enforce structured constraints.
 
-No match percentage is produced.
-
 ## 10. Result semantics
 
 A listing appears when it satisfies the active structured constraints plus the search query behavior.
@@ -166,7 +164,6 @@ A listing appears when it satisfies the active structured constraints plus the s
 Do not:
 
 - partially satisfy an active hard filter and still present the Listing as eligible;
-- display 85%/95% compatibility;
 - silently ignore an active hard filter;
 - silently broaden the query.
 

@@ -253,4 +253,3 @@ System-controlled:
 - [ ] Travel and Study date requirements are representable.
 - [ ] Activity Type can narrow use cases through Active Filters.
 - [ ] Profile trust signals remain system/profile data.
-- [ ] No compatibility or personality score is required.

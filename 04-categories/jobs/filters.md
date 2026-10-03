@@ -161,7 +161,7 @@ Can become multi-select later.
 
 ## 8. Salary filter
 
-Salary filtering is the highest-risk filter for incorrect matching because Jobs can use different pay periods.
+Salary filtering is the highest-risk filter for incorrect comparisons because Jobs can use different pay periods.
 
 ## 8.1 V1 salary filter contract
 
@@ -212,7 +212,7 @@ If:
 salary_type = negotiable
 ```
 
-it should not match numeric salary constraints unless product explicitly defines negotiable matching.
+it should not satisfy numeric salary constraints unless the product explicitly defines that behavior.
 
 ## 8.4 Range overlap
 
@@ -499,7 +499,7 @@ $20+/hour
 Last 3 days
 ```
 
-New matching Jobs can later trigger Telegram/email alerts according to Saved Search product rules.
+New Jobs satisfying Saved Filters can later trigger Telegram/email alerts according to Saved Filter product rules.
 
 ## 26. Zero-results behavior
 
