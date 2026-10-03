@@ -177,7 +177,7 @@ Advertio does not use a Cargo `role` field. A Cargo listing is simply a Cargo li
 
 Whether the source text describes a traveler carrying cargo or a person looking to send cargo is preserved in the listing content/provenance, not represented as a separate Product role.
 
-All Cargo listings use the same feed, route fields, filters, moderation model and relevance logic.
+All Cargo listings use the same feed, route fields, filters and moderation model.
 
 Ride-sharing for transporting passengers and commercial logistics/shipping remain outside Cargo V1 unless designed later as separate products.
 

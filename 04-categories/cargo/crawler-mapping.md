@@ -47,7 +47,6 @@ It must not:
 - create a public role;
 - create a filter;
 - change category;
-- change matching behavior;
 - be required for ingest.
 
 ## 3. Current AI output mapping

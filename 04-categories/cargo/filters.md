@@ -34,7 +34,7 @@ From Toronto
 To Tehran
 ```
 
-must not match:
+must not be returned for:
 
 ```text
 Tehran → Toronto
@@ -91,7 +91,7 @@ Examples:
 
 Important:
 
-Because Advertio has no role split, weight filtering is generic Cargo weight/capacity relevance.
+Because Advertio has no role split, weight is treated as a generic Cargo filter value.
 
 Do not assume every crawler weight means capacity or shipment mass beyond what the listing content states.
 
@@ -109,7 +109,7 @@ Telclaw `cargo_type_raw` can participate in Search but should not directly creat
 
 ## 7. Price
 
-Only compare prices with compatible known semantics.
+Only apply numeric price filtering when the stored price semantics are known and compatible.
 
 Use:
 

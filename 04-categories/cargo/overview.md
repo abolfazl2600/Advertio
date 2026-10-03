@@ -190,9 +190,9 @@ Negotiable
 
 The UI does not need a Carrier/Sender badge.
 
-## 7. Search and relevance
+## 7. Search and filtering
 
-Cargo discovery should rely on factual attributes:
+Cargo discovery uses normal search and structured filters over factual listing attributes:
 
 - origin;
 - destination;
@@ -206,9 +206,7 @@ Cargo discovery should rely on factual attributes:
 - price;
 - description.
 
-Relevance can rank route/date/item compatibility without requiring an explicit role.
-
-See [matching.md](./matching.md).
+Cargo does not have a separate matching engine or automatic listing-to-listing matching capability.
 
 ## 8. Product scope
 
@@ -263,7 +261,6 @@ Current-state docs should only change once runtime UI is actually renamed.
 
 - [attributes.md](./attributes.md) — unified Cargo schema
 - [filters.md](./filters.md) — unified discovery/filter contract
-- [matching.md](./matching.md) — route/relevance logic without roles
 - [crawler-mapping.md](./crawler-mapping.md) — Telclaw → Cargo mapping
 - [rules.md](./rules.md) — category rules
 
@@ -274,5 +271,5 @@ Current-state docs should only change once runtime UI is actually renamed.
 - [ ] Passenger/Shipper never become Carrier/Sender Product roles.
 - [ ] Both Telclaw intents ingest into the same Cargo model.
 - [ ] Route/date/flight/cargo/weight/price attributes survive ingestion.
-- [ ] Cargo discovery and relevance work without role filtering.
+- [ ] Cargo discovery works through search and structured filters only; no matching capability is required.
 - [ ] Ride-sharing and commercial logistics remain outside Cargo V1.
