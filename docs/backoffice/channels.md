@@ -81,15 +81,41 @@ The test-send flow is the implemented outcome of [Issue #5 — Add Test Channel 
 
 #### Filters
 
+The channel form uses system-provided selectors for its primary filter fields rather than arbitrary free-text input.
+
 - **Category**
+  - Selected from the application's supported category values.
   - Can be left unset to match any category.
 - **Language**
-  - Locale used for the outgoing message, e.g. `en-CA` or `fa-IR`.
+  - Selected from supported locales/languages.
+  - Uses the canonical locale value expected by the publishing/localization pipeline.
+  - Observed example: `Canadian English · en-CA`.
 - **Country**
-- **Province**
+  - Selected from supported/canonical country values.
+  - Observed example: `Canada (CA)`.
+- **Province / State**
+  - Selected from values valid for the currently selected Country.
+  - Observed example: `Ontario`.
 - **City**
+  - Selected from values valid for the current Country/Province context.
+  - Observed Ontario options include:
+    - Any city
+    - Toronto
+    - North York
+    - Richmond Hill
+    - Thornhill
+    - Mississauga
+    - Vaughan
+    - Markham
+    - Scarborough
+    - Etobicoke
+    - Brampton
 
-The form indicates that a blank filter matches any value for that filter.
+Changing a parent geographic filter must not preserve an incompatible child selection.
+
+The existing match-any behavior is preserved: an unset/Any value means that filter does not constrain matching.
+
+This data-driven selector behavior is the implemented outcome of [Issue #8 — Replace country, province, city and language text inputs with data-driven selectors](https://github.com/abolfazl2600/Advertio/issues/8).
 
 #### Attribute & tag filters
 
@@ -272,6 +298,8 @@ This is the implemented outcome of [Issue #7 — Add manual retry for failed pub
 - **Send test message** for channel destination verification
 - Actionable Telegram destination validation/error feedback
 - Localization/language configuration for outgoing messages
+- **Data-driven Language / Country / Province / City selectors**
+- Dependent geographic selectors with canonical values and match-any behavior
 - **Schema-driven attribute/tag filters**
 - Category-aware attribute/value selectors where applicable
 - Prevention of duplicate sends for normal automatic publishing
