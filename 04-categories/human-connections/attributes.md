@@ -2,15 +2,15 @@
 
 > Status: **Development specification**
 >
-> The original source provides only a small number of explicit Human Matching fields: travel date, study/exam period, and location or remote participation.
+> The original source provides only a small number of explicit fields for this area: travel date, study/exam period, and location or remote participation.
 >
-> The broader schema below is proposed to make Human Connections filterable without a matching engine.
+> The broader schema below makes Human Connections usable through structured Active Filters.
 
 ## 1. Design principle
 
 Every important discovery dimension should be represented as structured data when practical.
 
-The user should not need a compatibility score to find relevant listings.
+The structured fields below provide the discovery dimensions used by Active Filters.
 
 ## 2. Core fields
 
@@ -48,7 +48,7 @@ family_kids
 other
 ```
 
-These are filter values, not separate matching algorithms.
+These are structured filter values.
 
 ## 4. Activity Type
 
@@ -191,7 +191,7 @@ Optional.
 
 Use canonical language identifiers when implemented.
 
-Language preference is a filter preference, not a compatibility score.
+Language preference is an optional structured filter preference.
 
 ## 9. Profile-derived trust data
 
@@ -209,7 +209,7 @@ Only expose filters for states that actually exist in the runtime.
 
 ## 10. Sensitive-data boundary
 
-Do not create unnecessary filter fields for sensitive personal traits merely to simulate matching.
+Do not create unnecessary filter fields for sensitive personal traits.
 
 Avoid making the category depend on:
 
@@ -251,6 +251,6 @@ System-controlled:
 - [ ] Human Connections has structured fields sufficient for Active Filters.
 - [ ] Location/Remote is explicit.
 - [ ] Travel and Study date requirements are representable.
-- [ ] Activity Type can narrow use cases without a matching engine.
+- [ ] Activity Type can narrow use cases through Active Filters.
 - [ ] Profile trust signals remain system/profile data.
 - [ ] No compatibility or personality score is required.
