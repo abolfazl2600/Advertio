@@ -18,7 +18,9 @@ The Channels page currently displays:
 - Telegram destination / handle
 - Configured filter summary
 - Status
+- **Total Sent**
 - Last matched time
+- **Matches** action
 - History action
 - Edit action
 - Deactivate action
@@ -27,6 +29,22 @@ The Channels page currently displays:
 Observed channels are shown with an `Active` status.
 
 `Last matched` may contain a relative time or `Never`.
+
+#### Total Sent
+
+Each channel row exposes a **TOTAL SENT** value representing cumulative successful Telegram delivery events for that channel.
+
+Observed examples in the reviewed UI include values such as:
+
+- `30`
+- `14`
+- `0`
+
+A channel with no successful deliveries displays `0`.
+
+The metric is a successful-delivery/event count rather than a unique-listing count. It is intended to include successful automatic sends and successful admin-triggered/backfill deliveries according to the persisted delivery history.
+
+This is the implemented outcome of [Issue #10 — Show total sent message count per channel](https://github.com/abolfazl2600/Advertio/issues/10).
 
 ### Automatic publishing
 
@@ -47,6 +65,19 @@ The reviewed Edit Channel form contains the following configuration.
 - **Destination**
   - Telegram chat ID or `@channelusername`
   - UI notes that the bot must already be an admin of the destination.
+- **Send test message**
+  - Available in the channel configuration flow.
+  - Uses the currently entered Destination.
+  - Sends through the existing Advertio Telegram bot integration.
+  - The reviewed UI shows actionable destination errors when Telegram cannot resolve/reach the configured destination.
+
+Observed failure example:
+
+```text
+Telegram can't find that destination. Check the @username or chat id — and a private channel or group only resolves once the bot has been added to it.
+```
+
+The test-send flow is the implemented outcome of [Issue #5 — Add Test Channel / Send Test Message](https://github.com/abolfazl2600/Advertio/issues/5).
 
 #### Filters
 
@@ -62,14 +93,25 @@ The form indicates that a blank filter matches any value for that filter.
 
 #### Attribute & tag filters
 
-The UI supports adding one or more key/value filters:
+Attribute & tag filters are implemented as schema-driven selectors rather than raw free-text key/value fields.
 
-- Attribute key
-- Value
-- Add filter
-- Remove filter
+Current UI behavior:
 
-The current UI states that every configured row must match the listing's attributes.
+- **Attribute** is selected from a dropdown using human-readable names.
+- The corresponding **Value** is selected through a validated dropdown/control appropriate to that attribute.
+- The available attributes/values are category-aware where applicable.
+- Existing filters can be removed individually.
+- **Add filter** adds another attribute/value row.
+- Every configured row must match for a listing to qualify.
+
+Observed examples in the reviewed Housing & Roommate channel:
+
+- `Property Type → Condo`
+- `Rental Duration → Short Term`
+
+The underlying canonical attribute keys remain an implementation detail rather than something the admin has to type manually.
+
+This is the implemented outcome of [Issue #9 — Replace attribute key/value text filters with schema-driven dropdowns](https://github.com/abolfazl2600/Advertio/issues/9).
 
 ### Channel actions
 
@@ -151,9 +193,21 @@ The reviewed UI preserves per-listing send history and latest delivery informati
 
 #### Historical-match send behavior
 
-The current UI communicates that historical matches are live listings matching the channel's current filters.
+The current UI communicates that historical matches are live listings matching the channel's current filters, regardless of how long they have already been live.
 
 Manual selection and **Send selected** allow admins to queue matching listings for channel delivery while retaining per-listing delivery history.
+
+The reviewed UI confirms that previously sent listings remain visible and can be selected again. This provides the admin-controlled path for intentional re-send/backfill while keeping automatic publishing idempotency separate.
+
+Observed examples:
+
+- `Vancouver_house`: `Not sent yet 0`, `Already sent 14`, `All matching 14`
+- Previously sent rows show values such as `1 time` and a relative latest-send time.
+- Latest delivery is shown as `Sent` for successful historical sends.
+
+Historical matching uses the channel's configured filter set (category/location/attribute filters) rather than a separate ad-hoc filter definition.
+
+This is the implemented outcome of [Issue #11 — Add historical matching and manual backfill publishing](https://github.com/abolfazl2600/Advertio/issues/11).
 
 This flow is separate from automatic publish-on-activation behavior and separate from failed-record **Retry** in Publish History.
 
@@ -161,13 +215,31 @@ This flow is separate from automatic publish-on-activation behavior and separate
 
 Each channel has a Publish History view.
 
-The history model includes:
+The history table includes:
 
+- **Listing title**
 - Listing identifier
 - Status
 - Attempts
 - Last error
 - Created time
+
+#### Human-readable listing reference and listing navigation
+
+The Listing column shows the **listing title** as the primary human-readable reference, with the Listing ID underneath for technical identification.
+
+The title is used to open the corresponding listing in Backoffice. The reviewed current UI also shows the resulting listing-detail drawer, including category/location context, source/provenance, photos, description, attributes, and details.
+
+This is the implemented outcome of [Issue #6 — Show clickable listing title in Publish History](https://github.com/abolfazl2600/Advertio/issues/6).
+
+#### Publish source/status
+
+The reviewed Publish History rows can display additional delivery-source context such as:
+
+- `Sent`
+- `Backfill`
+
+Observed Backfill rows show `Attempts = 1` and no Last Error after successful delivery.
 
 The **Attempts** value represents the number of actual delivery attempts made for that publish record, including automatic attempts and eligible manual retries that reuse the same publish record.
 
@@ -197,15 +269,23 @@ This is the implemented outcome of [Issue #7 — Add manual retry for failed pub
 - Channel-specific filtering
 - Automatic publishing when a listing becomes Active and matches all configured filters
 - Per-channel destination configuration
+- **Send test message** for channel destination verification
+- Actionable Telegram destination validation/error feedback
 - Localization/language configuration for outgoing messages
-- Attribute/tag filtering
-- Prevention of duplicate sends
+- **Schema-driven attribute/tag filters**
+- Category-aware attribute/value selectors where applicable
+- Prevention of duplicate sends for normal automatic publishing
+- **Total Sent** successful-delivery metric per channel
 - Automatic retry/logging behavior for failed sends
 - Manual Retry for eligible failed Publish History records
 - Consistent Attempts semantics based on actual delivery attempts
 - Per-channel Publish History
+- Human-readable Listing title + Listing ID in Publish History
+- Listing-title navigation to Backoffice listing detail
+- Backfill delivery identification in Publish History
 - Historical matches with Not sent yet / Already sent / All matching views
 - Manual selection and **Send selected** for historical matching listings
+- Intentional admin re-send/backfill path for previously sent listings
 - Per-listing Sent here and Latest delivery visibility
 - Ability to edit and deactivate channels
 
@@ -213,14 +293,15 @@ This is the implemented outcome of [Issue #7 — Add manual retry for failed pub
 
 The reviewed UI does not establish the detailed behavior for:
 
-- Create Channel validation and save flow
+- Create Channel save-validation beyond the observed destination test behavior
 - Reactivating a deactivated channel
 - Exact automatic retry policy/backoff and retry limit
 - A current visual example of a failed Publish History row and its Retry control
-- Telegram group vs. channel permission validation behavior
+- Exact Telegram permission diagnostics beyond the observed destination-resolution error
 - Message template/content configuration
 - Ordering/priority when multiple channels match the same listing
 - Pagination behavior for very large Historical matches result sets
 - Whether **Select this page** selects only the visible page or all currently filtered results in every pagination state
+- Exact confirmation UX when intentionally re-sending already-sent historical matches
 
 Do not infer these behaviors from this document.
