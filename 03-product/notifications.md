@@ -79,12 +79,7 @@ Another workflow:
 
 ## Saved Filter notifications
 
-Product decision:
-
-- notification eligibility is based on deterministic Saved Filter conditions;
-- no 70% matching threshold;
-- no Compatibility Score;
-- no Match percentage.
+Notification eligibility is based on deterministic Saved Filter conditions.
 
 Current/future channels:
 
