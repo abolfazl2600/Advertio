@@ -36,9 +36,11 @@ See [Listings](./listings.md) for the current behavior.
 
 ### Current Users capability note
 
-Backoffice admins can send a direct plain-text Telegram message to an individual Advertio user from the **Users** section using the existing Advertio bot integration.
+The Backoffice Users table includes a dedicated **Username** column alongside display name, phone, status, role, reputation, joined date, and row actions. Stored usernames are shown with the `@` prefix, while missing usernames use the neutral `—` placeholder.
 
-The current UI provides a **Send message** composer with the selected user's identity, Telegram delivery context, message textarea, character counter, Cancel action, and **Send via Telegram** action.
+The current Users UI also exposes **All**, **Active**, **Disabled**, **Verified**, and **Posted** filters, with search by name, username, phone, or ID.
+
+Backoffice admins can also send a direct plain-text Telegram message to an individual Advertio user from the **Users** section using the existing Advertio bot integration.
 
 See [Users](./users.md) for the current behavior.
 
