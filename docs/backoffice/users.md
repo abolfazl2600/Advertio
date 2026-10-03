@@ -11,37 +11,61 @@ The Users section currently provides:
 - All
 - Active
 - Disabled
+- Verified
+- Posted
+
+The supplied 3 Oct 2026 UI confirms all five filter tabs are visible.
 
 ### Search
 
-The search UI indicates support for:
+The current search field explicitly supports:
 
 - Name
 - Username
 - Phone
 - ID
 
+Observed placeholder:
+
+```text
+Name, username, phone, or id
+```
+
 ### Users table
 
-The currently observed table includes:
+The current table includes dedicated columns for:
 
-- User / display name
-- Phone
-- Status
-- Verification indicator when applicable
-- Role
-- Reputation
-- Joined date
+- **User** / display name
+- **Username**
+- **Phone**
+- **Status**
+- **Role**
+- **Reputation**
+- **Joined**
 - Row actions menu
 
-Observed values include:
+#### Username column
 
-- `Active` user status
-- `Verified` indicator next to verified phone/user information
-- `User` role
-- Reputation displayed numerically
+A dedicated **USERNAME** column is implemented next to the User/display-name column.
 
-Some users currently display no phone value and use the UI's empty-value representation.
+Current behavior observed:
+
+- Stored usernames are displayed with the Telegram-style `@` prefix in the table, e.g. `@byndti70`, `@Leowin`, `@High_Pr1est`.
+- Users without a username display the neutral empty-value placeholder `—`.
+- Username remains searchable through the Users search field.
+- Display name and username remain separate values; the UI does not derive one from the other.
+
+This is the implemented outcome of [Issue #3 — Add username column to Users table](https://github.com/abolfazl2600/Advertio/issues/3).
+
+Observed table values also include:
+
+- `Active` user status;
+- `User` role;
+- numeric reputation such as `0.0`;
+- joined date;
+- row-actions control.
+
+Some users currently display no phone value and use `—` as the empty-value representation.
 
 ### Row actions
 
@@ -82,19 +106,17 @@ The supplied current-state UI confirms the composer, Telegram delivery context, 
 
 The currently documented Users capabilities include:
 
-- All / Active / Disabled filters;
-- user search;
-- user table with status, verification, role, reputation, and joined date;
-- row-actions menu;
+- All / Active / Disabled / Verified / Posted filters;
+- search by name, username, phone, or ID;
+- dedicated Username column;
+- neutral `—` representation when username or phone is unavailable;
+- user table with status, role, reputation, joined date, and row actions;
 - direct admin-to-user Telegram messaging through the Advertio bot.
 
-## Known Changes
+## Completed related issues
 
 - [Issue #3 — Add username column to Users table](https://github.com/abolfazl2600/Advertio/issues/3)
-
-### Important current-state distinction
-
-Although the search UI already mentions **username**, the reviewed table does **not currently display a dedicated Username column**. That is tracked by Issue #3.
+- [Issue #4 — Send direct Telegram message to a user](https://github.com/abolfazl2600/Advertio/issues/4)
 
 ## Not yet documented
 
