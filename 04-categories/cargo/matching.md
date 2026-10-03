@@ -1,218 +1,152 @@
-# Cargo — Sender ↔ Carrier Matching
+# Cargo — Route Relevance & Matching
 
-> Matching is role-based inside one Cargo category.
+> Cargo matching is **not role-based**.
 >
-> Telclaw transfer fields enrich matching, but unknown crawler values must never be invented to force eligibility.
+> Advertio does not require Carrier/Sender or Passenger/Shipper roles.
 
-## 1. Counterparty rule
+## 1. Goal
 
-A transaction match requires opposite roles:
+Matching means:
 
-```text
-sender ↔ carrier
-```
+> Find Cargo listings that are relevant to the user's route, timing and cargo requirements.
 
-Crawler role mapping:
+It does not mean matching two explicit marketplace roles.
 
-```text
-passenger → carrier
-shipper → sender
-```
-
-If crawler role is unknown, automatic counterparty matching should wait for normalization/review.
-
-## 2. Hard matching constraints
-
-### Role
-
-```text
-sender.role != carrier.role
-```
+## 2. Core relevance dimensions
 
 ### Route
 
+Primary:
+
 ```text
-sender.origin = carrier.origin
-sender.destination = carrier.destination
+origin
+destination
 ```
 
-Direction is mandatory.
+Direction must match.
 
 ### Date
 
-Carrier:
+Prefer listings whose departure/shipment dates overlap the user's requested date/range.
 
-```text
-departure_date
-```
+### Cargo type
 
-Native Sender:
-
-```text
-send_date_from .. send_date_until
-```
-
-Match when carrier departure date falls inside sender window.
-
-A crawled Sender may only contain one source date. In that case treat it as the known source date only; do not invent a date range.
+Prefer compatible normalized item type or relevant raw cargo description.
 
 ### Weight
 
-After safe unit normalization:
+Use normalized weight when helpful.
 
-```text
-carrier.available_weight_kg >= sender.cargo_weight_kg
-```
+Because there is no role field, weight is a relevance dimension rather than a strict Carrier-capacity-vs-Sender-weight equation.
 
-Telclaw raw `weight + weight_unit` must be interpreted according to reliable role/context before applying this rule.
+### Airline / flight
 
-### Item
+Can improve relevance when the user specifies:
 
-Canonical sender item types must be compatible with Carrier allowed items.
+- airline;
+- flight number;
+- airport/travel context.
 
-Raw Telclaw `cargo_type` needs normalization first.
+### Price
 
-## 3. Quantity compatibility
+Use only when price semantics are compatible/known.
 
-Telclaw can extract `quantity`.
+## 3. Hard constraints
 
-Quantity becomes a hard matching constraint only if Advertio has a corresponding Carrier quantity/package limit.
+Safe hard constraints for V1:
 
-Until then it is informational.
+- same route direction;
+- date inside requested range when user explicitly filters date;
+- explicit item restriction where canonical item type exists.
 
-## 4. Volume compatibility
+Weight can become hard only when the UX clearly defines what the user's weight constraint means.
 
-Telclaw can extract:
+## 4. Soft ranking
 
-- volume
-- volume_unit
+After hard filters, rank by:
 
-Future hard constraint:
-
-```text
-carrier.max_volume >= sender.cargo_volume
-```
-
-only after:
-
-- both roles have canonical volume semantics;
-- units are normalized.
-
-Until then volume is a soft/detail signal.
-
-## 5. Airline and flight number
-
-Telclaw may provide:
-
-- airline
-- flight_number
-
-These can improve:
-
-- trip confidence;
-- exact traveler discovery;
-- moderation;
-- ticket verification.
-
-They should not be mandatory general matching constraints unless the Sender explicitly asks for a specific airline/flight.
-
-## 6. Departure / arrival time
-
-Time fields can improve ranking for handoff practicality.
-
-Examples:
-
-- same-day airport handoff;
-- arrival-before-deadline preference.
-
-V1 does not require hard time matching unless the user supplies a time constraint.
-
-## 7. Price compatibility
-
-Telclaw provides price/currency but not a reliable dedicated price type.
-
-Do not hard-match raw crawler price until it is known whether the amount is:
-
-- per kg;
-- total;
-- negotiable.
-
-For native structured prices:
-
-```text
-carrier_total =
-  carrier.price_per_kg × sender.cargo_weight_kg
-```
-
-can be derived when `price_type = per_kg`.
-
-## 8. Soft ranking factors
-
-After hard constraints:
-
+- exact route match;
 - date closeness;
-- exact city match;
+- item relevance;
+- known weight compatibility;
+- airline/flight relevance;
 - verified trip;
 - verified user;
-- airline/flight completeness;
-- arrival timing;
-- rating/history when available;
-- response speed;
-- compatible known price;
+- price relevance;
 - freshness.
 
-## 9. Match score
+## 5. No role inference
 
-V1 can use:
+Do not infer:
 
 ```text
-Eligible / Not Eligible
+passenger = carrier
+shipper = sender
 ```
 
-then rank eligible matches.
+for Product matching.
 
-Do not show an arbitrary percentage without a documented formula.
+Even if Telclaw preserves `transfer_role`, Advertio relevance must work without it.
 
-## 10. Reverse-route rule
+## 6. Source role as provenance
 
-Never match:
+Optional internal:
+
+```text
+source_transfer_role
+```
+
+may be useful for:
+
+- debugging;
+- crawler QA;
+- source analysis.
+
+It must not be required for public matching.
+
+## 7. Reverse route
+
+Never treat:
 
 ```text
 Toronto → Tehran
 ```
 
-to:
+as equivalent to:
 
 ```text
 Tehran → Toronto
 ```
 
-unless a separate return-route listing exists.
+unless user explicitly searches both directions.
 
-## 11. Partial-route matching
+## 8. Partial routes
 
-Not required for V1.
+Out of scope for V1.
 
-One listing should have one origin and one destination.
+Use one origin and one destination per listing.
 
-## 12. Safety boundary
+## 9. Score
 
-A technical match does not establish:
+V1 can use deterministic eligibility + ranking.
 
-- cargo legality;
+Do not expose an arbitrary percentage unless a documented score formula exists.
+
+## 10. Safety boundary
+
+Relevance does not imply:
+
+- legal cargo;
 - customs acceptance;
 - airline acceptance;
-- verified identity;
-- verified trip;
+- identity verification;
 - delivery guarantee.
 
-## 13. Acceptance criteria
+## 11. Acceptance criteria
 
-- [ ] Opposite reliable roles are required for automatic sender↔carrier matching.
-- [ ] Route direction must match.
-- [ ] Date logic does not fabricate source dates/windows.
-- [ ] Weight comparison happens only after unit and role semantics are known.
-- [ ] Cargo type is normalized before item hard-matching.
-- [ ] Quantity/volume become hard constraints only when both sides support canonical limits.
-- [ ] Airline/flight fields enrich rather than falsely guarantee matching.
-- [ ] Unknown raw price type cannot cause an incorrect price match.
+- [ ] Matching works with no Cargo role field.
+- [ ] Route direction is preserved.
+- [ ] Date/item filters can act as hard constraints.
+- [ ] Weight is not interpreted through a nonexistent role model.
+- [ ] Telclaw source role does not control Product matching.
+- [ ] Ranking can use airline/flight/price/trust/freshness as soft signals.
