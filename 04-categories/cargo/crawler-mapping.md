@@ -1,45 +1,56 @@
 # Cargo — Telclaw Crawler Mapping
 
-> Upstream: [Telclaw](https://github.com/abolfazl260/Telclaw) commit [63fbc01](https://github.com/abolfazl260/Telclaw/commit/63fbc01555f01345bb92124c9112db63f1395e92)
+> Upstream: [Telclaw](https://github.com/abolfazl260/Telclaw) commit `63fbc01555f01345bb92124c9112db63f1395e92`
 >
 > Telclaw category: `transferlist`
 >
 > Advertio category: `Cargo`
 
-## 1. Why this mapping exists
+## 1. Core integration decision
 
-Telclaw's Transfer schema is richer than Advertio's original Passenger Cargo notes.
+Advertio does **not** map Telclaw role values into different Product roles.
 
-This file defines which upstream fields:
-
-- map directly;
-- require normalization;
-- remain raw/provenance;
-- cannot yet be trusted as always populated.
-
-## 2. Classification scope
-
-Telclaw classifier describes `transferlist` as:
-
-- air cargo;
-- passenger baggage;
-- luggage space;
-- parcel/package carried by an airline passenger;
-- flight-based shipping.
-
-The transfer extraction prompt recognizes conceptual listing intent:
+Old/rejected mapping:
 
 ```text
-PASSENGER
-SHIPPER
-OTHER
+passenger → carrier
+shipper   → sender
 ```
 
-where OTHER is rejected as a genuine transfer listing unless it satisfies Passenger/Shipper intent.
+Canonical mapping:
 
-## 3. Current AI output schema
+```text
+Telclaw transferlist → Advertio Cargo
+```
 
-Exact fields:
+If Telclaw supplies `passenger` or `shipper`, both still become the same Cargo listing type.
+
+## 2. Source role handling
+
+Optional internal provenance:
+
+```text
+source_transfer_role
+```
+
+may preserve:
+
+```text
+passenger
+shipper
+```
+
+for crawler QA/debugging.
+
+It must not:
+
+- create a public role;
+- create a filter;
+- change category;
+- change matching behavior;
+- be required for ingest.
+
+## 3. Current AI output mapping
 
 | Telclaw | Advertio mapping | Mapping type |
 | --- | --- | --- |
@@ -53,252 +64,175 @@ Exact fields:
 | `destination_country` | `destination_country` | ISO-2/canonical |
 | `airline` | `airline` | preserve/normalize later |
 | `flight_number` | `flight_number` | preserve |
-| `departure_date` | `departure_date` / sender source date | role-dependent |
+| `departure_date` | `departure_date` | preserve |
 | `departure_time` | `departure_time` | preserve |
 | `arrival_date` | `arrival_date` | preserve |
 | `arrival_time` | `arrival_time` | preserve |
 | `cargo_type` | `cargo_type_raw` + optional `item_types` | normalize if confident |
 | `weight` | `weight_value` | preserve |
-| `weight_unit` | `weight_unit` | preserve + normalize |
+| `weight_unit` | `weight_unit` | preserve + derive canonical |
 | `quantity` | `quantity` | preserve |
 | `volume` | `volume_value` | preserve |
-| `volume_unit` | `volume_unit` | preserve + normalize |
+| `volume_unit` | `volume_unit` | preserve + derive canonical |
 | `price` | `price_amount` | preserve |
-| `currency` | `currency` | ISO-4217 |
-| `contact` | `contact_external` | crawler/external only |
+| `currency` | `currency` | canonical ISO-4217 |
+| `contact` | `contact_external` | crawler/external |
 | `features` | `features_raw` | preserve |
 
-## 4. Role mapping
+## 4. transfer_role schema gap
 
-Desired:
+Telclaw currently has inconsistent support for `transfer_role` across prompt/schema/storage/publisher.
 
-```text
-Telclaw passenger → Advertio carrier
-Telclaw shipper   → Advertio sender
-```
+Because Advertio does not require a Cargo role anymore, this inconsistency is **not an Advertio ingest blocker**.
 
-Advertio must not persist `passenger` or `shipper` as public category names.
-
-## 5. Current role extraction gap
-
-On the reviewed Telclaw commit:
-
-- the prompt conceptually distinguishes PASSENGER and SHIPPER;
-- `storage/__init__.py` ensures DB support for `transfer_role`;
-- Telegram publisher reads `transfer_role`;
-- system docs say role is `passenger | shipper`.
-
-But the actual fetched `ai/category_schemas.py` transfer allow-list and transfer prompt JSON output do not include `transfer_role`.
-
-Therefore:
+Policy:
 
 ```text
-transfer_role support exists
-≠
-transfer_role reliably AI-extracted
+transfer_role missing → OK
+transfer_role passenger → Cargo
+transfer_role shipper → Cargo
 ```
 
-Advertio integration policy:
+Optionally retain the raw value only for diagnostics.
 
-1. use role if upstream record actually supplies a trusted value;
-2. map it to carrier/sender;
-3. otherwise keep role unknown;
-4. hold/review if public Cargo requires role;
-5. never infer role simply from weight/airline/contact.
+## 5. transport_type
 
-## 6. Transport type gap
+Telclaw storage/publisher may expose `transport_type`.
 
-Telclaw DB/publisher supports:
-
-```text
-transport_type
-```
-
-and presentation recognizes examples around air/ground transport.
-
-But this field is not in the current transfer AI output schema.
-
-Advertio can preserve it as:
+Advertio can preserve:
 
 ```text
 source_transport_type
 ```
 
-when present, but it is not a required Cargo V1 field.
+when present.
 
-## 7. Location normalization
+It is not required.
 
-Telclaw has a dedicated `transfer_locations` table with:
+## 6. Location
 
-- origin_city_canonical
-- origin_city_key
-- origin_country_iso2
-- destination_city_canonical
-- destination_city_key
-- destination_country_iso2
+Prefer canonical Telclaw/Advertio location values.
 
-Advertio should prefer canonical values for filtering/routing.
+Telclaw `transfer_locations` contains canonical origin/destination city keys and ISO-2 countries.
 
-Source text remains available for audit/reprocessing.
+## 7. Dates
 
-## 8. Date normalization
+Preserve explicit source dates.
 
-Telclaw prompt:
+Telclaw supports Gregorian/Jalali normalization to Gregorian `YYYY-MM-DD`.
 
-- uses explicit source dates only;
-- recognizes Gregorian/Jalali;
-- normalizes to Gregorian `YYYY-MM-DD`;
-- may infer only a missing year when month/day are explicit and a reference date is provided;
-- must not use Telegram post date as shipment/travel date.
+Never use Telegram message date as transfer date.
 
-Advertio should preserve that boundary.
+## 8. Weight
 
-## 9. Currency behavior
-
-The Transfer prompt says:
-
-- use stated currency;
-- infer from route only with high confidence;
-- never convert.
-
-The shared Telclaw extractor also contains currency-normalization behavior that can null non-CAD transfer pricing in some paths.
-
-Therefore Advertio integration should treat currency/price as **source-dependent** and should not assume every crawler record retains a non-CAD price.
-
-This is another reason to preserve raw source text.
-
-## 10. Null handling
-
-Telclaw normalizes sentinel strings such as:
-
-```text
-null
-none
-n/a
-unknown
-not provided
--
-```
-
-to real null values before persistence.
-
-Advertio must preserve null as unknown; do not convert it into fake placeholders.
-
-## 11. Features behavior
-
-Telclaw extracts `features` only for explicit transfer details that do not belong to another structured field.
-
-Advertio:
-
-- preserve as raw feature list/text;
-- optionally display/search;
-- do not auto-promote arbitrary feature strings to permanent filter enums.
-
-## 12. Weight normalization
-
-Telclaw:
+Preserve:
 
 ```text
 weight
 weight_unit
 ```
 
-Advertio:
+as:
 
 ```text
 weight_value
 weight_unit
-weight_kg_derived (optional)
 ```
 
-Rules:
-
-- preserve original;
-- convert only recognized units;
-- use derived kg for matching;
-- role meaning must be known before interpreting as capacity vs shipment weight.
-
-## 13. Volume normalization
-
-Telclaw:
+Optional derived:
 
 ```text
-volume
-volume_unit
+weight_kg_derived
 ```
 
-Advertio:
+Do not assign role-specific capacity/shipment semantics in Advertio.
+
+## 9. Quantity and volume
+
+Preserve:
+
+- quantity;
+- volume;
+- volume_unit.
+
+Do not discard them because they were absent from the original Advertio notes.
+
+## 10. Cargo type
+
+Preserve:
 
 ```text
-volume_value
-volume_unit
-canonical_volume_derived (future)
+cargo_type_raw
 ```
 
-Do not compare volume numerically across units before normalization.
+then normalize to canonical `item_types` if confident.
 
-## 14. Cargo type normalization
+Unknown remains unknown.
 
-Examples can be broader/free-form than Advertio's controlled item list.
+## 11. Price
 
-Pipeline:
+Preserve:
+
+- price;
+- currency.
+
+Crawler price type remains:
 
 ```text
-cargo_type
-→ preserve cargo_type_raw
-→ normalize to canonical item_types if confident
-→ otherwise leave item_types unset/review
+unknown
 ```
 
-## 15. Contact mapping
+unless explicitly established.
 
-Telclaw explicit `contact` plus Telegram message/user provenance can exist.
+## 12. Contact
 
-Advertio crawler contact-routing rules should decide the displayed action.
+Telclaw explicit contact + Telegram provenance can be available.
 
-Crawler contact does not create an Advertio-owned employer/user identity.
+Advertio crawler routing decides the public contact action.
 
-## 16. Fields to expose in Backoffice review
+No native ownership is created.
 
-For crawled Cargo review:
+## 13. Features
 
-- source role / mapped role;
-- origin/destination raw + canonical;
+Preserve `features` as raw explicit transfer information.
+
+Do not auto-create filter enums from arbitrary source text.
+
+## 14. Null handling
+
+Telclaw normalizes null-like strings to real null.
+
+Advertio should keep null as unknown.
+
+Do not insert fake placeholder values.
+
+## 15. Backoffice review
+
+Expose:
+
+- raw + canonical route;
 - airline;
 - flight number;
 - departure/arrival date/time;
 - cargo_type_raw;
-- normalized item_types;
+- item_types;
 - weight + unit + derived kg;
 - quantity;
 - volume + unit;
-- price + currency + price-type confidence;
+- price + currency;
 - contact;
 - features;
 - source URL/message;
-- raw source text.
+- raw source text;
+- source_transfer_role only as diagnostic metadata if available.
 
-## 17. Telclaw change dependency
+## 16. Acceptance criteria
 
-If Telclaw is updated to make role first-class AI output, change all affected Telclaw layers together:
-
-- AI allow-list/schema;
-- transfer prompt;
-- DB/migration;
-- repository persistence;
-- publisher;
-- tests.
-
-Advertio Docs should then update this file and remove the current role-gap warning only after verification.
-
-## 18. Acceptance criteria
-
-- [ ] Mapping covers every current Telclaw transfer AI field.
-- [ ] Storage-only/current-gap fields are not mislabeled as reliable extraction.
-- [ ] Passenger/Shipper are normalized to Carrier/Sender.
-- [ ] Source values are preserved before lossy normalization.
+- [ ] Every Telclaw transfer listing maps to one Advertio Cargo category.
+- [ ] Passenger/Shipper are not converted to Carrier/Sender Product roles.
+- [ ] Missing `transfer_role` never blocks ingestion.
+- [ ] All current Telclaw AI transfer fields have a mapping/preservation rule.
+- [ ] Raw source fields survive before normalization.
 - [ ] Null remains unknown.
-- [ ] Route/date direction semantics are preserved.
-- [ ] Weight and volume units are retained.
-- [ ] Price type is not guessed.
-- [ ] Backoffice can inspect raw + normalized crawler values.
+- [ ] Weight/volume units are retained.
+- [ ] Price semantics are not guessed.
