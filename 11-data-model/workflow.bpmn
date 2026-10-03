@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_AdvertioCurrentState"
+  targetNamespace="https://github.com/abolfazl2600/Advertio/bpmn"
+  exporter="OpenAI"
+  exporterVersion="1.0">
+
+  <bpmn:process id="Process_AdvertioCurrentState" name="Advertio Current-State Listing Workflow" isExecutable="false">
+    <bpmn:documentation>
+      Current documented Advertio workflow as of 2026-10-03.
+      Discovery uses Search + Active Filters + Saved Filters + Ranking.
+      No category-level matching engine is part of this workflow.
+      Current verified UI is strongest for Housing; Jobs, Cargo and Human Connections include development specifications.
+      Lifecycle monetization timing remains unresolved in source documentation and is represented as configured policy rather than a fixed day.
+    </bpmn:documentation>
+
+    <bpmn:laneSet id="LaneSet_Main">
+      <bpmn:lane id="Lane_User" name="User / Advertiser">
+        <bpmn:flowNodeRef>Task_SelectCategory</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_EnterCommonFields</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_EnterCategoryAttributes</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PreviewSubmit</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SearchFilter</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_OpenDetail</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ContactApply</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ExtendRenew</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_Crawler" name="Telclaw / Crawler">
+        <bpmn:flowNodeRef>Task_CollectTelegram</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PreserveRaw</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_NormalizeExtract</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CrawlerValidate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_IngestAPI</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_Platform" name="Advertio Platform">
+        <bpmn:flowNodeRef>Start_Source</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Source</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ValidateNative</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_SupplyMerge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SetPending</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ActivateListing</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ActiveFork</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_IndexDiscovery</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecordInteraction</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Reactivate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Interaction</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_Admin" name="Admin / Backoffice">
+        <bpmn:flowNodeRef>Task_AdminReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Approved</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SetRejected</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Rejected</bpmn:flowNodeRef>
+      </bpmn:lane>
+
+      <bpmn:lane id="Lane_Automation" name="Saved Filters / Notifications / Lifecycle">
+        <bpmn:flowNodeRef>Task_EvaluateSavedFilters</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_FilterSatisfied</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SendNotification</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Notification</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_NoAlert</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_MonitorLifecycle</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_LifecycleOutcome</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Deactivate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Expire</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Extend</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CategoryTerminal</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Deactivated</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Expired</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_CategoryTerminal</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="Start_Source" name="Listing source initiated">
+      <bpmn:outgoing>Flow_Start_SourceGateway</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:exclusiveGateway id="Gateway_Source" name="Source type?">
+      <bpmn:incoming>Flow_Start_SourceGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Source_Native</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Source_Crawler</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:userTask id="Task_SelectCategory" name="Choose Category">
+      <bpmn:incoming>Flow_Source_Native</bpmn:incoming>
+      <bpmn:outgoing>Flow_Category_Common</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_EnterCommonFields" name="Enter Common Listing Fields">
+      <bpmn:incoming>Flow_Category_Common</bpmn:incoming>
+      <bpmn:outgoing>Flow_Common_Attributes</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_EnterCategoryAttributes" name="Enter Category-specific Attributes">
+      <bpmn:incoming>Flow_Common_Attributes</bpmn:incoming>
+      <bpmn:outgoing>Flow_Attributes_Preview</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_PreviewSubmit" name="Preview &amp; Submit">
+      <bpmn:incoming>Flow_Attributes_Preview</bpmn:incoming>
+      <bpmn:outgoing>Flow_Preview_ValidateNative</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:serviceTask id="Task_ValidateNative" name="Validate Native Listing">
+      <bpmn:incoming>Flow_Preview_ValidateNative</bpmn:incoming>
+      <bpmn:outgoing>Flow_ValidateNative_Merge</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_CollectTelegram" name="Collect Telegram Post">
+      <bpmn:incoming>Flow_Source_Crawler</bpmn:incoming>
+      <bpmn:outgoing>Flow_Collect_Raw</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_PreserveRaw" name="Preserve Raw Source + Provenance">
+      <bpmn:incoming>Flow_Collect_Raw</bpmn:incoming>
+      <bpmn:outgoing>Flow_Raw_Normalize</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_NormalizeExtract" name="Normalize / Classify / Extract">
+      <bpmn:incoming>Flow_Raw_Normalize</bpmn:incoming>
+      <bpmn:outgoing>Flow_Normalize_CrawlerValidate</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_CrawlerValidate" name="Validate Crawler Record">
+      <bpmn:incoming>Flow_Normalize_CrawlerValidate</bpmn:incoming>
+      <bpmn:outgoing>Flow_CrawlerValidate_Ingest</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="Task_IngestAPI" name="Advertio Ingest API">
+      <bpmn:incoming>Flow_CrawlerValidate_Ingest</bpmn:incoming>
+      <bpmn:outgoing>Flow_Ingest_Merge</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:exclusiveGateway id="Gateway_SupplyMerge" name="Supply normalized">
+      <bpmn:incoming>Flow_ValidateNative_Merge</bpmn:incoming>
+      <bpmn:incoming>Flow_Ingest_Merge</bpmn:incoming>
+      <bpmn:outgoing>Flow_Merge_Pending</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:serviceTask id="Task_SetPending" name="Create / Update Listing as Pending">
+      <bpmn:incoming>Flow_Merge_Pending</bpmn:incoming>
+      <bpmn:outgoing>Flow_Pending_AdminReview</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:userTask id="Task_AdminReview" name="Review Listing">
+      <bpmn:incoming>Flow_Pending_AdminReview</bpmn:incoming>
+      <bpmn:outgoing>Flow_AdminReview_Approved</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:exclusiveGateway id="Gateway_Approved" name="Approved?">
+      <bpmn:incoming>Flow_AdminReview_Approved</bpmn:incoming>
+      <bpmn:outgoing>Flow_Approved_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Approved_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:serviceTask id="Task_SetRejected" name="Set Rejected">
+      <bpmn:incoming>Flow_Approved_No</bpmn:incoming>
+      <bpmn:outgoing>Flow_Rejected_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:endEvent id="End_Rejected" name="Rejected">
+      <bpmn:incoming>Flow_Rejected_End</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:serviceTask id="Task_ActivateListing" name="Publish / Activate Listing">
+      <bpmn:incoming>Flow_Approved_Yes</bpmn:incoming>
+      <bpmn:incoming>Flow_Reactivate_Activate</bpmn:incoming>
+      <bpmn:outgoing>Flow_Activate_Fork</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:parallelGateway id="Gateway_ActiveFork" name="Active Listing">
+      <bpmn:incoming>Flow_Activate_Fork</bpmn:incoming>
+      <bpmn:outgoing>Flow_Fork_Discovery</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Fork_SavedFilters</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Fork_Lifecycle</bpmn:outgoing>
+    </bpmn:parallelGateway>
+
+    <bpmn:serviceTask id="Task_IndexDiscovery" name="Index for Search + Active Filters">
+      <bpmn:incoming>Flow_Fork_Discovery</bpmn:incoming>
+      <bpmn:outgoing>Flow_Index_Search</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:userTask id="Task_SearchFilter" name="Search / Apply Active Filters">
+      <bpmn:incoming>Flow_Index_Search</bpmn:incoming>
+      <bpmn:outgoing>Flow_Search_Detail</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_OpenDetail" name="Open Listing Detail">
+      <bpmn:incoming>Flow_Search_Detail</bpmn:incoming>
+      <bpmn:outgoing>Flow_Detail_Contact</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_ContactApply" name="Official Contact / Apply Action">
+      <bpmn:incoming>Flow_Detail_Contact</bpmn:incoming>
+      <bpmn:outgoing>Flow_Contact_Analytics</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:serviceTask id="Task_RecordInteraction" name="Record Interaction Analytics">
+      <bpmn:incoming>Flow_Contact_Analytics</bpmn:incoming>
+      <bpmn:outgoing>Flow_Analytics_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:endEvent id="End_Interaction" name="Interaction recorded">
+      <bpmn:incoming>Flow_Analytics_End</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:serviceTask id="Task_EvaluateSavedFilters" name="Evaluate Saved Filters">
+      <bpmn:incoming>Flow_Fork_SavedFilters</bpmn:incoming>
+      <bpmn:outgoing>Flow_SavedFilters_Gateway</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:exclusiveGateway id="Gateway_FilterSatisfied" name="Saved Filter satisfied?">
+      <bpmn:incoming>Flow_SavedFilters_Gateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Filter_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Filter_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:sendTask id="Task_SendNotification" name="Send Notification">
+      <bpmn:incoming>Flow_Filter_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_Notification_End</bpmn:outgoing>
+    </bpmn:sendTask>
+
+    <bpmn:endEvent id="End_Notification" name="Alert sent">
+      <bpmn:incoming>Flow_Notification_End</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:endEvent id="End_NoAlert" name="No alert">
+      <bpmn:incoming>Flow_Filter_No</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:serviceTask id="Task_MonitorLifecycle" name="Monitor Listing Lifecycle">
+      <bpmn:incoming>Flow_Fork_Lifecycle</bpmn:incoming>
+      <bpmn:outgoing>Flow_Lifecycle_Gateway</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:exclusiveGateway id="Gateway_LifecycleOutcome" name="Lifecycle outcome">
+      <bpmn:incoming>Flow_Lifecycle_Gateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Lifecycle_Deactivate</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Lifecycle_Expire</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Lifecycle_Terminal</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:serviceTask id="Task_Deactivate" name="Deactivate Listing">
+      <bpmn:incoming>Flow_Lifecycle_Deactivate</bpmn:incoming>
+      <bpmn:outgoing>Flow_Deactivate_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:endEvent id="End_Deactivated" name="Deactivated">
+      <bpmn:incoming>Flow_Deactivate_End</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:serviceTask id="Task_Expire" name="Set Expired">
+      <bpmn:incoming>Flow_Lifecycle_Expire</bpmn:incoming>
+      <bpmn:outgoing>Flow_Expire_Extend</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:exclusiveGateway id="Gateway_Extend" name="Extend / Renew?">
+      <bpmn:incoming>Flow_Expire_Extend</bpmn:incoming>
+      <bpmn:outgoing>Flow_Extend_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Extend_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:userTask id="Task_ExtendRenew" name="Extend / Renew Listing">
+      <bpmn:incoming>Flow_Extend_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_Extend_Reactivate</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:serviceTask id="Task_Reactivate" name="Reactivate Existing Listing">
+      <bpmn:incoming>Flow_Extend_Reactivate</bpmn:incoming>
+      <bpmn:outgoing>Flow_Reactivate_Activate</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:endEvent id="End_Expired" name="Expired">
+      <bpmn:incoming>Flow_Extend_No</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:serviceTask id="Task_CategoryTerminal" name="Set Category-specific Terminal State">
+      <bpmn:incoming>Flow_Lifecycle_Terminal</bpmn:incoming>
+      <bpmn:outgoing>Flow_Terminal_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:endEvent id="End_CategoryTerminal" name="Category terminal state">
+      <bpmn:incoming>Flow_Terminal_End</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_Start_SourceGateway" sourceRef="Start_Source" targetRef="Gateway_Source"/>
+    <bpmn:sequenceFlow id="Flow_Source_Native" name="Native" sourceRef="Gateway_Source" targetRef="Task_SelectCategory"/>
+    <bpmn:sequenceFlow id="Flow_Source_Crawler" name="Crawler" sourceRef="Gateway_Source" targetRef="Task_CollectTelegram"/>
+    <bpmn:sequenceFlow id="Flow_Category_Common" sourceRef="Task_SelectCategory" targetRef="Task_EnterCommonFields"/>
+    <bpmn:sequenceFlow id="Flow_Common_Attributes" sourceRef="Task_EnterCommonFields" targetRef="Task_EnterCategoryAttributes"/>
+    <bpmn:sequenceFlow id="Flow_Attributes_Preview" sourceRef="Task_EnterCategoryAttributes" targetRef="Task_PreviewSubmit"/>
+    <bpmn:sequenceFlow id="Flow_Preview_ValidateNative" sourceRef="Task_PreviewSubmit" targetRef="Task_ValidateNative"/>
+    <bpmn:sequenceFlow id="Flow_ValidateNative_Merge" sourceRef="Task_ValidateNative" targetRef="Gateway_SupplyMerge"/>
+    <bpmn:sequenceFlow id="Flow_Collect_Raw" sourceRef="Task_CollectTelegram" targetRef="Task_PreserveRaw"/>
+    <bpmn:sequenceFlow id="Flow_Raw_Normalize" sourceRef="Task_PreserveRaw" targetRef="Task_NormalizeExtract"/>
+    <bpmn:sequenceFlow id="Flow_Normalize_CrawlerValidate" sourceRef="Task_NormalizeExtract" targetRef="Task_CrawlerValidate"/>
+    <bpmn:sequenceFlow id="Flow_CrawlerValidate_Ingest" sourceRef="Task_CrawlerValidate" targetRef="Task_IngestAPI"/>
+    <bpmn:sequenceFlow id="Flow_Ingest_Merge" sourceRef="Task_IngestAPI" targetRef="Gateway_SupplyMerge"/>
+    <bpmn:sequenceFlow id="Flow_Merge_Pending" sourceRef="Gateway_SupplyMerge" targetRef="Task_SetPending"/>
+    <bpmn:sequenceFlow id="Flow_Pending_AdminReview" sourceRef="Task_SetPending" targetRef="Task_AdminReview"/>
+    <bpmn:sequenceFlow id="Flow_AdminReview_Approved" sourceRef="Task_AdminReview" targetRef="Gateway_Approved"/>
+    <bpmn:sequenceFlow id="Flow_Approved_Yes" name="Yes" sourceRef="Gateway_Approved" targetRef="Task_ActivateListing"/>
+    <bpmn:sequenceFlow id="Flow_Approved_No" name="No" sourceRef="Gateway_Approved" targetRef="Task_SetRejected"/>
+    <bpmn:sequenceFlow id="Flow_Rejected_End" sourceRef="Task_SetRejected" targetRef="End_Rejected"/>
+    <bpmn:sequenceFlow id="Flow_Activate_Fork" sourceRef="Task_ActivateListing" targetRef="Gateway_ActiveFork"/>
+    <bpmn:sequenceFlow id="Flow_Fork_Discovery" sourceRef="Gateway_ActiveFork" targetRef="Task_IndexDiscovery"/>
+    <bpmn:sequenceFlow id="Flow_Index_Search" sourceRef="Task_IndexDiscovery" targetRef="Task_SearchFilter"/>
+    <bpmn:sequenceFlow id="Flow_Search_Detail" sourceRef="Task_SearchFilter" targetRef="Task_OpenDetail"/>
+    <bpmn:sequenceFlow id="Flow_Detail_Contact" sourceRef="Task_OpenDetail" targetRef="Task_ContactApply"/>
+    <bpmn:sequenceFlow id="Flow_Contact_Analytics" sourceRef="Task_ContactApply" targetRef="Task_RecordInteraction"/>
+    <bpmn:sequenceFlow id="Flow_Analytics_End" sourceRef="Task_RecordInteraction" targetRef="End_Interaction"/>
+    <bpmn:sequenceFlow id="Flow_Fork_SavedFilters" sourceRef="Gateway_ActiveFork" targetRef="Task_EvaluateSavedFilters"/>
+    <bpmn:sequenceFlow id="Flow_SavedFilters_Gateway" sourceRef="Task_EvaluateSavedFilters" targetRef="Gateway_FilterSatisfied"/>
+    <bpmn:sequenceFlow id="Flow_Filter_Yes" name="Yes" sourceRef="Gateway_FilterSatisfied" targetRef="Task_SendNotification"/>
+    <bpmn:sequenceFlow id="Flow_Filter_No" name="No" sourceRef="Gateway_FilterSatisfied" targetRef="End_NoAlert"/>
+    <bpmn:sequenceFlow id="Flow_Notification_End" sourceRef="Task_SendNotification" targetRef="End_Notification"/>
+    <bpmn:sequenceFlow id="Flow_Fork_Lifecycle" sourceRef="Gateway_ActiveFork" targetRef="Task_MonitorLifecycle"/>
+    <bpmn:sequenceFlow id="Flow_Lifecycle_Gateway" sourceRef="Task_MonitorLifecycle" targetRef="Gateway_LifecycleOutcome"/>
+    <bpmn:sequenceFlow id="Flow_Lifecycle_Deactivate" name="User deactivates" sourceRef="Gateway_LifecycleOutcome" targetRef="Task_Deactivate"/>
+    <bpmn:sequenceFlow id="Flow_Lifecycle_Expire" name="Configured expiry" sourceRef="Gateway_LifecycleOutcome" targetRef="Task_Expire"/>
+    <bpmn:sequenceFlow id="Flow_Lifecycle_Terminal" name="Category terminal state" sourceRef="Gateway_LifecycleOutcome" targetRef="Task_CategoryTerminal"/>
+    <bpmn:sequenceFlow id="Flow_Deactivate_End" sourceRef="Task_Deactivate" targetRef="End_Deactivated"/>
+    <bpmn:sequenceFlow id="Flow_Expire_Extend" sourceRef="Task_Expire" targetRef="Gateway_Extend"/>
+    <bpmn:sequenceFlow id="Flow_Extend_Yes" name="Yes" sourceRef="Gateway_Extend" targetRef="Task_ExtendRenew"/>
+    <bpmn:sequenceFlow id="Flow_Extend_No" name="No" sourceRef="Gateway_Extend" targetRef="End_Expired"/>
+    <bpmn:sequenceFlow id="Flow_Extend_Reactivate" sourceRef="Task_ExtendRenew" targetRef="Task_Reactivate"/>
+    <bpmn:sequenceFlow id="Flow_Reactivate_Activate" sourceRef="Task_Reactivate" targetRef="Task_ActivateListing"/>
+    <bpmn:sequenceFlow id="Flow_Terminal_End" sourceRef="Task_CategoryTerminal" targetRef="End_CategoryTerminal"/>
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_AdvertioCurrentState">
+    <bpmndi:BPMNPlane id="BPMNPlane_AdvertioCurrentState" bpmnElement="Process_AdvertioCurrentState">
+
+      <bpmndi:BPMNShape id="Lane_User_di" bpmnElement="Lane_User" isHorizontal="true"><dc:Bounds x="100" y="100" width="3600" height="170"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Crawler_di" bpmnElement="Lane_Crawler" isHorizontal="true"><dc:Bounds x="100" y="270" width="3600" height="170"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Platform_di" bpmnElement="Lane_Platform" isHorizontal="true"><dc:Bounds x="100" y="440" width="3600" height="200"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Admin_di" bpmnElement="Lane_Admin" isHorizontal="true"><dc:Bounds x="100" y="640" width="3600" height="170"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Automation_di" bpmnElement="Lane_Automation" isHorizontal="true"><dc:Bounds x="100" y="810" width="3600" height="220"/></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_Source_di" bpmnElement="Start_Source"><dc:Bounds x="145" y="512" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Source_di" bpmnElement="Gateway_Source" isMarkerVisible="true"><dc:Bounds x="230" y="505" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SelectCategory_di" bpmnElement="Task_SelectCategory"><dc:Bounds x="350" y="135" width="130" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_EnterCommonFields_di" bpmnElement="Task_EnterCommonFields"><dc:Bounds x="525" y="135" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_EnterCategoryAttributes_di" bpmnElement="Task_EnterCategoryAttributes"><dc:Bounds x="720" y="135" width="160" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_PreviewSubmit_di" bpmnElement="Task_PreviewSubmit"><dc:Bounds x="925" y="135" width="130" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CollectTelegram_di" bpmnElement="Task_CollectTelegram"><dc:Bounds x="350" y="315" width="130" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_PreserveRaw_di" bpmnElement="Task_PreserveRaw"><dc:Bounds x="525" y="315" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_NormalizeExtract_di" bpmnElement="Task_NormalizeExtract"><dc:Bounds x="720" y="315" width="160" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CrawlerValidate_di" bpmnElement="Task_CrawlerValidate"><dc:Bounds x="925" y="315" width="140" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_IngestAPI_di" bpmnElement="Task_IngestAPI"><dc:Bounds x="1110" y="315" width="140" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ValidateNative_di" bpmnElement="Task_ValidateNative"><dc:Bounds x="1110" y="495" width="140" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_SupplyMerge_di" bpmnElement="Gateway_SupplyMerge" isMarkerVisible="true"><dc:Bounds x="1300" y="510" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SetPending_di" bpmnElement="Task_SetPending"><dc:Bounds x="1400" y="495" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AdminReview_di" bpmnElement="Task_AdminReview"><dc:Bounds x="1600" y="685" width="140" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Approved_di" bpmnElement="Gateway_Approved" isMarkerVisible="true"><dc:Bounds x="1790" y="700" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SetRejected_di" bpmnElement="Task_SetRejected"><dc:Bounds x="1890" y="700" width="120" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Rejected_di" bpmnElement="End_Rejected"><dc:Bounds x="2055" y="717" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ActivateListing_di" bpmnElement="Task_ActivateListing"><dc:Bounds x="1890" y="495" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_ActiveFork_di" bpmnElement="Gateway_ActiveFork"><dc:Bounds x="2100" y="510" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_IndexDiscovery_di" bpmnElement="Task_IndexDiscovery"><dc:Bounds x="2220" y="475" width="160" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SearchFilter_di" bpmnElement="Task_SearchFilter"><dc:Bounds x="2440" y="135" width="160" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_OpenDetail_di" bpmnElement="Task_OpenDetail"><dc:Bounds x="2660" y="135" width="140" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ContactApply_di" bpmnElement="Task_ContactApply"><dc:Bounds x="2860" y="135" width="160" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RecordInteraction_di" bpmnElement="Task_RecordInteraction"><dc:Bounds x="3080" y="475" width="160" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Interaction_di" bpmnElement="End_Interaction"><dc:Bounds x="3290" y="497" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_EvaluateSavedFilters_di" bpmnElement="Task_EvaluateSavedFilters"><dc:Bounds x="2220" y="835" width="160" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_FilterSatisfied_di" bpmnElement="Gateway_FilterSatisfied" isMarkerVisible="true"><dc:Bounds x="2430" y="850" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SendNotification_di" bpmnElement="Task_SendNotification"><dc:Bounds x="2530" y="825" width="140" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Notification_di" bpmnElement="End_Notification"><dc:Bounds x="2720" y="842" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_NoAlert_di" bpmnElement="End_NoAlert"><dc:Bounds x="2538" y="940" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_MonitorLifecycle_di" bpmnElement="Task_MonitorLifecycle"><dc:Bounds x="2220" y="930" width="160" height="70"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_LifecycleOutcome_di" bpmnElement="Gateway_LifecycleOutcome" isMarkerVisible="true"><dc:Bounds x="2430" y="940" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Deactivate_di" bpmnElement="Task_Deactivate"><dc:Bounds x="2640" y="915" width="130" height="65"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Deactivated_di" bpmnElement="End_Deactivated"><dc:Bounds x="2810" y="930" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Expire_di" bpmnElement="Task_Expire"><dc:Bounds x="2640" y="995" width="120" height="65"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Extend_di" bpmnElement="Gateway_Extend" isMarkerVisible="true"><dc:Bounds x="2810" y="1003" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ExtendRenew_di" bpmnElement="Task_ExtendRenew"><dc:Bounds x="2930" y="185" width="140" height="65"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Reactivate_di" bpmnElement="Task_Reactivate"><dc:Bounds x="3110" y="565" width="140" height="65"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Expired_di" bpmnElement="End_Expired"><dc:Bounds x="2910" y="1010" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CategoryTerminal_di" bpmnElement="Task_CategoryTerminal"><dc:Bounds x="2640" y="835" width="165" height="65"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_CategoryTerminal_di" bpmnElement="End_CategoryTerminal"><dc:Bounds x="2850" y="850" width="36" height="36"/></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Flow_Start_SourceGateway_di" bpmnElement="Flow_Start_SourceGateway"><di:waypoint x="181" y="530"/><di:waypoint x="230" y="530"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Source_Native_di" bpmnElement="Flow_Source_Native"><di:waypoint x="255" y="505"/><di:waypoint x="255" y="175"/><di:waypoint x="350" y="175"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Source_Crawler_di" bpmnElement="Flow_Source_Crawler"><di:waypoint x="255" y="505"/><di:waypoint x="255" y="355"/><di:waypoint x="350" y="355"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Category_Common_di" bpmnElement="Flow_Category_Common"><di:waypoint x="480" y="175"/><di:waypoint x="525" y="175"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Common_Attributes_di" bpmnElement="Flow_Common_Attributes"><di:waypoint x="675" y="175"/><di:waypoint x="720" y="175"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Attributes_Preview_di" bpmnElement="Flow_Attributes_Preview"><di:waypoint x="880" y="175"/><di:waypoint x="925" y="175"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Preview_ValidateNative_di" bpmnElement="Flow_Preview_ValidateNative"><di:waypoint x="1055" y="175"/><di:waypoint x="1180" y="175"/><di:waypoint x="1180" y="495"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ValidateNative_Merge_di" bpmnElement="Flow_ValidateNative_Merge"><di:waypoint x="1250" y="535"/><di:waypoint x="1300" y="535"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Collect_Raw_di" bpmnElement="Flow_Collect_Raw"><di:waypoint x="480" y="355"/><di:waypoint x="525" y="355"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Raw_Normalize_di" bpmnElement="Flow_Raw_Normalize"><di:waypoint x="675" y="355"/><di:waypoint x="720" y="355"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Normalize_CrawlerValidate_di" bpmnElement="Flow_Normalize_CrawlerValidate"><di:waypoint x="880" y="355"/><di:waypoint x="925" y="355"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CrawlerValidate_Ingest_di" bpmnElement="Flow_CrawlerValidate_Ingest"><di:waypoint x="1065" y="355"/><di:waypoint x="1110" y="355"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Ingest_Merge_di" bpmnElement="Flow_Ingest_Merge"><di:waypoint x="1250" y="355"/><di:waypoint x="1325" y="355"/><di:waypoint x="1325" y="510"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Merge_Pending_di" bpmnElement="Flow_Merge_Pending"><di:waypoint x="1350" y="535"/><di:waypoint x="1400" y="535"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Pending_AdminReview_di" bpmnElement="Flow_Pending_AdminReview"><di:waypoint x="1550" y="535"/><di:waypoint x="1670" y="535"/><di:waypoint x="1670" y="685"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_AdminReview_Approved_di" bpmnElement="Flow_AdminReview_Approved"><di:waypoint x="1740" y="725"/><di:waypoint x="1790" y="725"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Approved_Yes_di" bpmnElement="Flow_Approved_Yes"><di:waypoint x="1815" y="700"/><di:waypoint x="1815" y="535"/><di:waypoint x="1890" y="535"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Approved_No_di" bpmnElement="Flow_Approved_No"><di:waypoint x="1840" y="725"/><di:waypoint x="1890" y="735"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Rejected_End_di" bpmnElement="Flow_Rejected_End"><di:waypoint x="2010" y="735"/><di:waypoint x="2055" y="735"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Activate_Fork_di" bpmnElement="Flow_Activate_Fork"><di:waypoint x="2040" y="535"/><di:waypoint x="2100" y="535"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Fork_Discovery_di" bpmnElement="Flow_Fork_Discovery"><di:waypoint x="2150" y="535"/><di:waypoint x="2220" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Index_Search_di" bpmnElement="Flow_Index_Search"><di:waypoint x="2380" y="515"/><di:waypoint x="2520" y="515"/><di:waypoint x="2520" y="215"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Search_Detail_di" bpmnElement="Flow_Search_Detail"><di:waypoint x="2600" y="175"/><di:waypoint x="2660" y="175"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Detail_Contact_di" bpmnElement="Flow_Detail_Contact"><di:waypoint x="2800" y="175"/><di:waypoint x="2860" y="175"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Contact_Analytics_di" bpmnElement="Flow_Contact_Analytics"><di:waypoint x="3020" y="175"/><di:waypoint x="3160" y="175"/><di:waypoint x="3160" y="475"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Analytics_End_di" bpmnElement="Flow_Analytics_End"><di:waypoint x="3240" y="515"/><di:waypoint x="3290" y="515"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Fork_SavedFilters_di" bpmnElement="Flow_Fork_SavedFilters"><di:waypoint x="2125" y="560"/><di:waypoint x="2125" y="875"/><di:waypoint x="2220" y="875"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SavedFilters_Gateway_di" bpmnElement="Flow_SavedFilters_Gateway"><di:waypoint x="2380" y="875"/><di:waypoint x="2430" y="875"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Filter_Yes_di" bpmnElement="Flow_Filter_Yes"><di:waypoint x="2480" y="875"/><di:waypoint x="2530" y="860"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Filter_No_di" bpmnElement="Flow_Filter_No"><di:waypoint x="2455" y="900"/><di:waypoint x="2455" y="958"/><di:waypoint x="2538" y="958"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Notification_End_di" bpmnElement="Flow_Notification_End"><di:waypoint x="2670" y="860"/><di:waypoint x="2720" y="860"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Fork_Lifecycle_di" bpmnElement="Flow_Fork_Lifecycle"><di:waypoint x="2125" y="560"/><di:waypoint x="2125" y="965"/><di:waypoint x="2220" y="965"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Lifecycle_Gateway_di" bpmnElement="Flow_Lifecycle_Gateway"><di:waypoint x="2380" y="965"/><di:waypoint x="2430" y="965"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Lifecycle_Deactivate_di" bpmnElement="Flow_Lifecycle_Deactivate"><di:waypoint x="2480" y="965"/><di:waypoint x="2640" y="948"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Lifecycle_Expire_di" bpmnElement="Flow_Lifecycle_Expire"><di:waypoint x="2455" y="990"/><di:waypoint x="2455" y="1028"/><di:waypoint x="2640" y="1028"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Lifecycle_Terminal_di" bpmnElement="Flow_Lifecycle_Terminal"><di:waypoint x="2455" y="940"/><di:waypoint x="2455" y="868"/><di:waypoint x="2640" y="868"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Deactivate_End_di" bpmnElement="Flow_Deactivate_End"><di:waypoint x="2770" y="948"/><di:waypoint x="2810" y="948"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Expire_Extend_di" bpmnElement="Flow_Expire_Extend"><di:waypoint x="2760" y="1028"/><di:waypoint x="2810" y="1028"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Extend_Yes_di" bpmnElement="Flow_Extend_Yes"><di:waypoint x="2835" y="1003"/><di:waypoint x="2835" y="218"/><di:waypoint x="2930" y="218"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Extend_No_di" bpmnElement="Flow_Extend_No"><di:waypoint x="2860" y="1028"/><di:waypoint x="2910" y="1028"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Extend_Reactivate_di" bpmnElement="Flow_Extend_Reactivate"><di:waypoint x="3070" y="218"/><di:waypoint x="3180" y="218"/><di:waypoint x="3180" y="565"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Reactivate_Activate_di" bpmnElement="Flow_Reactivate_Activate"><di:waypoint x="3110" y="598"/><di:waypoint x="1965" y="598"/><di:waypoint x="1965" y="575"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Terminal_End_di" bpmnElement="Flow_Terminal_End"><di:waypoint x="2805" y="868"/><di:waypoint x="2850" y="868"/></bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
