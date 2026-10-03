@@ -51,11 +51,7 @@ Related filters include:
 
 ## Product interpretation
 
-These filters allow roommate-style matching without requiring a separate AI matching system.
-
-Current behavior is structured-filter based.
-
-The future AI/Compatibility Score concepts described elsewhere in the product roadmap are **not** documented here as current behavior.
+Current roommate discovery is structured-filter based.
 
 ## Current data boundary
 
@@ -63,8 +59,6 @@ The current UI establishes the availability of the roommate filters, but it does
 
 - a separate Roommate listing subtype enum;
 - required roommate-specific posting fields;
-- mutual matching/swipe behavior;
-- compatibility score;
 - chat;
 - gender/age enforcement rules.
 
