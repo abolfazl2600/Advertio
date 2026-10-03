@@ -1,6 +1,6 @@
 # Advertio Mini App — Current State
 
-> Last documented from the current Telegram Mini App/Web App UI review on 24 Sep 2026.
+> Last documented from the current Telegram Mini App/Web App UI review on 3 Oct 2026.
 
 This documentation records **what is currently visible/implemented in the Advertio Mini App/Web App**. It is intended to be a development reference alongside the codebase.
 
@@ -23,11 +23,23 @@ The bottom navigation currently contains:
 
 The central **Post** action is visually emphasized.
 
-### Important Search note
+### Current Global Search
 
-The **Search** tab is visible in navigation, but the Global Search experience is not implemented yet. The current Search screen shows a **Coming Soon** state and tells users to browse Housing and use the feed filters.
+The **Search** tab is implemented as a functional Global Search experience.
 
-Global Search work is tracked separately in GitHub issue #23.
+The current Search screen includes:
+
+- free-text keyword input;
+- clear-input control;
+- matching result count;
+- listing result cards;
+- persistent bottom navigation.
+
+A reviewed current-state example showed the query `toro` returning **7 results**.
+
+Global Search remains separate from the structured Housing feed filters.
+
+See [Global Search](./search.md) for the detailed current-state documentation.
 
 ## Current Home implementation
 
@@ -48,6 +60,7 @@ The current Home experience routes users into the Housing marketplace while pres
 The following current-state areas have been reviewed and documented:
 
 - Home and bottom navigation
+- Global Search
 - Housing listing feed
 - Housing feed filters
 - Wallet and Telegram Stars coin purchase flow
@@ -55,6 +68,7 @@ The following current-state areas have been reviewed and documented:
 
 ## Detailed documentation
 
+- [Global Search](./search.md)
 - [Housing](./housing.md)
 - [Wallet](./wallet.md)
 - [Profile](./profile.md)
@@ -66,6 +80,7 @@ These issues were created during the review process to capture already-observed 
 - #20 — Mini App Home category selection and bottom navigation
 - #21 — Housing listing feed
 - #22 — Housing feed filters
+- #23 — Global Search
 - #24 — Wallet and Telegram Stars coin purchase flow
 
 The issues themselves should not be treated as the current-state specification.
