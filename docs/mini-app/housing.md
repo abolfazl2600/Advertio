@@ -211,8 +211,13 @@ Observed amenity choices include:
 
 ## Current Search relationship
 
-Housing filtering is currently implemented directly in the Housing feed.
+Housing filtering is implemented directly in the Housing feed.
 
-The separate **Search** tab in bottom navigation is not yet a functional Global Search experience. Its current screen shows **Search is coming soon** and directs users back to Housing filters.
+The separate **Search** tab in bottom navigation is now a functional Global Search experience with free-text input, result count, and listing result cards.
 
-Global Search is therefore separate from the currently implemented Housing filter system.
+Global Search remains separate from the Housing filter system:
+
+- Global Search is used for keyword-oriented discovery.
+- Housing feed filters are used for structured Housing filtering.
+
+See [Global Search](./search.md) for the current Search implementation.
