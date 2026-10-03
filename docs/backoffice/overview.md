@@ -51,7 +51,8 @@ See [Users](./users.md) for the current behavior.
 The Backoffice Channels area supports automatic filtered publishing to configured Telegram destinations and now includes the following documented operational capabilities:
 
 - destination verification through **Send test message**;
-- schema-driven Category/Location/Attribute filtering;
+- data-driven Language/Country/Province/City selectors with dependent geographic filtering;
+- schema-driven Category/Attribute filtering;
 - per-channel **Total Sent** successful-delivery count;
 - **Matches / Historical matches** with Not sent yet / Already sent / All matching;
 - manual historical/backfill sends and intentional re-send path;
