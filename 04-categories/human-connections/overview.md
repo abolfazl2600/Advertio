@@ -2,10 +2,6 @@
 
 > Status: **Development specification**
 >
-> Legacy source name: **Human Matching**
->
-> Product decision: Advertio does **not** use a matching engine, compatibility score, match percentage, or automatic person-to-person matching for this category.
->
 > Discovery is based on **Search + Active Filters**.
 
 ## 1. Category purpose
@@ -27,7 +23,6 @@ Examples from the original product source include:
 - photography walk;
 - family/kids exchange use cases.
 
-The source originally called this area **Human Matching**. That naming is superseded by **Human Connections** because the product does not perform matching.
 
 ## 2. Product model
 
@@ -60,7 +55,6 @@ Advertio then lets users find these listings through:
 - Saved Filters;
 - normal Listing ranking.
 
-There is no separate matching step.
 
 ## 3. Human Connections vs Social & Events
 
@@ -160,7 +154,7 @@ Sports · Tennis · North York · Weekend
 
 A notification should be generated when a new Active Listing satisfies the saved filter conditions.
 
-No fuzzy 70% threshold or match percentage is required.
+Alert eligibility uses the same Saved Filter conditions.
 
 ## 8. Current implementation boundary
 
@@ -177,9 +171,7 @@ This document does not claim that a dedicated Human Connections feed, filters, p
 
 ## 10. Acceptance criteria
 
-- [ ] Category is named Human Connections, not Human Matching.
-- [ ] No matching engine is required.
-- [ ] No Compatibility Score or match percentage is exposed.
+- [ ] Category is named Human Connections.
 - [ ] Search + Active Filters are sufficient for discovery.
 - [ ] Saved Filters can represent the same filter state.
 - [ ] Human Connections remains distinct from event publishing.
