@@ -48,17 +48,7 @@ Search
 + Ranking
 ```
 
-Advertio does **not** require a category-level Matching Engine.
-
-The following concepts are removed from the target product specification:
-
-- Smart Matching
-- Compatibility Score
-- percentage Match Score
-- fuzzy 70% Saved Filter threshold
-- Human Matching as a category name
-
-Ranking can order results after Search/Filters, but it does not replace or bypass active hard filters.
+Active Filters determine the structured result set. Ranking can order that result set, but it does not replace or bypass active hard filters.
 
 ## Product roadmap
 
@@ -213,15 +203,13 @@ Ride-sharing for transporting passengers and commercial logistics/shipping remai
 
 ## Human Connections taxonomy decision
 
-The legacy source name **Human Matching** is replaced by:
+Canonical category name:
 
 ```text
 Human Connections
 ```
 
-Human Connections uses structured Attributes + Active Filters.
-
-It does not implement automatic matching or compatibility scoring.
+Human Connections uses structured Attributes + Active Filters for discovery.
 
 See [Human Connections](../04-categories/human-connections/overview.md).
 
