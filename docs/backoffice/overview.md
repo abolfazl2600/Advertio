@@ -46,6 +46,8 @@ Gate A provides current product-validation and marketplace-health metrics includ
 
 In the reviewed 3 Oct 2026 state, Active Users are defined in the UI as accounts that **viewed, contacted, signed in, or posted** during the window.
 
+The current Gate A UI also exposes `ⓘ` metric-definition controls across the KPI dashboard. The supplied screenshots confirm the controls themselves, but do not show the opened definition content; exact formulas/source-data definitions therefore remain pending verification.
+
 See [Gate A](./gate-a.md) for the current metric definitions and observed UI state.
 
 ### Current Listings capability note
