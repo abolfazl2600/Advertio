@@ -2,7 +2,6 @@
 
 > Active Filters are the primary structured discovery mechanism for Human Connections.
 >
-> There is no person-to-person matching engine.
 
 ## 1. Primary filter row
 
@@ -166,7 +165,7 @@ A listing appears when it satisfies the active structured constraints plus the s
 
 Do not:
 
-- calculate a 70% filter match;
+- partially satisfy an active hard filter and still present the Listing as eligible;
 - display 85%/95% compatibility;
 - silently ignore an active hard filter;
 - silently broaden the query.
@@ -196,7 +195,7 @@ Field names are illustrative until API implementation is finalized.
 
 A new Listing can trigger a Saved Filter alert when it satisfies the saved filter conditions.
 
-This is deterministic filter satisfaction, not matching.
+Eligibility is determined by deterministic Saved Filter conditions.
 
 ## 13. Zero results
 
@@ -222,7 +221,6 @@ When user opens a Listing and returns:
 - [ ] Active filters remain visible/editable.
 - [ ] AND/OR semantics are deterministic.
 - [ ] No match percentage exists.
-- [ ] No 70% threshold exists.
 - [ ] Saved Filter serializes the same query state.
 - [ ] Alert eligibility is based on saved-filter satisfaction.
 - [ ] Zero-result handling never silently changes filters.
