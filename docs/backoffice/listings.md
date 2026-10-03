@@ -1,6 +1,6 @@
 # Backoffice — Listings
 
-> Current-state documentation based on the reviewed Backoffice UI as of 23 Sep 2026.
+> Current-state documentation based on the reviewed Backoffice behavior as of 3 Oct 2026.
 
 ## Current Implementation
 
@@ -246,26 +246,51 @@ Selecting **Review** opens a side panel/drawer that:
 - Displays location
 - Displays submitted timestamp
 - Displays listing identifier
-- Provides a `Confirm duplicate` action
+- Provides explicit selection of which listing should be removed
+- Provides a confirmation action for the selected listing
 - Provides a `Not a duplicate` action
 
 #### Current duplicate-resolution behavior
 
-The current UI assumes:
+The duplicate-resolution flow now lets the admin decide which listing in the pair should be removed.
 
-- **Candidate**: "Would be removed if confirmed"
-- **Matched Against**: "Stays as-is either way"
+Current behavior:
 
-Therefore, the current implementation pre-decides which listing is removed when the duplicate is confirmed.
+- Neither listing is preselected for removal when Review opens.
+- The admin can select either listing as the listing to remove.
+- Only one listing can be selected at a time.
+- The selection can be changed before confirmation.
+- The destructive confirmation action is enabled only after a listing is selected.
+- The confirmation state identifies the listing that will be removed.
+- Confirming the duplicate removes/takes down only the selected listing.
+- The unselected listing remains unchanged.
+- After successful resolution, the duplicate pair is removed from the **Possible Duplicate** review queue.
+- **Not a duplicate** keeps both listings unchanged and resolves/removes the duplicate review item.
+- Existing duplicate comparison information remains available, including similarity score, detection time, listing metadata, and side-by-side comparison.
+- Resolution must not be shown as successful if the backend removal/resolution operation fails.
+
+This behavior is the implemented outcome of [Issue #2 — Let admin choose which duplicate listing to remove](https://github.com/abolfazl2600/Advertio/issues/2).
+
+## Current Backoffice listing features
+
+The currently documented Listings feature set includes:
+
+- Listing moderation queues for Pending, Live, Rejected, Taken down, Expired, All, and Possible Duplicate.
+- Listing search by title, city, and listing ID.
+- Pending listing review with Approve / Reject actions.
+- Active listing performance and monetization metrics.
+- Listing publication lifecycle information.
+- Take-down action for active listings.
+- Possible Duplicate detection queue with similarity score and detection timestamp.
+- Side-by-side duplicate review.
+- **Admin-controlled duplicate resolution**, where the admin explicitly chooses which duplicate listing to remove.
+- **Not a duplicate** resolution that preserves both listings.
 
 ## Known Changes
 
-- [Issue #2 — Let admin choose which duplicate listing to remove](https://github.com/abolfazl2600/Advertio/issues/2)
 - Issue #17 — Show listing submission/source provenance in review drawer
 - Issue #18 — Show linked Telegram username as a clickable profile link
 - Issue #19 — Persist Telegram numeric user ID for listing/user provenance
-
-Issue #2 changes the manual duplicate-resolution flow so the admin explicitly chooses which of the two listings should be removed. Until that issue is implemented, the behavior described under **Current duplicate-resolution behavior** remains the current state.
 
 ## Not yet documented
 
