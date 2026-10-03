@@ -34,6 +34,14 @@ The Backoffice **Possible Duplicate** workflow includes admin-controlled duplica
 
 See [Listings](./listings.md) for the current behavior.
 
+### Current Users capability note
+
+Backoffice admins can send a direct plain-text Telegram message to an individual Advertio user from the **Users** section using the existing Advertio bot integration.
+
+The current UI provides a **Send message** composer with the selected user's identity, Telegram delivery context, message textarea, character counter, Cancel action, and **Send via Telegram** action.
+
+See [Users](./users.md) for the current behavior.
+
 ## Detailed documentation
 
 - [Gate A](./gate-a.md)
