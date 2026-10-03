@@ -169,18 +169,17 @@ Phase 3:
 
 ## Cargo taxonomy decision
 
-Cargo is one top-level marketplace category.
+Cargo is one top-level marketplace category with **one unified listing model**.
 
-It must **not** be split into `Passenger Cargo`, `Ride Sharing`, or `Logistics / Shipping` subcategories.
+It must **not** be split into `Passenger Cargo`, `Ride Sharing`, `Logistics / Shipping`, `Carrier`, or `Sender` categories/subcategories.
 
-The two sides of the Cargo marketplace are represented by a listing-level `role`:
+Advertio does not use a Cargo `role` field. A Cargo listing is simply a Cargo listing.
 
-- `carrier` — a traveler who has capacity to carry cargo;
-- `sender` — a person who needs cargo transported.
+Whether the source text describes a traveler carrying cargo or a person looking to send cargo is preserved in the listing content/provenance, not represented as a separate Product role.
 
-Both roles use the same Cargo feed, route model, filters, moderation model and matching system.
+All Cargo listings use the same feed, route fields, filters, moderation model and relevance logic.
 
-Ride-sharing for transporting passengers and commercial logistics/shipping are outside the Cargo V1 scope unless they are designed later as separate products.
+Ride-sharing for transporting passengers and commercial logistics/shipping remain outside Cargo V1 unless designed later as separate products.
 
 ## Cold-start boundary
 
