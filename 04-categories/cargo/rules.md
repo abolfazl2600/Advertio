@@ -1,170 +1,147 @@
 # Cargo — Category Rules
 
-> Cargo is one category with two listing roles: Carrier and Sender.
+> Cargo is one category with one unified listing model.
 >
-> Telclaw `transferlist` is an upstream crawler source for this category.
+> Telclaw `transferlist` is an upstream crawler source.
 
 ## 1. Category identity
 
-Canonical product category:
+Canonical category:
 
 ```text
 Cargo
 ```
 
-Do not introduce these as Cargo subcategories:
+Do not create:
 
 - Passenger Cargo
-- Ride Sharing
-- Logistics / Shipping
 - Carrier
 - Sender
+- Ride Sharing
+- Logistics / Shipping
 
-Carrier and Sender are roles.
+as Cargo categories/subcategories.
 
-## 2. Role rule
+## 2. No-role rule
 
-Advertio role:
+Advertio Cargo has no public Product role.
 
-```text
-carrier
-sender
-```
-
-Telclaw mapping:
+Do not create:
 
 ```text
-passenger → carrier
-shipper → sender
+role = carrier
+role = sender
 ```
 
-Unknown crawler role stays unknown/review-required.
+Telclaw may internally classify or store:
+
+```text
+passenger
+shipper
+```
+
+but Advertio treats both as:
+
+```text
+Cargo
+```
 
 ## 3. Telclaw extraction boundary
 
-Telclaw current AI extraction supports:
+Preserve current Telclaw fields:
 
+- title/description;
 - route city/province/country;
 - airline;
 - flight number;
-- departure/arrival date;
-- departure/arrival time;
+- departure/arrival date/time;
 - cargo type;
-- weight + unit;
+- weight/unit;
 - quantity;
-- volume + unit;
-- price + currency;
+- volume/unit;
+- price/currency;
 - contact;
-- features;
-- title/description.
+- features.
 
-Do not discard these fields during Cargo ingestion merely because the original Advertio Cargo notes had a smaller schema.
+## 4. Telclaw transfer_role
 
-## 4. Telclaw schema-gap rule
+If upstream `transfer_role` exists:
 
-Current Telclaw storage/publisher contains:
+- preserve only as `source_transfer_role` if useful;
+- do not map it to Advertio Product roles;
+- do not expose it as category/filter requirement;
+- do not block ingestion if it is missing.
 
-- `transfer_role`
-- `transport_type`
+This also removes the previous Telclaw role-schema gap as an Advertio blocker.
 
-but the reviewed current AI allow-list/output does not reliably include them.
+## 5. transport_type
 
-Advertio must:
+Telclaw may contain `transport_type`.
 
-- accept them when a trustworthy upstream path supplies them;
-- never assume they are populated;
-- never invent them to make an import valid;
-- retain review visibility for records missing required role.
+Preserve as source provenance when present.
 
-## 5. Scope rule
+It does not expand Cargo into commercial logistics.
 
-Cargo V1 is traveler-assisted cargo transport.
+## 6. Scope
 
-Included:
-
-- traveler with spare baggage/carrying capacity;
-- sender seeking a traveler.
+Cargo V1 covers traveler-assisted cargo transfer.
 
 Excluded:
 
-- passenger transportation;
-- ride-sharing/carpooling;
+- passenger transport;
+- ride-sharing;
 - taxi;
-- commercial freight brokerage;
-- trucking;
-- courier fleet management;
+- freight brokerage;
+- trucking fleets;
 - warehousing;
+- courier fleet management;
 - freight forwarding.
 
-A Telclaw `transport_type` value must not automatically expand this product scope.
+## 7. Route
 
-## 6. Route rule
+Every public Cargo listing should have a usable directional route.
 
-Every public Cargo listing needs a usable directional route.
+Incomplete crawler routes should be reviewed/held according to ingest policy rather than fabricated.
 
-Crawler route data may be incomplete; incomplete records may require review rather than fabricated locations.
+## 8. Date/time
 
-## 7. Airline / flight rule
+Preserve source dates/times.
 
-Airline and flight number:
+Never substitute Telegram post date for transfer date.
 
-- are optional;
-- may support moderation/verification;
-- do not imply Ticket Verified;
-- must reflect source/native user input accurately.
+## 9. Weight/unit
 
-## 8. Date/time rule
+Preserve original value + unit.
 
-Crawler dates/times must be preserved as extracted.
+Derive normalized weight separately.
 
-Do not substitute Telegram message date for trip/shipment date.
+Do not assign role-specific meaning.
 
-Telclaw explicitly forbids that behavior.
+## 10. Quantity/volume
 
-## 9. Weight/unit rule
+Preserve quantity and volume/unit.
 
-Never drop the source unit.
+Only make them hard filters when semantics/normalization are sufficiently reliable.
 
-Store source value + unit and derive a canonical matching value separately when safe.
+## 11. Cargo type
 
-Do not interpret raw crawler weight as Carrier capacity until role/context supports that meaning.
+Preserve raw cargo type.
 
-## 10. Quantity/volume rule
+Normalize to controlled item types only with confidence.
 
-Quantity and volume extracted by Telclaw are legitimate Cargo data.
+## 12. Price
 
-Preserve them.
+Preserve amount/currency.
 
-Do not force them into hard matching until their role semantics and units are normalized.
+Do not assume per-kg vs total.
 
-## 11. Cargo type rule
+## 13. Contact
 
-Preserve raw `cargo_type`.
+Crawler contact remains external/source contact.
 
-Normalize into Advertio canonical item types only when confident.
+It does not create native ownership or verification.
 
-Unknown/ambiguous types remain raw/reviewable.
-
-## 12. Price rule
-
-Telclaw extracts price/currency but not a dedicated reliable price-type field.
-
-Therefore:
-
-- preserve amount/currency;
-- do not assume per-kg;
-- do not assume total;
-- classify price semantics only when established.
-
-## 13. Contact rule
-
-Crawler contact stays external/source contact.
-
-It does not create native Advertio ownership or verification.
-
-## 14. Item declaration and safety
-
-Sender must declare item type.
+## 14. Safety
 
 Do not encourage:
 
@@ -172,21 +149,18 @@ Do not encourage:
 - undeclared goods;
 - illegal/restricted goods.
 
-A dedicated compliance policy is required before public Cargo launch.
+A dedicated compliance policy is required before public launch.
 
 ## 15. Verification
 
-Source mentions Cargo ticket verification.
+Ticket/trip verification is system/admin-controlled.
 
-Verification is system/admin controlled.
-
-Airline + flight number alone are not verification.
+Airline + flight number alone do not create verification.
 
 ## 16. Moderation
 
-Review should expose:
+Backoffice should expose:
 
-- role/source role;
 - route;
 - airline;
 - flight number;
@@ -198,14 +172,12 @@ Review should expose:
 - price/currency;
 - contact;
 - features;
-- crawler provenance.
+- crawler provenance;
+- source_transfer_role only as diagnostic provenance if present.
 
-## 17. One-active-listing conflict
+## 17. Multiple active Cargo listings
 
-Multiple legitimate Cargo listings may be required for:
-
-- multiple trips;
-- multiple sender routes.
+Cargo may legitimately need multiple active routes/dates.
 
 Recommended:
 
@@ -225,22 +197,19 @@ Crawled Cargo must:
 - remain non-monetized under crawler rules;
 - never impersonate a native verified user.
 
-## 19. Current UI rename
+## 19. UI rename
 
 Current Telegram Bot docs still record **Passenger Cargo** as current UI copy.
 
-Target product taxonomy is **Cargo**.
+Target is **Cargo**.
 
-Current-state docs should change only when runtime UI actually changes.
+Update current-state docs only after runtime UI changes.
 
 ## 20. Acceptance criteria
 
-- [ ] Cargo remains a single category.
-- [ ] Telclaw's full current transfer field set can survive ingestion.
-- [ ] Role mapping is explicit.
-- [ ] Telclaw role/transport schema gap is documented and safely handled.
-- [ ] Airline/flight/date/time are preserved.
-- [ ] Weight/unit, quantity and volume/unit are preserved.
-- [ ] Raw cargo type/features are not silently discarded.
-- [ ] Raw price is not misinterpreted.
-- [ ] Crawled data never grants native verification.
+- [ ] Cargo remains one category.
+- [ ] No Carrier/Sender Product role exists.
+- [ ] Telclaw Passenger/Shipper values never create Advertio Product roles.
+- [ ] Full Telclaw transfer attributes survive ingestion.
+- [ ] Role absence never blocks Cargo ingestion.
+- [ ] Route/date/weight/cargo/price/contact semantics are preserved.
