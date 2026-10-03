@@ -1,25 +1,28 @@
-# Cargo — Attributes & Data Contract
+# Cargo — Unified Attributes & Data Contract
 
 > Status: **Development specification**
 >
-> This contract combines:
-> 1. original Advertio Cargo/Passenger Cargo requirements;
-> 2. actual Telclaw `transferlist` fields on commit [63fbc01](https://github.com/abolfazl260/Telclaw/commit/63fbc01555f01345bb92124c9112db63f1395e92);
-> 3. Advertio-specific normalized fields required for matching and UX.
+> Advertio Cargo uses one schema for every Cargo listing.
+>
+> There is no public `role`, `carrier`, or `sender` field.
 
 ## 1. Core principle
 
-Cargo has one public category schema with conditional behavior based on:
+The same schema handles every Cargo listing.
 
-```text
-role = carrier | sender
-```
+Meaning is expressed through:
 
-Do not create separate Carrier/Sender categories.
+- structured route/cargo/flight fields;
+- title;
+- description;
+- contact;
+- source text/provenance.
 
-## 2. Exact Telclaw AI extraction fields
+Do not add Product branching based on passenger/shipper role.
 
-The current Telclaw AI allow-list contains:
+## 2. Telclaw extraction fields
+
+Current Telclaw `transferlist` supports:
 
 ```text
 title
@@ -48,318 +51,199 @@ contact
 features
 ```
 
-Reference:
+Advertio should preserve all of these when present.
 
-- [ai/category_schemas.py](https://github.com/abolfazl260/Telclaw/blob/63fbc01555f01345bb92124c9112db63f1395e92/ai/category_schemas.py)
-- [ai/prompts/transferlist.txt](https://github.com/abolfazl260/Telclaw/blob/63fbc01555f01345bb92124c9112db63f1395e92/ai/prompts/transferlist.txt)
+## 3. Canonical Advertio Cargo fields
 
-Unknown/ambiguous source values are explicitly required by the Telclaw prompt to remain `null`.
-
-## 3. Additional Telclaw storage/publisher fields
-
-Telclaw storage/presentation also knows:
-
-```text
-transport_type
-transfer_role
-```
-
-Important: on the reviewed commit these are **not both present in the current AI extraction allow-list/output schema**.
-
-Therefore mark their crawler extraction status separately:
-
-| Telclaw field | Storage/Publisher | Current AI output | Advertio use |
-| --- | ---: | ---: | --- |
-| `transfer_role` | Yes | Not reliably present | map passenger→carrier, shipper→sender when present |
-| `transport_type` | Yes | Not in current AI output | optional transport-mode provenance |
-
-Do not make Cargo ingest fail solely because these crawler-side compatibility fields are absent.
-
-## 4. Canonical Advertio common fields
-
-| Advertio field | Type | Required native | Filterable | Telclaw source |
+| Field | Type | Required native | Filterable | Telclaw source |
 | --- | --- | ---: | ---: | --- |
 | `title` | string | Yes | Search | title |
 | `description` | text | Yes | Search | description |
-| `role` | enum | Yes | Yes | transfer_role when reliably present |
-| `origin_country` | ISO-2/canonical | Yes | Yes | origin_country |
+| `origin_country` | canonical ISO-2 country | Yes | Yes | origin_country |
 | `origin_province` | canonical region | Conditional | Yes | origin_province |
 | `origin_city` | canonical city | Yes | Yes | origin_city |
-| `destination_country` | ISO-2/canonical | Yes | Yes | destination_country |
+| `destination_country` | canonical ISO-2 country | Yes | Yes | destination_country |
 | `destination_province` | canonical region | Conditional | Yes | destination_province |
 | `destination_city` | canonical city | Yes | Yes | destination_city |
 | `airline` | string/canonical later | No | Soft | airline |
 | `flight_number` | string | No | Search/exact later | flight_number |
-| `departure_date` | date | Conditional | Yes | departure_date |
+| `departure_date` | date | Yes for native V1 | Yes | departure_date |
 | `departure_time` | time | No | Soft | departure_time |
 | `arrival_date` | date | No | Soft | arrival_date |
 | `arrival_time` | time | No | Soft | arrival_time |
-| `cargo_type_raw` | string | No | No | cargo_type |
-| `weight_value` | decimal | Conditional | Yes | weight |
-| `weight_unit` | enum/string | Conditional | Yes | weight_unit |
+| `cargo_type_raw` | string | No | Search | cargo_type |
+| `item_types` | canonical array | No | Yes | normalized from cargo_type when confident |
+| `weight_value` | decimal | No | Yes | weight |
+| `weight_unit` | unit | Conditional | Yes | weight_unit |
+| `weight_kg_derived` | decimal | No | Yes | derived only |
 | `quantity` | decimal/integer | No | Soft | quantity |
 | `volume_value` | decimal | No | Soft | volume |
-| `volume_unit` | enum/string | No | Soft | volume_unit |
+| `volume_unit` | unit | Conditional | Soft | volume_unit |
 | `price_amount` | decimal | No | Yes | price |
 | `currency` | ISO-4217 | Conditional | Yes | currency |
+| `price_type` | enum | No | Yes | native/normalized; not reliably in Telclaw |
 | `contact_external` | string | Crawled only | No | contact |
-| `features_raw` | array/text | No | Search only initially | features |
+| `features_raw` | array/text | No | Search | features |
 
-## 5. Role mapping
+## 4. No role field
 
-Telclaw role vocabulary:
-
-```text
-passenger
-shipper
-```
-
-Advertio:
+Advertio must not persist:
 
 ```text
-passenger → carrier
-shipper   → sender
+role = carrier
+role = sender
 ```
 
-Advertio public data should persist only:
+Telclaw may expose:
 
 ```text
-carrier
-sender
+transfer_role = passenger
+transfer_role = shipper
 ```
 
-Optionally preserve:
+If present, optionally preserve it only as:
 
 ```text
 source_transfer_role
 ```
 
-internally for traceability.
+inside crawler provenance.
 
-### Unknown role
+It is not part of the canonical public Cargo schema.
 
-If Telclaw does not provide a reliable role:
+## 5. Route
 
-```text
-role = null
-```
-
-and the record should follow a review/hold policy.
-
-Do not infer role merely because an airline/flight number exists.
-
-## 6. Route
-
-Direction is significant.
+Route is directional.
 
 ```text
 Toronto → Tehran
 ```
 
-does not match:
+is not the same as:
 
 ```text
 Tehran → Toronto
 ```
 
-Telclaw prompt explicitly requires preserving source direction and never reversing it.
+Preserve origin and destination independently.
 
-## 7. Location normalization
+## 6. Location normalization
 
-Telclaw outputs:
+Telclaw provides city/province/country and also maintains transfer-specific canonical location data.
 
-- city in standard English/Roman form;
-- country as ISO 3166-1 alpha-2 uppercase;
-- province when explicit/confident.
+Advertio should map into canonical location values where possible.
 
-Telclaw also maintains `transfer_locations` with:
+Country flags remain presentation only.
 
-- origin_city_canonical
-- origin_city_key
-- origin_country_iso2
-- destination_city_canonical
-- destination_city_key
-- destination_country_iso2
+## 7. Date/time
 
-Advertio should map these into its canonical location catalog where possible.
-
-## 8. Date and time model
-
-### Telclaw behavior
-
-Telclaw can extract:
+Use:
 
 - departure_date
 - departure_time
 - arrival_date
 - arrival_time
 
-Dates are normalized to Gregorian `YYYY-MM-DD`.
+Native V1 should require a useful Cargo date, normally departure/shipment date.
 
-Its prompt can recognize Gregorian and Jalali dates and only fills dates supported by the source.
+Crawler rule:
 
-### Advertio native Carrier
+- preserve explicit source dates;
+- do not use Telegram post timestamp as transfer date;
+- do not invent missing date ranges.
 
-Carrier should use:
+## 8. Airline and flight number
 
-- departure_date required;
-- departure_time optional;
-- arrival_date optional;
-- arrival_time optional.
-
-### Advertio native Sender
-
-For native UX, a sender may need flexibility:
-
-- `send_date_from`
-- `send_date_until`
-
-Crawler mapping can retain the source `departure_date` as the source shipment/travel date when that is all Telclaw extracted.
-
-Do not invent a date range from one extracted date.
-
-## 9. Airline and flight number
-
-Telclaw extracts these only when stated:
+Optional fields:
 
 - airline
 - flight_number
 
-Advertio usage:
+Useful for:
 
-- Carrier detail;
+- detail display;
+- search;
 - moderation;
-- optional trust/ticket verification workflow;
-- optional exact search/filter later.
+- trip/ticket verification workflow.
 
-They should be optional.
+Presence does not mean verified.
 
-Presence does **not** imply Ticket Verified.
+## 9. Cargo type
 
-## 10. Cargo type / item model
+Telclaw `cargo_type` is free-form.
 
-Telclaw:
-
-```text
-cargo_type
-```
-
-is source-derived/free-form.
-
-Advertio native V1 uses controlled item types such as:
+Advertio stores:
 
 ```text
-documents
-electronics
-clothes
-personal_items
-other
+cargo_type_raw
 ```
 
-Recommended ingestion model:
+and can derive:
 
 ```text
-cargo_type_raw = Telclaw original extracted value
-item_types = normalized canonical Advertio values when mapping is confident
+item_types
 ```
 
-If normalization is ambiguous:
+when mapping is confident.
 
-```text
-item_types = []
-cargo_type_raw = preserved
-```
+Initial canonical examples:
 
-Do not force an unknown cargo type into an incorrect enum.
+- documents
+- electronics
+- clothes
+- personal_items
+- other
 
-## 11. Weight model
+Do not force ambiguous raw cargo into an incorrect enum.
 
-Telclaw preserves both:
+## 10. Weight
 
-- weight
-- weight_unit
-
-Advertio should preserve source values and derive a matching value only when conversion is safe.
-
-Recommended:
+Unified Cargo uses generic:
 
 ```text
 weight_value
 weight_unit
-weight_kg_derived
 ```
 
-### Role semantics
+Do not reinterpret weight differently based on a Carrier/Sender role because Advertio has no role model.
 
-Carrier:
+The title/description/source context explains whether the number represents available capacity, parcel weight, or another cargo-related weight.
 
-```text
-weight = available carrying capacity
-```
+For numeric comparison:
 
-only when source context clearly indicates capacity.
+- preserve original value/unit;
+- derive kg separately when conversion is known;
+- never overwrite source value.
 
-Sender:
+## 11. Quantity
 
-```text
-weight = cargo shipment weight
-```
+Preserve Telclaw `quantity`.
 
-only when role/context supports it.
+Until a stronger package model exists, treat it as source-declared cargo/item quantity.
 
-Because current Telclaw role extraction has a known gap, do not automatically reinterpret every crawler weight as available capacity.
+Do not invent a package unit/noun.
 
-## 12. Quantity
+## 12. Volume
 
-Telclaw extracts:
+Preserve:
 
-```text
-quantity
-```
-
-when explicitly stated.
-
-Possible meaning:
-
-- number of packages;
-- number of items;
-- another stated count.
-
-Until Cargo establishes a stronger structured package model:
-
-```text
-quantity = source-declared cargo count
-```
-
-and detail UI should avoid inventing the noun/unit if source does not identify it.
-
-## 13. Volume
-
-Telclaw extracts:
-
-- volume
+- volume_value
 - volume_unit
 
-Advertio should preserve:
+Derived canonical volume can be added later.
 
-```text
-volume_value
-volume_unit
-```
+Do not compare different units without normalization.
 
-Potential derived canonical volume can be added later.
+## 13. Price
 
-Volume is useful for bulky cargo even when weight is low.
+Telclaw gives:
 
-## 14. Price
+- price
+- currency
 
-Telclaw extracts:
+but not a reliable price semantic.
 
-- price only when explicitly stated;
-- currency as ISO 4217;
-- no conversion.
-
-Advertio needs additional semantics:
+Advertio supports:
 
 ```text
 price_type:
@@ -369,162 +253,85 @@ price_type:
 - unknown
 ```
 
-Telclaw currently does not provide a dedicated `price_type`.
-
-Therefore crawler price should remain:
+Crawler default:
 
 ```text
-price_amount = extracted price
-currency = extracted currency
 price_type = unknown
 ```
 
-unless source text/normalization explicitly establishes per-kg vs total.
+unless source/normalization explicitly establishes the meaning.
 
-Do not assume every Transfer price is per kg.
+Never assume all crawler prices are per kg.
 
-## 15. Contact
+## 14. Contact
 
-Telclaw extracts explicit contact information only.
+Crawler `contact` maps to external/source contact.
 
-Advertio mapping:
+Native Cargo should use Advertio's canonical contact method.
 
-```text
-contact_external
-```
+Crawler contact does not create native Advertio ownership.
 
-For crawled records, source Telegram username/message link may be preferred by the existing crawler contact-routing contract.
+## 15. Features
 
-Do not mix external crawler contact into native account ownership.
-
-## 16. Features
-
-Telclaw `features` means explicit transfer information not represented in another field.
-
-Advertio should initially store:
+Preserve `features` as:
 
 ```text
 features_raw
 ```
 
-It can be displayed/searchable if safe.
+It may be searchable/displayed.
 
-Do not make arbitrary feature strings canonical filter enums automatically.
+Do not turn arbitrary raw features into permanent filter enums automatically.
 
-## 17. Transport type
+## 16. System fields
 
-Telclaw storage/publisher supports `transport_type` and formats examples such as air/ground.
+System-owned:
 
-However current classification/prompt scope is strongly air-cargo/passenger-baggage oriented, and `transport_type` is not in the reviewed AI output schema.
+- listing_id
+- owner_user_id
+- status
+- supply_source
+- created_at
+- published_at
+- expires_at
+- moderation_state
+- boost_status
 
-Advertio Cargo V1 remains traveler-assisted Cargo.
+No role-dependent system fields are required.
 
-If `transport_type` is supplied by a trusted upstream path:
+## 17. Crawler provenance
 
-```text
-source_transport_type
-```
-
-may be preserved.
-
-Do not expand Cargo V1 to commercial ground logistics merely because this storage field exists.
-
-## 18. Native Carrier fields
-
-Recommended required native fields:
-
-- role = carrier
-- route
-- departure_date
-- available weight/capacity
-- allowed item types
-- description
-- price state
-- contact method
-
-Optional:
-
-- airline
-- flight_number
-- departure_time
-- arrival_date/time
-- quantity constraints
-- volume constraints
-
-## 19. Native Sender fields
-
-Recommended required native fields:
-
-- role = sender
-- route
-- date/date window
-- cargo weight
-- item type
-- description
-- price/budget state
-- contact method
-
-Optional:
-
-- quantity
-- volume
-- special features/handling notes
-
-## 20. Crawler provenance
-
-Keep separately:
+Internal/provenance:
 
 - source_name
 - external_id
 - source_url
-- channel/message identity
-- sender identity where available
+- source message/channel
+- source sender identity
 - raw source text
 - imported_at
 - source_transfer_role
 - source_transport_type
 
-## 21. Validation
+`source_transfer_role` is diagnostic only.
 
-### Common
+## 18. Validation
 
-- canonical role when public;
-- origin/destination direction preserved;
-- canonical location where possible;
-- valid Gregorian dates after normalization;
-- no invented values.
+- valid directional route;
+- canonical locations where available;
+- useful date;
+- positive numeric weight/quantity/volume/price when supplied;
+- currency required for numeric price where appropriate;
+- weight unit required when weight is present unless canonical default is explicitly defined;
+- no invented crawler data;
+- verification fields are system-controlled.
 
-### Weight
+## 19. Acceptance criteria
 
-- numeric weight > 0;
-- recognized unit before deriving kg;
-- derived conversion must not overwrite original source value.
-
-### Volume
-
-- numeric volume > 0;
-- preserve original unit.
-
-### Flight
-
-- flight number optional;
-- airline optional;
-- neither implies verification.
-
-### Price
-
-- amount > 0 when present;
-- currency canonical when present;
-- price type remains unknown unless established.
-
-## 22. Acceptance criteria
-
-- [ ] Every actual Telclaw AI transfer field has an explicit Advertio mapping or preservation rule.
-- [ ] `transfer_role` and `transport_type` are documented as current Telclaw schema gaps, not falsely claimed as reliable AI output.
-- [ ] Passenger maps to Carrier and Shipper maps to Sender.
+- [ ] Cargo schema has no Product role field.
+- [ ] Every current Telclaw transfer extraction field has a preservation/mapping rule.
+- [ ] Passenger/Shipper values, if preserved, stay provenance-only.
 - [ ] Airline/flight/date/time survive ingestion.
-- [ ] Weight/unit survive without forced kg overwrite.
-- [ ] Quantity and volume are preserved.
-- [ ] Cargo type raw text is preserved before canonical item mapping.
-- [ ] Price is not assumed per-kg.
-- [ ] Unknown role or ambiguous normalized values are not guessed.
+- [ ] Weight/unit, quantity and volume/unit survive ingestion.
+- [ ] Price type is never guessed.
+- [ ] Raw cargo type/features survive before normalization.
