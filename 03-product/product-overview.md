@@ -213,6 +213,22 @@ Human Connections uses structured Attributes + Active Filters for discovery.
 
 See [Human Connections](../04-categories/human-connections/overview.md).
 
+## Social & Events taxonomy decision
+
+Canonical Social & Events types:
+
+```text
+event
+meetup
+community_activity
+```
+
+Study Partner, Sports Partner and other person-seeking use cases belong to **Human Connections**, not Social & Events.
+
+Peer Exchange is not a Social subtype.
+
+See [Social & Events](../04-categories/social/overview.md).
+
 ## Cold-start boundary
 
 Telegram Crawler:
