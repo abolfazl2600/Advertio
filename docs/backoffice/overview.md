@@ -46,11 +46,19 @@ See [Users](./users.md) for the current behavior.
 
 ### Current Channels capability note
 
-The Backoffice Channels area supports automatic filtered publishing to configured Telegram destinations, per-channel Publish History, and manual recovery of failed deliveries.
+The Backoffice Channels area supports automatic filtered publishing to configured Telegram destinations and now includes the following documented operational capabilities:
 
-Eligible failed Publish History records can be manually retried through the existing publishing pipeline, with Attempts representing actual delivery attempts.
-
-Channels also expose **Historical matches** with **Not sent yet**, **Already sent**, and **All matching** views. Admins can select matching live listings and use **Send selected**, while the table exposes per-listing **Sent here** and **Latest delivery** state.
+- destination verification through **Send test message**;
+- schema-driven Category/Location/Attribute filtering;
+- per-channel **Total Sent** successful-delivery count;
+- **Matches / Historical matches** with Not sent yet / Already sent / All matching;
+- manual historical/backfill sends and intentional re-send path;
+- per-listing Sent here / Latest delivery visibility;
+- Publish History with human-readable listing titles and Listing IDs;
+- listing-title navigation to Backoffice Listing Detail;
+- Backfill status visibility;
+- manual recovery of eligible failed deliveries;
+- Attempts semantics based on actual delivery attempts.
 
 See [Channels](./channels.md) for the current behavior.
 
