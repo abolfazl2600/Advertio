@@ -1,146 +1,143 @@
-# Jobs — Category Overview
+# Jobs — Development Overview
 
-> Category documentation prepared from the current Advertio product documentation, reviewed Telegram Bot state, Mini App current state, and the original project source as of **3 Oct 2026**.
+> Status: **Development specification**
+>
+> Current verified product state as of 3 Oct 2026:
+> - Jobs is visible in Telegram Bot category selection.
+> - Jobs is still **Coming Soon** in the Mini App.
+> - A dedicated Jobs feed/filter/detail experience is not yet verified as implemented.
+>
+> The specification below expands the original Advertio product source so the Jobs category can be implemented without requiring the developer/AI agent to invent core product decisions.
 
-## Current implementation status
+## Product objective
 
-Jobs is an Advertio product category, but it is **not yet a fully verified live Mini App category experience**.
+Jobs should initially solve one focused marketplace problem:
 
-Current verified state:
+> An employer/recruiter publishes a structured job opening, and a job seeker discovers it using location, job category, employment type, salary and work arrangement, then uses an official Advertio contact/apply action.
 
-- **Telegram Bot — Create Listing** shows **Jobs** in the category-selection screen.
-- **Mini App Home** shows **Jobs** as **Coming Soon**.
-- No dedicated Jobs feed UI has been verified.
-- No dedicated Jobs filter UI has been verified.
-- No dedicated Jobs listing-detail UI has been verified.
-- No completed Jobs-specific Mini App implementation issue has been identified in the current repository review.
-
-Therefore, this folder separates:
-
-1. **Current verified behavior**
-2. **Source-defined product rules**
-3. **Not-yet-defined Jobs schema/product decisions**
+Jobs V1 is **not** intended to be a full ATS, resume platform or LinkedIn replacement.
 
 ## Product priority
 
-The original product source identifies Jobs as the **second category priority after Housing**.
+The original Advertio source defines Jobs as the **second category priority after Housing**, with an initial emphasis on **General Jobs / daily work**.
 
-Source rationale:
+Source-defined rationale:
 
 - high demand;
 - serious/high-intent users;
 - monetization opportunity on the job-seeker side;
-- focus on General Jobs / daily work.
+- General Jobs / daily work as the initial focus.
 
-The source also contains an internal General Jobs Canada market-sizing exercise. Those numbers are historical planning assumptions and are not treated here as current externally verified market data.
+## Jobs V1 scope
 
-## Current surfaces
+Recommended V1 scope:
 
-### Telegram Bot
+- employer/recruiter job openings only;
+- Canada-first location model using Advertio canonical geography;
+- General Jobs-oriented taxonomy;
+- structured posting;
+- admin moderation;
+- Jobs feed;
+- Jobs filters;
+- Job detail;
+- official contact/apply actions;
+- crawler support;
+- duplicate/fraud controls;
+- lifecycle/expiry;
+- analytics.
 
-Current verified category-selection UI includes:
+Out of scope for Jobs V1:
 
-```text
-Housing & Roommate
-Passenger Cargo
-Jobs
-Services
-Social & Events
-```
+- resume builder;
+- CV parsing;
+- applicant tracking system;
+- interview scheduling;
+- AI candidate scoring;
+- job-seeker public marketplace;
+- employer subscription plans;
+- skill assessments;
+- LinkedIn import;
+- automatic candidate matching;
+- visa-eligibility engine.
 
-The Jobs button itself is visible.
+## Core user flows
 
-The next Jobs-specific posting steps are **not verified** from the reviewed Telegram screenshots.
-
-### Mini App
-
-Current Home status:
-
-```text
-Jobs → Coming Soon
-```
-
-Housing remains the currently verified live category experience.
-
-### Search
-
-Global Search exists in the Mini App.
-
-A future Telegram Quick Search task (#33) defines Jobs as one of the categories that should participate in global search and uses:
-
-```text
-💼
-```
-
-as the Jobs category emoji.
-
-Issue #33 is not treated as implemented in this category documentation until separately verified.
-
-## Source-defined listing flow
-
-The generic Advertio listing flow applies to Jobs:
+### Employer / poster
 
 ```text
-Choose category
-→ eligibility check
-→ title
-→ description
-→ images
-→ location
-→ category-specific fields
-→ preview
-→ confirm
+Post
+→ Jobs
+→ Job form
+→ Preview
+→ Submit
 → Pending
-→ Admin moderation
-→ Approved / Published
-→ lifecycle
+→ Admin review
+→ Active
+→ Views / Contact / Apply
+→ Filled / Deactivated / Expired
 ```
 
-The original source explicitly names **job type** as a Jobs-specific field.
+### Job seeker
 
-No complete canonical Jobs attribute schema is defined in the current source.
+```text
+Jobs
+→ Search / Filters
+→ Job card
+→ Job detail
+→ Contact / Apply
+```
 
-## Lifecycle relationship
+### Crawled job
 
-The shared product source places Jobs inside the listing lifecycle that can include:
+```text
+Telegram source
+→ Crawler
+→ Normalize / classify / validate
+→ Advertio crawler ingest
+→ Moderation / publication rules
+→ Jobs feed
+→ External Telegram/source contact
+```
 
-- Pending
-- Admin moderation
-- Approved / Published
-- Active
-- Expired
-- Extend
-- Boost
-- Urgent
+## Documentation map
 
-The source also says Early Access applies to Jobs, but two incompatible Early Access timing models exist. See [monetization.md](./monetization.md).
+- [attributes.md](./attributes.md) — canonical Jobs V1 data model
+- [filters.md](./filters.md) — category-specific filtering
+- [general-jobs.md](./general-jobs.md) — initial General Jobs focus
+- [job-taxonomy.md](./job-taxonomy.md) — proposed canonical job categories
+- [posting-flow.md](./posting-flow.md) — employer listing creation
+- [listing-card.md](./listing-card.md) — feed card presentation
+- [listing-detail.md](./listing-detail.md) — detail-page structure
+- [employer-model.md](./employer-model.md) — poster/employer identity and trust
+- [application-contact.md](./application-contact.md) — contact/apply methods
+- [moderation-safety.md](./moderation-safety.md) — fraud/scam and admin moderation
+- [crawler-mapping.md](./crawler-mapping.md) — Jobs crawler contract
+- [lifecycle.md](./lifecycle.md) — statuses, expiry, Filled, Extend and Boost
+- [analytics.md](./analytics.md) — events and KPIs
+- [monetization.md](./monetization.md) — current source model and unresolved Early Access decision
+- [rules.md](./rules.md) — category-level invariants
 
-## Supply model
+## Source-derived vs proposed
 
-The general Advertio supply distinction applies:
+This folder deliberately separates:
 
-- user-generated/native listings;
-- crawled listings for initial supply.
+- **Current verified** — behavior visible in the current product;
+- **Source-defined** — behavior explicitly present in existing Advertio product docs;
+- **Jobs V1 proposed** — product decisions added here to make implementation possible.
 
-Crawled listings must remain distinguishable from native Jobs listings.
+Proposed values should become canonical only once implemented/approved.
 
-The original source explicitly warns that crawler supply must not become the permanent product and that real/native supply should grow beyond crawled supply.
+## Acceptance criteria
 
-## Documentation status
+Jobs documentation is development-ready when:
 
-This folder does **not** invent a finished Jobs product schema.
-
-Where the source is incomplete, the files say so explicitly.
-
-## Related documentation
-
-- [Jobs attributes](./attributes.md)
-- [Jobs filters](./filters.md)
-- [General Jobs](./general-jobs.md)
-- [Jobs monetization](./monetization.md)
-- [Jobs rules](./rules.md)
-- [Product overview](../../03-product/product-overview.md)
-- [Product rules](../../03-product/product-rules.md)
-- [Listing lifecycle](../../03-product/listing-lifecycle.md)
-- [Telegram Bot current state](../../docs/telegram-bot/overview.md)
-- [Mini App current state](../../docs/mini-app/overview.md)
+- [x] Every major Jobs surface has a dedicated specification.
+- [x] Required and optional fields are defined.
+- [x] Filter behavior is defined.
+- [x] Posting and moderation flow is defined.
+- [x] Employer identity/trust behavior is defined.
+- [x] Contact/application paths are defined.
+- [x] Crawler mapping and provenance rules are defined.
+- [x] Lifecycle and Jobs-specific `Filled` state are defined.
+- [x] Analytics events and category KPIs are defined.
+- [x] Acceptance criteria live inside the relevant files instead of a separate acceptance-criteria document.

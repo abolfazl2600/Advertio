@@ -1,179 +1,101 @@
 # Jobs — Category Rules
 
-> Compiled from current platform rules, Telegram Bot current state, Mini App current state, and the original Jobs product direction.
+> Status: **Development rules** combining current platform invariants, source-defined behavior and Jobs V1 decisions.
 
-## Current availability
+## Availability
 
-### Telegram Bot
+- Telegram Bot: Jobs category button is verified.
+- Mini App: Jobs is currently Coming Soon.
+- Dedicated Jobs feed/filter/detail is a development target.
 
-Jobs is visible in the Create Listing category-selection screen.
+## V1 listing role
 
-Verified:
+Jobs V1 should focus on employer/recruiter openings.
 
-```text
-Jobs
-```
+Public Job Seeker / "I am looking for work" listings are out of scope for the initial category unless separately designed.
 
-as a category button.
+## Ownership
 
-Jobs-specific steps after category selection are not verified from the current reviewed screenshots.
+Every native Job has an owning Advertio user.
 
-### Mini App
-
-Jobs is currently shown as:
-
-```text
-Coming Soon
-```
-
-A dedicated Jobs feed should therefore not be documented as currently live.
-
-## Generic listing submission rules
-
-The shared Advertio submission flow applies:
-
-1. User chooses category.
-2. Eligibility is checked.
-3. User enters Title.
-4. User enters Description.
-5. User uploads Images.
-6. User enters Location.
-7. User enters category-specific fields.
-8. Preview.
-9. Confirm.
-10. Status becomes Pending.
-11. Admin moderates.
-12. Approved listing enters publication/lifecycle flow.
-
-For Jobs, the original source explicitly mentions **Job Type** as a category-specific field.
+Crawled Jobs retain crawler provenance and are not silently reassigned as native ownership.
 
 ## Moderation
 
-Product rules state:
-
-> Listing must not be published before Admin approval.
-
-This applies to Jobs unless a later explicit category rule changes it.
+Native Jobs follow mandatory Admin approval before publication under current platform rules.
 
 ## One-active-listing rule
 
-The source's main rule says:
+The current broad product source says one Active Listing per User per Category.
 
-```text
-one Active Listing per User per Category
-```
+This base rule conflicts with realistic employers needing multiple simultaneous Jobs.
 
-The source also contains unresolved exceptions involving support escalation / fees / repeat-posting rules.
+Therefore Jobs implementation **must explicitly resolve this platform rule before launch**.
 
-Therefore:
+Recommended Jobs rule:
 
-- document the one-active-listing rule as the base rule;
-- do not invent the final additional-listing exception flow.
+- employer/recruiter accounts may have multiple active Jobs;
+- limits/rate controls can be introduced separately;
+- do not apply Housing-style one-active-listing semantics blindly to Jobs.
 
-## Status/lifecycle vocabulary
+This is an important Jobs-specific product decision.
 
-Shared source vocabulary includes:
+## Structured data
 
-- Pending
-- Approved
-- Rejected
-- Published
-- Active
-- Expired
-- Extend
-- Boost
-- Urgent
+Filterable Jobs attributes must be structured.
 
-The source does not fully resolve whether `Approved` and `Published` are separate statuses or operational synonyms.
+Do not store Salary, Employment Type or Work Arrangement only in description text if canonical fields exist.
 
-## Location
+## Missing data
 
-Jobs uses the shared listing location model:
+Optional data:
 
-- Country
-- Province / State
-- City
-- optional Area
+- null/omit;
+- never fabricate.
 
-No Jobs-specific geo rule is defined in the current source.
+## Contact
 
-## Structured data rule
+Every Active Job must have a valid primary application/contact method.
 
-When the Jobs category is implemented fully:
+Crawled Jobs use external/source contact and remain non-monetized.
 
-- job-specific filterable fields should be stored structurally;
-- free-text description should remain separate;
-- missing values must not be fabricated;
-- crawler/AI extraction must use canonical category values.
+## Expiry / Filled
 
-## Crawled listings
+Jobs supports a Jobs-specific `Filled` inactive state.
 
-If Jobs uses crawler supply, shared crawled rules apply:
+Expired/Filled/TakenDown jobs cannot expose an active Apply CTA.
 
-- crawled/native supply must remain distinguishable;
-- crawler monetization disabled;
-- contact routes to the external Telegram advertiser/source;
-- internal chat disabled;
-- review disabled;
-- escrow disabled;
-- crawler is intended for cold start, not permanent supply dominance.
+## Duplicate handling
 
-## Contact / Early Access
+Use:
 
-The source says Early Access applies to Jobs.
+- deterministic crawler duplicate protection;
+- ingest idempotency;
+- marketplace fuzzy duplicate review.
 
-However, the lifecycle source contains conflicting timing models.
+Do not auto-delete legitimate similar openings solely because titles are similar.
 
-See [monetization.md](./monetization.md).
+## Fraud/safety
+
+Jobs moderation should specifically detect suspicious payment requests, company impersonation, financial credential requests, suspicious links and other employment-scam patterns.
 
 ## Ranking
 
-A source-level Basic Ranking model exists:
+Shared source model includes:
 
 1. Boosted
 2. Newest
-3. Verified Users
-4. Other listings
+3. Verified users
+4. Other
 
-No Jobs-specific runtime ranking has been verified.
+Jobs runtime ranking should eventually combine relevance/freshness/trust, but no unverified algorithm should be documented as current.
 
-Do not state that the current Jobs feed uses this ordering until a live Jobs feed is implemented and verified.
+## Acceptance criteria
 
-## Search
-
-Future/revised Telegram Quick Search task #33 intends global free-text search to return Jobs results without forcing category selection.
-
-Jobs result representation in that task:
-
-```text
-💼 {Listing Title} — {Relevant information}
-```
-
-Issue #33 is not current implemented behavior until completed/verified.
-
-## Missing product decisions
-
-The current source does not define:
-
-- canonical Jobs taxonomy;
-- complete Job Type enum;
-- mandatory Jobs attributes;
-- employer verification rules;
-- salary schema;
-- employment type schema;
-- remote/hybrid/onsite model;
-- job application flow;
-- job-specific expiry duration;
-- job-specific moderation rules beyond general listing moderation.
-
-These remain explicit gaps rather than inferred behavior.
-
-## Related
-
-- [Jobs overview](./overview.md)
-- [Jobs attributes](./attributes.md)
-- [Jobs filters](./filters.md)
-- [General Jobs](./general-jobs.md)
-- [Jobs monetization](./monetization.md)
-- [Product rules](../../03-product/product-rules.md)
-- [Listing lifecycle](../../03-product/listing-lifecycle.md)
+- [ ] Native Jobs always have an owner.
+- [ ] Crawled Jobs preserve source identity.
+- [ ] Jobs-specific multi-listing rule is resolved before production launch.
+- [ ] Active Jobs always have a valid application method.
+- [ ] Inactive Jobs cannot be applied to.
+- [ ] Missing optional fields are never fabricated.
+- [ ] Fraud and duplicate review rules exist before Jobs is enabled publicly.

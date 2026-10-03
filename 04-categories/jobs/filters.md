@@ -1,79 +1,159 @@
 # Jobs — Filters
 
-> Current state: a dedicated Jobs filter experience has **not** been verified in the Mini App.
+> Status: **Jobs V1 proposed filter specification**. Current Mini App Jobs remains Coming Soon.
 
-## Current verified state
+## Primary filter row
 
-- Jobs appears in Telegram Bot category selection.
-- Jobs is marked **Coming Soon** on the current Mini App Home.
-- No Jobs-specific filter sheet or filter row is currently documented as implemented.
-- Global Search exists in the Mini App, but the reviewed UI evidence is not sufficient to document a dedicated Jobs search/filter experience.
+Recommended Jobs V1 primary filters:
 
-## Source-supported future/minimal filter model
+1. City / Location
+2. Job Category
+3. Employment Type
+4. Salary
+5. Work Arrangement
+6. More Filters
 
-The project source explicitly supports the following Jobs-related inputs:
+The filter row should follow the same reusable Mini App interaction pattern as Housing: horizontal chips/selectors plus a More Filters sheet.
 
-### Location
+## Location
 
-Generic listing location includes:
+Recommended values:
 
-- Country
-- Province / State
-- City
-- optional area/neighborhood
+- All cities
+- canonical cities from Advertio location data
 
-Location is therefore a supported dimension for Jobs discovery once the Jobs category becomes available.
+Remote behavior:
 
-### Job Type
+- a Remote job should remain discoverable even when no city is set;
+- city filters should not incorrectly exclude a remote job when product rules allow nationwide remote work;
+- country remains part of the job's structured scope.
 
-The source explicitly identifies **Job Type** as a Jobs-specific field.
+## Job Category
 
-A future Jobs structured filter experience can use the canonical Job Type values once that enum/schema is defined.
+Uses the canonical taxonomy from [job-taxonomy.md](./job-taxonomy.md).
 
-## Not defined in the source
+## Employment Type
 
-The current source does not define canonical filter values for:
+Canonical V1 values:
 
-- salary range;
-- employment type;
-- full-time / part-time;
-- remote / hybrid / onsite;
-- company;
-- experience level;
-- education;
-- schedule/shift;
-- benefits;
-- visa/work permit;
-- language;
-- industry;
-- profession.
+- Any
+- Full-time
+- Part-time
+- Contract
+- Temporary
+- Internship
+- Casual
 
-These should not be added to documentation as existing filters until product schema and runtime behavior are defined.
+## Salary
+
+Jobs salary has period-specific semantics.
+
+Recommended V1:
+
+- Salary disclosed only
+- Salary period selector
+- Minimum salary
+- Maximum salary
+
+Do **not** automatically compare hourly vs monthly vs yearly values unless a canonical salary-normalization service exists.
+
+## Work Arrangement
+
+- Any
+- On-site
+- Remote
+- Hybrid
+
+## More Filters
+
+Recommended V1/next-step fields:
+
+### Experience Level
+
+- Any
+- Entry
+- Mid
+- Senior
+- Lead / Manager
+
+### Shift
+
+Multi-select:
+
+- Morning
+- Evening
+- Night
+- Weekend
+
+### Schedule
+
+- Any
+- Fixed
+- Flexible
+
+### Language Requirements
+
+Multi-select canonical language values.
+
+### Start Date
+
+- Any
+- Immediately / as soon as possible
+- Date-based filtering when data exists
+
+### Company / Poster Trust
+
+Potential filters:
+
+- Verified employer only
+- Company / Recruiter / Individual
+
+Only expose a verification filter once the corresponding trust state exists in the runtime.
+
+### Posted Within
+
+Potential:
+
+- Any
+- Last 24 hours
+- Last 3 days
+- Last 7 days
+
+This should use `published_at`, not listing creation draft time.
+
+## Filter semantics
+
+- `Any` / unset does not constrain results.
+- Multiple independent filters use AND semantics.
+- Multi-select values inside one filter use the category's intended OR/contains semantics.
+- Filters must not mutate listing data.
+- Result count must reflect current filters.
+- Missing optional listing attributes should not match a filter that explicitly requires that value.
+
+## URL/state behavior
+
+Recommended:
+
+- persist filters in Mini App navigation state when feasible;
+- returning from Job Detail should restore the prior Jobs feed state;
+- clear/reset returns to the category default.
 
 ## Search relationship
 
-Advertio's product direction separates:
+Global Search and Jobs filters are separate:
 
-- **Quick/global text search**
-- **Category-specific advanced filters**
+- Search answers broad free-text intent.
+- Jobs filters provide exact structured narrowing.
 
-Issue #33 specifies a future/revised Telegram Quick Search where Jobs results use the 💼 emoji and the user does not have to preselect Jobs before searching.
+Issue #33 defines a Telegram Quick Search design where a simple term such as `Designer` can return a Jobs result without category preselection.
 
-That issue is not recorded here as completed behavior.
+## Acceptance criteria
 
-## Filter semantics for future implementation
-
-When Jobs filters are implemented, they should follow the same platform principles already used elsewhere:
-
-- `Any` / unset should not constrain the query;
-- filter values should use canonical structured data;
-- missing listing attributes should not be fabricated;
-- filtering should not mutate listing content;
-- result count should reflect the active filters.
-
-These are platform conventions, not proof of an existing Jobs UI.
-
-## Related
-
-- [Jobs attributes](./attributes.md)
-- [Issue #33 — Telegram Quick Search revision](https://github.com/abolfazl2600/Advertio/issues/33)
+- [ ] Primary filter row includes Location, Category, Employment Type, Salary, Work Arrangement and More Filters.
+- [ ] Unset/Any filters do not constrain results.
+- [ ] Multiple active filters combine predictably.
+- [ ] Salary filtering never silently compares incompatible periods.
+- [ ] Remote listings are handled consistently with location rules.
+- [ ] Clear/Reset restores the default Jobs feed.
+- [ ] Filtered result count updates correctly.
+- [ ] Returning from Job Detail preserves filter state where the platform navigation architecture supports it.

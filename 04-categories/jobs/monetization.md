@@ -1,112 +1,92 @@
 # Jobs — Monetization
 
-> Jobs monetization exists in the source product model, but no dedicated current Jobs monetization UI has been verified. Source conflicts are preserved rather than silently resolved.
+> Status: **Source-defined monetization model with unresolved Early Access timing**, plus Jobs V1 launch recommendation.
 
-## Current implementation evidence
+## Current verified state
 
-No live Jobs Mini App experience has been verified.
+Jobs is still Coming Soon in the Mini App, so no Jobs-specific paid runtime UI is currently documented as implemented.
 
-Therefore, this document does not claim that paid Jobs contact access, Boost, Extend or Urgent are currently available in a Jobs UI.
+## Source-defined monetization capabilities
 
-## Early Access — source-defined but conflicting
+Shared Advertio source includes:
 
-The shared Listing Lifecycle says Early Access applies to:
+- Early Access / contact monetization
+- Boost
+- Extend
+- Urgent
+- Wallet / Coin system
 
-- Housing
-- Jobs
-- Passenger Cargo
+The source says Early Access applies to Jobs.
 
-However, the source contains two opposite timing models.
+## Unresolved Early Access conflict
 
-### Model A — pay for fresh access first
+Two opposite source models exist.
 
-The source describes:
+### Model A — fresh access paid first
 
-- new listing enters Early Access after publication;
-- approximately 30 hours / Day 1–3 language;
-- full access limited to Early Access users;
-- Coin consumed per contact;
-- after Early Access, contact becomes free.
+- listing enters Early Access immediately;
+- approximately first 30 hours / Day 1–3 language;
+- contact consumes Coin;
+- contact becomes free later.
 
-### Model B — free first, pay later
+### Model B — free first, paid later
 
-Another source flow describes:
-
-- Day 1–3 free messages/contact;
-- Day 4+ contact access costs 1 Coin;
+- Day 1–3 contact is free;
+- Day 4+ contact costs Coin;
 - Day 30 expiry.
 
-These models conflict.
+Do not implement Jobs Early Access from documentation alone until one model is selected as canonical.
 
-No canonical Jobs Early Access timing should be documented until product/runtime behavior is explicitly resolved.
+## Jobs/Social extension source prices
 
-## Extend — Jobs-specific source pricing
+Source examples:
 
-The source defines sample Jobs/Social extension pricing.
+- First 30-day extension: **35 Coins**
+- Second and later extension: **55 Coins**
 
-### First 30-day extension
-
-```text
-35 Coins
-```
-
-### Second and later extension
-
-```text
-55 Coins
-```
-
-The same product source states that service pricing is dynamically configurable by Admin.
-
-Therefore these numbers are source examples/rules, not immutable constants.
+Pricing is Admin-configurable.
 
 ## Boost
 
-Source model:
+Source sample:
 
-- sample price: **3 Coins**
+- 3 Coins
 - Admin-configurable
-- intended to return the listing toward the top of results
-- may republish to communication/social channels
 
-No Jobs-specific purchase UI is currently verified.
+Boost should affect placement/promotion, not listing contents.
 
 ## Urgent
 
-Source model:
-
-- paid visual badge/distinction;
-- category-specific fee;
-- Admin-configurable.
-
-No Jobs-specific Urgent UI is currently verified.
+Source defines paid Urgent as a visual distinction with category-configurable price.
 
 ## Crawled Jobs
 
-General crawler rules apply:
+Crawled listing monetization is disabled under shared crawler rules.
 
-- crawled listing is free;
-- Advertio monetization disabled;
-- user is redirected to Telegram advertiser/contact source;
-- internal chat disabled;
-- review disabled;
-- escrow disabled.
+Therefore:
 
-This is a platform source rule and applies if/when Jobs crawler supply is delivered through the same crawled-listing model.
+- no Coin charge to open crawler contact;
+- contact routes to Telegram/source;
+- crawler contact remains a separate analytics cohort.
 
-## Pricing principle
+## Recommended Jobs V1 launch policy
 
-The source says pricing can vary by:
+For initial Jobs liquidity validation:
 
-- Country
-- Category
-- Supply & Demand
-- User behavior
-- Unit Economics
+- Posting: free
+- Contact/Apply: free
+- Crawled contact: free
+- Boost: can be introduced as paid after basic liquidity
+- Extend: can be paid after expiry behavior is validated
+- Urgent: later
+- Paid contact unlock: delay until meaningful Jobs supply/demand liquidity exists
 
-Do not hard-code old sample prices into category documentation as permanent business rules.
+This section is a **product recommendation**, not current source behavior.
 
-## Related
+## Acceptance criteria
 
-- [Product rules](../../03-product/product-rules.md)
-- [Listing lifecycle](../../03-product/listing-lifecycle.md)
+- [ ] Crawled Jobs are never charged native contact monetization.
+- [ ] Admin-configurable prices are not hard-coded as permanent rules.
+- [ ] Early Access timing is explicitly resolved before paid Jobs contact launches.
+- [ ] Wallet deductions are idempotent and never double-charge.
+- [ ] Free/paid contact state is obvious before the user confirms an action.

@@ -1,92 +1,144 @@
 # Jobs — Attributes
 
-> This file records only Jobs attributes directly supported by the current project source or verified platform behavior. It intentionally does not invent a complete employment schema.
+> Status: **Jobs V1 proposed schema**, except where marked source-defined/current.
 
-## Platform-level listing fields
+## Design principles
 
-The generic Advertio listing form defines:
+- Filterable information should be structured.
+- Missing information must remain null/omitted; never fabricate values.
+- Free-text description remains separate from structured fields.
+- Crawler/AI output must validate against the same canonical schema used by native Jobs listings.
+- Country/province/city should reuse Advertio canonical location data.
 
-- Title
-- Description
-- Images
-- Location
-- Category-specific optional fields
+## Core fields
 
-The shared location step includes:
+| Field | Type | Required | Filterable | Notes |
+| --- | --- | ---: | ---: | --- |
+| `job_title` | string | Yes | Search | Position title |
+| `description` | text | Yes | Search | Full job description |
+| `job_category` | enum | Yes | Yes | See job-taxonomy.md |
+| `employment_type` | enum | Yes | Yes | Full-time, Part-time, Contract, Temporary, Internship, Casual |
+| `work_arrangement` | enum | Yes | Yes | On-site, Remote, Hybrid |
+| `company_name` | string | Yes | Search | Employer/company display name |
+| `poster_type` | enum | Yes | Yes/soft | Company, Recruiter, Individual |
+| `country` | canonical country | Yes | Yes | Reuse Advertio location catalog |
+| `province` | canonical region | Yes* | Yes | Required where applicable |
+| `city` | canonical city | Conditional | Yes | Required for On-site/Hybrid |
+| `area` | string/canonical area | No | Soft | Neighborhood/area |
+| `salary_type` | enum | Yes | Soft | Exact, Range, Negotiable, Not disclosed |
+| `salary_min` | decimal | Conditional | Range | Required for Exact/Range as applicable |
+| `salary_max` | decimal | Conditional | Range | Required for Range |
+| `salary_currency` | ISO currency | Conditional | Yes | e.g. CAD |
+| `salary_period` | enum | Conditional | Yes | Hour, Day, Week, Month, Year |
+| `experience_level` | enum | No | Yes | Entry, Mid, Senior, Lead/Manager |
+| `experience_years_min` | integer | No | Range | Minimum relevant years |
+| `education_level` | enum | No | Soft | Optional |
+| `language_requirements` | array | No | Soft | Canonical language values |
+| `skills` | array | No | Search/soft | Structured tags |
+| `shift` | array | No | Soft | Morning, Evening, Night, Weekend |
+| `schedule` | enum | No | Soft | Fixed, Flexible |
+| `start_date` | date | No | Soft | Planned start |
+| `application_deadline` | date | No | Yes | If supplied |
+| `vacancies` | integer | No | Soft | Number of openings |
+| `benefits` | array | No | Soft | Structured benefits |
+| `license_requirements` | array | No | Soft | Driver/trade/professional requirements |
+| `work_authorization` | enum | No | Soft | Optional product decision |
+| `application_method` | enum | Yes | No | Advertio contact, Telegram, external URL, email |
+| `application_url` | URL | Conditional | No | Required for external URL method |
+| `application_email` | email | Conditional | No | Required for email method |
 
-- Country
-- Province / State
-- City
-- Area / neighborhood when applicable
-- Telegram location sharing is mentioned in the source flow
+## Source-defined field
 
-## Jobs-specific field explicitly defined by the source
+The original Advertio listing-form source explicitly mentions **Job Type** as a Jobs category-specific field.
 
-The original listing-form documentation explicitly gives:
+For development clarity, Jobs V1 maps that broad source concept into:
+
+- `job_category` — what kind of work this is;
+- `employment_type` — contract/work relationship;
+- `work_arrangement` — where work happens.
+
+This is an intentional schema refinement for implementation.
+
+## Salary model
 
 ```text
-نوع کار (jobs)
+salary_type:
+- exact
+- range
+- negotiable
+- not_disclosed
+
+salary_period:
+- hour
+- day
+- week
+- month
+- year
 ```
 
-or **Job Type** as an example of a category-specific Jobs field.
+Examples:
 
-This is currently the only Jobs-specific structured attribute explicitly defined in the source material reviewed for this folder.
+```text
+$22/hour
+$20–$25/hour
+$4,000–$5,000/month
+Negotiable
+Salary not disclosed
+```
 
-## Current supported attribute documentation
+Do not show `$0` for missing salary.
 
-| Attribute | Status | Notes |
-| --- | --- | --- |
-| Title | Source-defined | Generic listing field |
-| Description | Source-defined | Generic listing field |
-| Images | Source-defined | Generic listing field |
-| Country | Source-defined | Generic location field |
-| Province / State | Source-defined | Generic location field |
-| City | Source-defined | Generic location field |
-| Area / neighborhood | Source-defined | Optional generic location field |
-| Job Type | Source-defined | Explicitly named Jobs-specific field |
+## Location rules
 
-## Attributes not defined canonically yet
+For `on_site` or `hybrid`:
 
-The reviewed project source does **not** define a canonical Jobs schema for fields such as:
+- country required;
+- province required where the country uses it;
+- city required.
 
-- employer/company;
-- salary/pay range;
-- pay frequency;
-- employment type enum;
-- full-time / part-time;
-- contract / temporary;
-- shift;
-- remote / hybrid / onsite;
-- required experience;
-- education;
-- language requirements;
-- benefits;
-- visa/work-permit requirements;
-- application deadline;
-- job category/profession taxonomy.
+For `remote`:
 
-These may be useful product fields, but they should not be documented as current or source-defined until a Jobs schema decision is made and implemented.
+- country remains required because remote jobs may still have legal/tax/work-authorization boundaries;
+- city may be omitted.
 
-## Data-quality rule
+## Optional display rule
 
-Do not encode a field as canonical Jobs metadata merely because it appears in free-text description.
+Missing optional data must be omitted.
 
-When a future Jobs schema is introduced:
+Bad:
 
-- use canonical attribute keys;
-- use controlled values where appropriate;
-- keep filtering attributes structured;
-- avoid guessing unavailable values;
-- preserve raw description separately.
+```text
+Company: Unknown
+Salary: $0
+Experience: 0 years
+```
 
-## Crawler/import rule
+Correct:
 
-Crawler-generated Jobs records should only populate structured attributes that can be reliably extracted and validated against the canonical Advertio category schema.
+```text
+Graphic Designer
+XYZ Studio
+Richmond Hill, Ontario
+Part-time · Hybrid
+```
 
-Unknown required values should be held/rejected rather than fabricated.
+## Validation rules
 
-## Related
+- `job_title`: 5–120 characters.
+- `description`: must contain meaningful text; exact minimum can be configured.
+- `salary_min <= salary_max`.
+- Salary fields are required only when salary type requires them.
+- `application_deadline >= today` when supplied.
+- External application URLs must use HTTPS.
+- On-site/Hybrid listings require city.
+- Company name is required for employer/recruiter Jobs V1.
+- Unknown structured values must be rejected/held rather than guessed.
 
-- [Jobs filters](./filters.md)
-- [Jobs rules](./rules.md)
-- [Crawler normalization](../../09-crawler/data-normalization.md)
+## Acceptance criteria
+
+- [ ] Native and crawled Jobs use the same canonical structured schema.
+- [ ] Required fields are validated before submission.
+- [ ] Missing optional fields render as omitted, not fake defaults.
+- [ ] Salary Exact/Range/Negotiable/Not disclosed states are represented without ambiguity.
+- [ ] On-site/Hybrid location validation differs correctly from Remote.
+- [ ] Invalid enum values cannot be persisted through normal application flows.

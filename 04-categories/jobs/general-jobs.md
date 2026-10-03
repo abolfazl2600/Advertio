@@ -1,85 +1,81 @@
 # Jobs — General Jobs
 
-> The original Advertio product source identifies **General Jobs / daily work** as the initial Jobs focus. This document preserves that planning direction without presenting historical market assumptions as newly verified external data.
+> The original Advertio source identifies General Jobs / daily work as the initial Jobs direction. The taxonomy below is a proposed V1 implementation layer.
 
-## Product direction from the source
+## Initial product focus
 
-Jobs is identified as the second category priority after Housing.
+Advertio should begin with common, high-frequency job openings that fit community/Telegram supply and do not require a complex professional-network product.
 
-The source gives these reasons:
+Recommended V1 categories:
 
-- high demand;
-- users with serious/high-intent needs;
-- monetization opportunity on the job-seeker side;
-- General Jobs and daily work as the initial focus.
+- General Labour
+- Warehouse
+- Delivery & Driver
+- Restaurant & Food
+- Retail
+- Cleaning
+- Construction
+- Office & Administration
+- Customer Service
+- Sales
+- Skilled Trades
+- Other
 
-## Historical internal market-sizing assumptions
+IT/Tech, Design/Creative, Healthcare Support, Childcare and Education can exist in the canonical taxonomy but do not need special V1 product flows.
 
-The original project source includes a General Jobs Canada sizing exercise using figures attributed there to Job Bank and Kijiji.
+## Historical internal market assumptions
 
-The source states:
+The existing project source contains an older General Jobs Canada sizing exercise attributed there to Job Bank and Kijiji.
 
-- Job Bank: 12,578 General Jobs out of 63,119 total → 19.9%
-- Kijiji: 11,321 General Jobs out of 68,292 total → 16.6%
-- internal average General Jobs share → approximately 18%
-- assumed Telegram users in Canada → approximately 3,000,000
-- assumed job-seeker ratio → 3.6%
-- resulting internal estimate → approximately 108,000 Telegram job seekers
-- applying the 18% General Jobs share → approximately 19,400 General Jobs users
+Those figures should remain treated as historical internal planning assumptions and **not** current verified market facts.
 
-## Important evidence boundary
+## Why General Jobs first
 
-These numbers are preserved because they exist in the project source.
+Product rationale:
 
-They have **not** been revalidated here against current Job Bank, Kijiji, Statistics Canada, Telegram, or other external sources.
+- frequent hiring;
+- local/city-based discovery matters;
+- job posts often already circulate in community channels;
+- simpler application/contact flow;
+- suitable for crawler-assisted cold start;
+- useful for newcomers and community-based employment discovery.
 
-Do not use them as current market facts without a separate fresh market-research task.
+## V1 product constraint
 
-## General Jobs scope
+General Jobs should not introduce unique custom fields for every profession.
 
-The source does not define a detailed taxonomy for General Jobs.
+Use a stable common Jobs schema first:
 
-It also does not define whether General Jobs includes specific verticals such as:
+- title;
+- category;
+- company;
+- employment type;
+- work arrangement;
+- location;
+- salary;
+- description;
+- skills;
+- shift/schedule;
+- contact/apply.
 
-- warehouse;
-- restaurant;
-- delivery;
-- retail;
-- construction;
-- cleaning;
-- administrative;
-- labour;
-- hospitality.
+Profession-specific schemas can be added only when volume justifies them.
 
-Those examples must not be promoted to canonical subcategories until a product taxonomy is approved.
+## Marketplace risk
 
-## Product risk
+Crawler supply must not become the permanent product.
 
-The source explicitly flags a marketplace risk:
+Track:
 
-> native/real listings must quickly become more important than crawled listings.
+- Native Jobs %
+- Crawled Jobs %
+- Native contact/apply share
+- Crawled contact/apply share
 
-The crawler is intended to solve cold start, not turn Advertio into a permanent Telegram job-search mirror.
+A healthy Jobs marketplace should gradually increase native employer supply.
 
-## Current implementation status
+## Acceptance criteria
 
-No dedicated General Jobs Mini App feed or filter UI has been verified.
-
-Current verified Jobs availability is limited to:
-
-- category presence in Telegram Bot Create Listing;
-- Coming Soon state in Mini App Home.
-
-## Next schema decision required
-
-Before Jobs becomes a full Mini App category, the product needs a canonical decision for at least:
-
-- Job Type values;
-- whether General Jobs is a subtype/category/tag;
-- which fields are mandatory;
-- which filters are exposed;
-- employer identity model;
-- compensation representation;
-- contact/application flow.
-
-The source does not currently resolve those decisions.
+- [ ] General Jobs uses the common Jobs schema.
+- [ ] V1 does not require profession-specific posting forms.
+- [ ] Crawled and native supply remain analytically distinguishable.
+- [ ] Product analytics can measure whether native supply is replacing crawler dependence.
