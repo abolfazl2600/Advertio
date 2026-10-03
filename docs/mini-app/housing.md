@@ -1,12 +1,12 @@
 # Mini App — Housing Current State
 
-> Current implementation documented from the Mini App/Web App UI review on 24 Sep 2026.
+> Current implementation documented from the Mini App/Web App UI review on **3 Oct 2026**.
 
 This document describes the Housing experience currently visible in Advertio. It does not define future Housing behavior.
 
 ## Current Housing feed
 
-The Housing category opens a dedicated listing feed.
+Housing opens a dedicated listing feed.
 
 ### Current feed behavior observed
 
@@ -24,30 +24,29 @@ The Housing category opens a dedicated listing feed.
 - Relative publish time
 - Floating Post action
 
-An observed feed state displayed **320 listings**.
+A reviewed 3 Oct 2026 feed state displayed **171 listings**.
 
 ## Current primary filters
 
-The Housing feed currently exposes filter controls across the top of the feed.
+The Housing feed currently exposes horizontally scrollable filter controls.
 
-Observed filters include:
+Observed primary filters include:
 
 - City
 - Listing Type
 - Property Type
-- Rent (CAD)
+- Bedrooms
+- Monthly Rent (CAD)
 - Furnishing
 - Gender Preference
 - Rental Duration
 - More Filters
 
-The filter row can extend horizontally as more filters are available.
-
 ## City filter
 
-The City selector is implemented as a bottom sheet with a city search field.
+The City selector is implemented as a bottom sheet.
 
-Observed options include:
+Previously reviewed options include:
 
 - All cities
 - Toronto
@@ -57,11 +56,21 @@ Observed options include:
 - North Vancouver
 - Coquitlam
 
-The selected value is visually indicated.
+## Monthly Rent (CAD)
+
+The reviewed current selector shows:
+
+- Any
+- Under 2,600
+- 2,600–5,050
+- 5,050–7,550
+- Over 7,550
+
+These are documented as current UI buckets.
 
 ## Gender Preference
 
-The current selector includes:
+Current selector:
 
 - Any
 - Male
@@ -69,11 +78,9 @@ The current selector includes:
 - Family
 - No preference
 
-The selected value is visually indicated.
-
 ## Rental Duration
 
-The current selector includes:
+Current selector:
 
 - Any
 - Daily
@@ -82,11 +89,9 @@ The current selector includes:
 
 ## More Filters
 
-The **More Filters** experience is implemented as a bottom sheet containing additional Housing and roommate criteria.
+The **More Filters** experience is implemented as a scrollable bottom sheet containing Housing and roommate criteria.
 
 ### Roommate Age Range
-
-Observed options:
 
 - 18–25
 - 25–35
@@ -94,8 +99,6 @@ Observed options:
 - 50+
 
 ### Lifestyle
-
-Observed selectable lifestyle tags include:
 
 - Quiet
 - Early bird
@@ -110,8 +113,6 @@ Observed selectable lifestyle tags include:
 
 ### Pets Allowed
 
-Current segmented options:
-
 - Any
 - Yes
 - No
@@ -122,8 +123,6 @@ A date input is available.
 
 ### Area (m²)
 
-Observed options:
-
 - Under 150
 - 150–250
 - 250–400
@@ -131,26 +130,22 @@ Observed options:
 
 ### Bathrooms
 
-Observed options:
-
 - 1
 - 2
 - +3
 
 ### Floor
 
-Observed options currently shown in the UI:
+Current UI:
 
 - Under 50
 - 50–50
 - 50–100
 - Over 100
 
-> Note: this documents the UI exactly as observed. The `50–50` value and the overall Floor ranges appear to need product/QA review, but no correction is assumed in this current-state document.
+> QA note: `50–50` and the overall Floor buckets appear inconsistent. This document records the UI exactly as observed.
 
 ### Year Built
-
-Observed options:
 
 - 0–5 years
 - 5–10 years
@@ -159,9 +154,7 @@ Observed options:
 
 ### Owner
 
-A segmented control is shown under **Are you the owner?**
-
-Options:
+Under **Are you the owner?**:
 
 - Any
 - Yes
@@ -169,15 +162,13 @@ Options:
 
 ### Smoking Allowed
 
-Current segmented options:
-
 - Any
 - Yes
 - No
 
 ### Amenities
 
-Observed amenity choices include:
+Observed options:
 
 - Elevator
 - Parking
@@ -200,24 +191,77 @@ Observed amenity choices include:
 - Sauna
 - Gym
 
+The current More Filters sheet exposes a **Show results** action.
+
+Issue #22 also records Reset behavior as implemented.
+
+## Current listing detail
+
+The reviewed current Housing detail includes:
+
+- About / description
+- Listing Type
+- Property Type
+- Bedrooms
+- Monthly Rent (CAD)
+- Furnishing
+- Rental Duration
+- Contact section
+
+Observed current example:
+
+```text
+Listing Type: Rent
+Property Type: House
+Bedrooms: 1
+Monthly Rent (CAD): 2,000
+Furnishing: Furnished
+Rental Duration: Long Term
+```
+
+The reviewed Contact area shows:
+
+```text
+Contact via Telegram
+No coins charged
+Open in Telegram
+```
+
+This documents the visible UI state only; the screenshot does not expose the listing supply-source badge in the captured area.
+
 ## Filter interaction patterns observed
 
-- Bottom-sheet selectors are used for filter selection.
-- Selected single-choice values are marked with a check.
-- More Filters groups secondary criteria in one scrollable sheet.
-- A **Reset** action is available in More Filters.
-- Chip/segmented-control patterns are used for multi-option and Yes/No/Any filters.
-- The feed exposes the number of matching listings.
+- Bottom-sheet selectors are used.
+- Selected single-choice values use checkmarks.
+- Multi-select chips are used for Lifestyle/Amenities.
+- Segmented controls are used for Any / Yes / No.
+- More Filters groups secondary criteria.
+- Housing feed shows the matching listing count.
 
 ## Current Search relationship
 
 Housing filtering is implemented directly in the Housing feed.
 
-The separate **Search** tab in bottom navigation is now a functional Global Search experience with free-text input, result count, and listing result cards.
+Global Search is separate:
 
-Global Search remains separate from the Housing filter system:
+- Global Search = free-text discovery.
+- Housing filters = structured category-specific discovery.
 
-- Global Search is used for keyword-oriented discovery.
-- Housing feed filters are used for structured Housing filtering.
+See [Global Search](./search.md).
 
-See [Global Search](./search.md) for the current Search implementation.
+## Category documentation
+
+Detailed category-level documentation now lives under:
+
+- [Housing overview](../../04-categories/housing/overview.md)
+- [Housing attributes](../../04-categories/housing/attributes.md)
+- [Housing filters](../../04-categories/housing/filters.md)
+- [Rental listings](../../04-categories/housing/rental-apartments.md)
+- [Roommate experience](../../04-categories/housing/roommates.md)
+- [Housing monetization](../../04-categories/housing/monetization.md)
+- [Housing rules](../../04-categories/housing/rules.md)
+
+## Related implementation issues
+
+- [#21 — Housing listing feed](https://github.com/abolfazl2600/Advertio/issues/21)
+- [#22 — Housing feed filters](https://github.com/abolfazl2600/Advertio/issues/22)
