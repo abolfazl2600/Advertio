@@ -1,60 +1,33 @@
-# Cargo — Filters & Search Contract
+# Cargo — Unified Filters & Search Contract
 
-> Cargo has one feed. Filters narrow listings by role and route; they do not navigate to subcategories.
+> Cargo has one feed and one filter surface.
 >
-> Filter design also accounts for fields currently extracted by Telclaw `transferlist`.
+> There is no Role filter.
 
 ## 1. Primary filters
 
 Recommended V1:
 
-1. Role
-2. From
-3. To
-4. Date
-5. Weight
-6. Item Type
-7. Price
-8. More Filters
+1. From
+2. To
+3. Date
+4. Weight
+5. Item Type
+6. Price
+7. More Filters
 
-## 2. Role
+Do not add:
 
-Values:
+- Carrier;
+- Sender;
+- Passenger;
+- Shipper
 
-- Any
-- Carrier
-- Sender
+as Product filters.
 
-Crawler terminology maps:
+## 2. Route
 
-```text
-passenger → Carrier
-shipper → Sender
-```
-
-A crawler listing whose role is unknown must not be silently put into either role filter.
-
-## 3. User-intent shortcut
-
-UI may offer:
-
-```text
-I need a carrier
-I need a sender
-```
-
-Mapping:
-
-```text
-I need a carrier → filter role = carrier
-I need a sender → filter role = sender
-```
-
-These are query shortcuts, not categories.
-
-## 4. Origin / destination
-
-Route filters are directional.
+Route is directional.
 
 ```text
 From Toronto
@@ -67,109 +40,64 @@ must not match:
 Tehran → Toronto
 ```
 
-Use canonical locations, not display flags or raw route strings.
+Use canonical location fields.
 
-## 5. Date
+## 3. Date
 
-### Carrier
+Filter against the listing's known transfer/travel date fields.
 
-Filter against:
+Recommended:
+
+- exact date;
+- date range.
+
+Crawler listings may have:
 
 - departure_date;
-- optionally arrival_date.
+- arrival_date;
+- no date when source did not provide one.
 
-### Sender
+Do not invent date flexibility.
 
-Native sender listings can support a date window.
+## 4. Time
 
-Crawled sender records may only contain one extracted departure/shipment date.
-
-Do not fabricate flexibility around a single crawler date.
-
-## 6. Time
-
-Telclaw can extract:
+Telclaw can provide:
 
 - departure_time
 - arrival_time
 
-Time should initially live in More Filters/detail rather than the primary row.
+Keep time under More Filters initially.
 
-Possible later filters:
+Possible future:
 
 - Morning
 - Afternoon
 - Evening
-- Exact time window
+- exact window
 
-Only introduce these after time normalization is reliable.
+only after reliable normalization.
 
-## 7. Weight
+## 5. Weight
 
-### Carrier
+Filter Cargo by normalized weight when possible.
 
-Desired query semantics:
+Examples:
 
-```text
-available capacity >= required weight
-```
+- Up to 2 kg
+- Up to 5 kg
+- Up to 10 kg
+- 10+ kg
+- Custom
 
-### Sender
+Important:
 
-Weight represents shipment cargo weight.
+Because Advertio has no role split, weight filtering is generic Cargo weight/capacity relevance.
 
-### Crawled records
+Do not assume every crawler weight means capacity or shipment mass beyond what the listing content states.
 
-Telclaw provides:
+## 6. Item Type
 
-- weight
-- weight_unit
-
-Only apply role-specific capacity logic when role is reliable.
-
-Normalize units for matching without deleting source values.
-
-## 8. Quantity
-
-Telclaw can provide `quantity`.
-
-Quantity should be a secondary filter only after its semantics are sufficiently normalized.
-
-Until then:
-
-- preserve/display it;
-- do not make it a primary hard filter.
-
-## 9. Volume
-
-Telclaw provides:
-
-- volume
-- volume_unit
-
-Potential More Filter:
-
-```text
-Maximum cargo volume
-```
-
-for Carrier discovery.
-
-Do not compare incompatible volume units without normalization.
-
-## 10. Item / Cargo Type
-
-Telclaw provides free-form:
-
-```text
-cargo_type
-```
-
-Advertio uses normalized `item_types` when confidently mapped.
-
-Filter against canonical item types, not arbitrary `cargo_type_raw`.
-
-Initial values:
+Use normalized Advertio item types:
 
 - Documents
 - Electronics
@@ -177,46 +105,52 @@ Initial values:
 - Personal Items
 - Other
 
-## 11. Price
+Telclaw `cargo_type_raw` can participate in Search but should not directly create uncontrolled filter values.
 
-Telclaw provides:
+## 7. Price
 
-- price
-- currency
+Only compare prices with compatible known semantics.
 
-but does not reliably encode per-kg vs total price.
+Use:
 
-Therefore numeric Cargo price filters should operate only on records with a known compatible `price_type`.
+- Price Type
+- Amount
+- Currency
 
-Do not interpret a crawler price with `price_type = unknown` as per-kg or total.
+Crawler `price_type = unknown` should not be forced into per-kg/total numeric comparisons.
 
-## 12. Airline
+## 8. Airline
 
-Telclaw extracts `airline` when explicitly stated.
+Telclaw extracts airline when stated.
 
-Recommended placement:
+Recommended:
 
 ```text
 More Filters → Airline
 ```
 
-Only expose as a structured selector after airline normalization exists.
+only once airline normalization is good enough.
 
-Before then, airline can be text/search/display data.
+Before then airline remains searchable/display data.
 
-## 13. Flight number
+## 9. Flight number
 
-Telclaw extracts `flight_number`.
+Use primarily for:
 
-Use cases:
-
-- detail display;
 - exact search;
-- moderation/trip verification.
+- detail;
+- moderation;
+- verification workflow.
 
-It should not normally be a primary browse filter.
+Not a primary browse filter.
 
-## 14. More Filters
+## 10. Quantity / volume
+
+Optional secondary filters only after normalization is stable.
+
+Preserve them even if not yet filterable.
+
+## 11. More Filters
 
 Potential:
 
@@ -229,87 +163,56 @@ Potential:
 - Verified user only
 - Published within
 - Price type
-- Supply source — admin/internal only
 
-Only enable filters whose data is normalized enough for predictable query behavior.
+No role/source-role filter should be exposed as part of Cargo Product UX.
 
-## 15. Features
+## 12. Search
 
-Telclaw `features` is open-ended explicit transfer information.
-
-Do not expose arbitrary `features_raw` as structured filter values.
-
-It may participate in free-text Search where safe.
-
-## 16. Cross-filter semantics
-
-Across independent filters:
-
-```text
-AND
-```
-
-Within a canonical multi-select Item Type:
-
-```text
-OR
-```
-
-unless UX explicitly requires all selected types.
-
-## 17. Search
-
-Free-text Cargo search can consider:
+Free-text Cargo search can search:
 
 - origin city;
 - destination city;
 - airline;
 - flight number;
+- title;
 - description;
 - raw cargo type;
 - normalized item type;
-- features;
-- role label.
+- features.
 
-Structured route filters remain authoritative for precise route matching.
+Telclaw source role may remain provenance but should not affect public search segmentation.
 
-## 18. Saved Search
+## 13. Saved Search
 
 Examples:
 
 ```text
-Carrier · Toronto → Tehran · 18–22 Oct · ≥5 kg
-Carrier · Toronto → Tehran · Air Canada
-Sender · Vancouver → Tehran · documents
+Toronto → Tehran · 18–22 Oct · ≥5 kg
+Toronto → Tehran · Air Canada
+Vancouver → Tehran · Documents
 ```
 
-Persist canonical filter values.
+No role value is stored.
 
-## 19. Zero results
+## 14. Zero results
 
 Offer:
 
 - change date;
-- increase flexibility;
-- reduce required capacity;
+- increase date range;
+- relax weight;
 - remove item restriction;
 - remove airline restriction;
 - reset filters.
 
-Do not silently:
+Never silently reverse route.
 
-- reverse route;
-- switch role;
-- change cargo type;
-- change date.
+## 15. Acceptance criteria
 
-## 20. Acceptance criteria
-
-- [ ] Filter model includes relevant Telclaw transfer fields where normalized.
-- [ ] Unknown crawler role never appears under the wrong role filter.
+- [ ] No Role filter exists.
 - [ ] Route direction is deterministic.
-- [ ] Date/time semantics do not invent missing flexibility.
-- [ ] Weight/volume unit normalization is required before numerical comparison.
-- [ ] Raw cargo type is not treated as a canonical filter enum without mapping.
-- [ ] Unknown crawler price type is excluded from incompatible numeric filtering.
-- [ ] Airline/flight info can be searched/displayed even if not yet canonical filters.
+- [ ] Date/time filtering preserves source truth.
+- [ ] Weight/volume comparisons require normalized units.
+- [ ] Raw cargo type is not treated as canonical enum without mapping.
+- [ ] Unknown crawler price semantics are not miscompared.
+- [ ] Airline/flight information can be searched/displayed.
