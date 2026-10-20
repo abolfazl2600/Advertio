@@ -2,7 +2,25 @@
 
 **Audience:** whoever is writing the crawler.
 **Server-side status:** ✅ built and tested (ADR-0009). This document is a contract, not a proposal.
-**Last updated:** 2026-08-20
+**Journeys that accept listings:** `housing` · `passenger-cargo` · `jobs`
+**Last updated:** 2026-10-20
+
+> **What changed since 2026-08-31.** Two new journeys went live on 2026-10-19, and both take
+> crawled listings through the same endpoints:
+>
+> - **Passenger cargo** (`passenger-cargo`): a trip between two cities. See §7.2.
+> - **Jobs** (`jobs`): a job opening, or a person looking for work, in Canada. See §7.3.
+> - **Housing hasn't changed.** Nothing you already send needs to change.
+> - The note saying jobs uses `salary_negotiable` is out of date and has been removed. Jobs
+>   now has no "negotiable" flag (§7.3).
+> - **New in §4:** what it means when `alreadyExisted: true` comes back for a *different* post.
+>   Cargo and jobs posts look alike much more often than housing posts do.
+> - **New in §8:** the location catalog now covers seven countries, but only cargo routes use
+>   them.
+>
+> No backend change was needed. Ingest has always checked a listing against the schema of the
+> category it names. However, your first crawled cargo and jobs runs are the first real traffic
+> of that kind. Start them with `autoPublish: false` (§3).
 
 ## Base URLs
 
@@ -30,13 +48,13 @@ it may change.
 ## 0. Before anything else — this cohort is separate and must stay separate
 
 Any listing created through this path gets `supplySource = Crawled`. This is not a cosmetic
-label — three behaviors are tied to it:
+label — three behaviors are tied to it, and they are the same in every journey:
 
 | | User-submitted listing | Listing from this path |
 |---|---|---|
-| Contact | up to 20 coins are deducted | **coins are never deducted** — the user is redirected to Telegram |
-| Gate A metric | counted | **fully excluded** |
-| Display | "Verified" badge | "From Telegram" badge |
+| Contact | coins are deducted (each journey sets its own price) | **coins are never deducted** — the user is redirected to Telegram |
+| Gate A metric | counted, in its own journey's Gate A | **fully excluded** from every journey's Gate A |
+| Display | phone / identity verification badges | **no verification badge**; the contact button reads "Contact via Telegram" |
 
 The reasoning is in `.specify/memory/constitution.md` §IV and is NON-NEGOTIABLE. For you, this
 means: **never send a real user's listing through this path.** If someone signed up with us
@@ -75,7 +93,11 @@ way — same handling applies.
 
 This section is deliberately numbered because it really is a sequence.
 
-### Step 1 — upload photos (if the listing has any)
+### Step 1 — upload photos (housing only, if the listing has any)
+
+> **Skip this step for cargo and jobs.** Their listings have no photo slot, on the card or on
+> the detail page. Send `mediaKeys: []`. An upload makes the production server decode and
+> re-encode the image, and for these listings nobody would ever see it.
 
 ```http
 POST /api/ingest/media?source=telegram-rent
@@ -128,6 +150,7 @@ X-Ingest-Key: <key>
   "externalId": "4021",
   "sourceUrl": "https://t.me/some_channel/4021",
   "contactHandle": "@landlord",
+  "posterTelegramUserId": 123456789,
 
   "title": "Bright 2-bed near Yonge & Eglinton",
   "description": "Cleaned-up post text",
@@ -145,21 +168,30 @@ X-Ingest-Key: <key>
 }
 ```
 
+This example is a housing listing. Cargo and jobs use the same request with their own
+`categorySlug` and `attributesJson`. See §7.2, §7.3 and the examples at the end.
+
 Responses:
 
 | Status | Body | Meaning |
 |---|---|---|
 | `201` | `{"leadId":"…","status":"PendingReview","alreadyExisted":false}` | created |
 | `201` | `{"leadId":"…","status":"Active","alreadyExisted":false}` | created and published (`autoPublish: true`) |
-| `200` | `{"leadId":"…","status":"…","alreadyExisted":true}` | **already existed. Nothing was changed.** Not an error |
+| `201` | `{"leadId":"…","status":"PendingReview","alreadyExisted":false}` | created, but flagged as a possible duplicate of an existing listing — **stays PendingReview for human review even if you sent `autoPublish: true`** |
+| `200` | `{"leadId":"…","status":"…","alreadyExisted":true}` | **already existed: either this same post, or one the server judged to be the same ad (§4). Nothing was changed.** Not an error |
 | `400` | a JSON string with the error message | see §5 |
 | `401` | — | bad or missing key |
 
 ### Step 3 — remove the listing once the source post is gone
 
-**This step is not optional.** A crawled listing has no publisher to mark it "rented," and we
-never update an existing listing in place. If you don't remove it, it stays in the feed for up
-to 30 days (TTL). For a housing site, a dead listing is the worst thing a user can see.
+**This step is not optional.** A crawled listing has no publisher to mark it as rented, filled
+or no longer available, and we never update an existing listing in place. If you don't remove
+it, it stays in the feed for up to 30 days (TTL). A rented flat, a filled job or a trip that has
+already left: a dead listing is the worst thing a user can see.
+
+Cargo has one extra wrinkle. The feed hides a trip once its travel date has passed, but the
+listing itself stays live until its 30 days are up. Delete it when the post is removed, the
+same as for housing.
 
 ```http
 DELETE /api/ingest/leads/telegram-rent/4021      → 204   (or 404 if not found)
@@ -175,41 +207,89 @@ spam, or the crawler was broken for a while. Use with care.
 
 | Field | Required | Rule |
 |---|---|---|
-| `sourceName` | ✅ | `^[a-z0-9][a-z0-9-]{1,31}$` — lowercase letters, digits and dashes only, 2–32 characters. **Must stay constant**; changing it orphans every previous listing from that source |
+| `sourceName` | ✅ | `^[a-z0-9][a-z0-9-]{1,31}$` — lowercase letters, digits and dashes only, 2–32 characters. **Must stay constant**; changing it orphans every previous listing from that source. Don't reuse a housing source's name for a cargo or jobs channel: a source-wide `DELETE` (§2) would remove both channels' listings together |
 | `externalId` | ✅ | the post's id at the source (e.g. the Telegram message id). Max 200 characters. **The idempotency key** — see §4 |
 | `sourceUrl` | ⚠️ | link to the original post. Max 500 characters |
-| `contactHandle` | ⚠️ | the poster's Telegram handle, with or without `@` (we strip it). Max 64 characters |
-| `title` | ✅ | max 200 characters |
-| `description` | — | max 2,000 characters |
-| `categorySlug` | ✅ | only `housing` is supported today. Live list: `GET /api/categories` |
+| `contactHandle` | ⚠️ | the **poster's** Telegram handle (not the channel's), with or without `@`. Max 64 characters. Also the ownership-claim key — see below |
+| `posterTelegramUserId` | — | the **poster's** Telegram numeric user id (`from.id`), as a JSON number. Only when the post really exposes its author — see below. Positive; never a chat, channel or message id |
+| `title` | ✅ | max 200 characters. For cargo and jobs, build it from the attributes the same way the app does (§7.2, §7.3) |
+| `description` | — | max 2,000 characters. **For cargo and jobs, always send the post text.** See §4 |
+| `categorySlug` | ✅ | `housing` · `passenger-cargo` · `jobs`. `GET /api/categories` also lists `services` and `social`. Those have no journey in the app yet, so a listing sent there is stored but never shown to users. Don't send them |
 | `attributesJson` | ✅ | **a JSON string, not an object** — see §7 |
-| `countryCode` | ✅ | `CA` |
-| `province` | ✅ | name or code (`Ontario` or `ON`) |
-| `city` | ✅ | name or code (`Toronto` or `toronto`) |
+| `countryCode` | ✅ | `CA` for housing and jobs. For cargo, the country of the trip's origin (§7.2) |
+| `province` | ✅ | name or code (`Ontario` or `ON`). For cargo, the origin city's province |
+| `city` | ✅ | name or code (`Toronto` or `toronto`). For cargo, the origin city |
 | `neighborhood` | — | free text, max 100 characters. Not validated |
-| `mediaKeys` | — | up to 10 keys from step 1. **The first key is the feed card's cover photo** |
+| `mediaKeys` | — | housing only (§2 Step 1). Up to 10 keys from step 1. **The first key is the feed card's cover photo** |
 | `autoPublish` | — | defaults to `false` |
 
 ⚠️ = **one of `sourceUrl` or `contactHandle` is required.** Without either, the "Open in
 Telegram" button has nowhere to go and the listing is a dead end. The server rejects it.
 
 The redirect target is chosen in this order: `t.me/{contactHandle}` if present, otherwise
-`sourceUrl`. So if you can extract the poster's handle from the post text, send it — it's a
-noticeably better experience for the end user.
+`sourceUrl`.
+
+### `contactHandle` does two jobs — it is your most valuable optional field
+
+Besides being the redirect target, it is the **ownership-claim key**. When the person who
+posted the original ad later signs in to the platform with Telegram, every crawled listing
+whose `contactHandle` matches their Telegram username is **transferred to their account
+automatically** and shows up under their own listings.
+
+That transfer is the only path by which a crawled listing becomes a listing from a *real*
+publisher. Which means:
+
+> **Every post whose handle you fail to extract is a user you will never acquire.** If you are
+> weighing "just send it without the handle" against "spend more effort on handle extraction",
+> pick the second.
+
+Details:
+- Send it with or without `@`; the server lowercases and strips it. No need to normalise.
+- **Send the poster's handle, not the channel's.** If you send the channel handle, the first
+  person who signs in with it inherits *every* listing from that channel.
+- If you are not confident the handle belongs to the poster, leave it empty and send only
+  `sourceUrl`. A wrong transfer is worse than no transfer.
+- Transfer happens once. A listing that has already been claimed is never handed to a second
+  person, even if the handle later changes owner on Telegram.
+- The listing keeps `supplySource: "Crawled"` after the transfer. Only the publisher's *new*
+  listings count as user-supplied.
 
 > `title`, `description`, `sourceUrl`, `contactHandle` and `neighborhood` are only enforced as
 > database column limits, not as an application-level check — a value over the limit is not
 > guaranteed to come back as a clean `400` with a friendly message. Truncate or validate these
 > client-side before sending.
 
+### `posterTelegramUserId` — only when Telegram gave it to you
+
+The stable identity behind the handle: a username can change hands, the numeric user id can't.
+Admins see it on the listing's review drawer; it never appears in any public API.
+
+- Send it only when the update carries an **individual author** — the message's `from.id` in a
+  group. A channel post has no individual author (its `sender_chat` is the channel): **omit the
+  field** there. Never send the channel's or chat's id instead.
+- Telegram user ids are positive. Chat and channel ids are negative (`-100…`), so a zero or
+  negative value is refused with a `400` rather than stored.
+- It can exceed 32 bits — keep it in a 64-bit integer end to end.
+- Never look it up from a username, and never guess it. Missing is fine; wrong is not.
+- It is recorded with the listing's first ingest. A re-send of the same `externalId` doesn't
+  change it.
+
 ### `autoPublish` — which one should I send?
 
 | | `false` (default) | `true` |
 |---|---|---|
 | Status | `PendingReview` — awaiting admin approval | `Active` — immediately in the feed |
-| When to use it | **any new source, new crawler, or any change to your extraction logic** | only a channel that has already been manually reviewed and proven reliable |
+| When to use it | **any new source, new crawler, new journey, or any change to your extraction logic** | only a channel that has already been manually reviewed and proven reliable **for that journey** |
 
 Start with `false`. Flipping it later is a one-line change.
+
+A channel you already trust for housing is not automatically trusted for cargo or jobs. Each
+journey has its own parser, and a new parser starts at `false`.
+
+`true` is still only ever a *request*: if the post is flagged as a possible duplicate of an
+existing listing (score high enough to warrant a human look, not high enough to reject outright),
+it is created at `PendingReview` regardless — a trusted feed can auto-publish a new-looking post,
+never a possible duplicate.
 
 ---
 
@@ -229,6 +309,39 @@ must be a no-op, and it is.**
 So build `externalId` to be stable. A Telegram message id is a good choice. A hash of the post
 text is a **bad** one — a small edit to the post creates a duplicate listing.
 
+### When `alreadyExisted: true` is about a different post
+
+Before creating anything, the server also checks whether it already has the same ad from any
+source. If any of these checks matches, it returns `200` with `alreadyExisted: true` and the
+**existing** listing's `leadId`:
+
+| Check | Matches when |
+|---|---|
+| Link | the same normalized `sourceUrl`, in the same category |
+| Content | the same title, description, price and city, in the same category |
+| Similarity | a weighted score of 0.92 or more against listings in the same category and city from the last 60 days. The weights are title 35%, description 35%, price 20% and photos 10% |
+
+For cargo, "city" means the trip's origin. A score between 0.75 and 0.92 still creates the
+listing, but holds it at `PendingReview` (§3, `autoPublish`). The thresholds and weights are
+configuration values and can change.
+
+Nothing is stored under your `externalId` in that case. Re-sending it gets the same answer, and
+a `DELETE` for it returns `404`.
+
+On housing this is rare and almost always right: it's the same flat posted in two channels. On
+cargo and jobs it's the first thing to look at, because those posts are short and look alike:
+
+- **Always send the post text as `description`.** A cargo or jobs title is built from the
+  attributes (§7.2, §7.3), so two travellers on the same route and date get the same title.
+  If they also quote the same price and you send no description, the second post is refused as
+  a copy of the first. A different person's trip is dropped without any error.
+- Even with the text included, a channel that posts every trip from one fixed template, where
+  only the handle changes, can score two different people's posts above 0.92. By default the
+  contact handle carries no weight in the score.
+- **Log every `alreadyExisted: true` that comes back on the first send of an `externalId`**,
+  with both your id and the returned `leadId`, and report them to the team. That's how we'll
+  find out whether these journeys need different thresholds.
+
 ---
 
 ## 5. Errors
@@ -242,6 +355,7 @@ The `400` response body is a JSON string, e.g. `"Unknown category 'huosing'."`
 | `sourceName must be 2–32 characters…` | `sourceName` doesn't match the pattern |
 | `externalId is required…` | you sent an empty value |
 | `A crawled listing needs somewhere to send the buyer…` | neither `contactHandle` nor `sourceUrl` was sent |
+| `posterTelegramUserId must be the author's Telegram user id…` | zero or negative — a chat or channel id was sent in its place |
 | `Unknown category '…'` | invalid `categorySlug` |
 | `That location isn't available…` | city/province not in the catalog — see §8 |
 | `A listing can have at most 10 photos.` | more than 10 keys in `mediaKeys` |
@@ -252,8 +366,8 @@ The `400` response body is a JSON string, e.g. `"Unknown category 'huosing'."`
 | Message | Cause |
 |---|---|
 | `Attributes must be a JSON object.` | `attributesJson` isn't valid JSON, or isn't a JSON object |
-| `'{key}' is not a valid field for this category.` | unknown attribute key |
-| `{Label} is required.` | a required attribute is missing |
+| `'{key}' is not a valid field for this category.` | unknown attribute key — including a key that was removed (§7.3) |
+| `{Label} is required.` | a required attribute is missing — for housing's `price`, unless `price_negotiable` is `true` |
 | `{Label} must be a number.` / `must be at least {min}.` / `must be at most {max}.` | a `number` attribute is invalid or out of range |
 | `'{value}' is not one of the allowed values for {Label}.` | a `select` or `multi-select` value isn't in the enum — **see the value lists in §7** |
 | `{Label} must be a list.` | a `multi-select` attribute wasn't sent as an array |
@@ -261,6 +375,8 @@ The `400` response body is a JSON string, e.g. `"Unknown category 'huosing'."`
 | `{Label} must be a date.` | a `date` attribute isn't a valid `YYYY-MM-DD` |
 | `{Label} must be a range with a start and an end.` / `must be a range of numbers.` / `starts after it ends.` / `must start at {min} or above.` / `must end at {max} or below.` | a `range` attribute (e.g. `age_range`) is malformed or out of bounds |
 | `{Label} must be {500} characters or fewer.` | a `text` attribute is too long |
+| `{Label} can't have a value when {Flag label} is on.` | you sent a `price` **and** `price_negotiable: true` — see §7.1 |
+| `'{value}' is not a city on the list for {Label}.` | a cargo `origin` or `destination` isn't a catalog city of its country — see §7.2 |
 
 `{Label}` is the attribute's display label (e.g. "Monthly Rent (CAD)"), not its key.
 
@@ -276,8 +392,12 @@ team. Only `5xx` is worth retrying.
 | Expected volume | ~1,000 requests/day sustained — revised up from the original ~20,000/month estimate; this is what moved the API to its own domain (ADR-0012) |
 | App rate limit | none |
 | Edge rate limit (nginx, `api.advertio.ir`) | 10 req/s with a burst of 20, per IP — a flood absorber, not the budget |
-| Daily budget (Cloudflare Rate Limiting Rule) | ~1,000 req/day on `api.advertio.ir` |
+| Daily budget (Cloudflare Rate Limiting Rule) | ~1,000 req/day on `api.advertio.ir`, **shared by all journeys** |
 | **Recommended concurrency** | **2–3** |
+
+The daily budget is one budget for every journey together. Adding cargo and jobs channels
+doesn't raise it. If all three together will need more than ~1,000 requests a day, tell the
+team before you go over, not after.
 
 Why limit it if there's no hard cap? Every photo upload does a decode and an encode on the same
 server that hosts the database and storage. 500 parallel uploads will slow the app down for real
@@ -286,6 +406,9 @@ to any ceiling anyway.
 
 Listing lifetime: `Early` for 72 hours, then `Public`, expiring 30 days after publication. All
 three numbers are read from the database and can change — don't hardcode assumptions about them.
+Each journey has its own copy of these numbers. Cargo and jobs started with housing's values.
+A cargo trip does not expire on its travel date: from that date on the feed hides it, but it
+stays live until its 30 days are up (§2, Step 3).
 
 ---
 
@@ -313,22 +436,52 @@ The single most likely mistake. This field is a **string** that contains JSON:
 | `range` | `[from, to]`, both numbers from a fixed range |
 | `text` | free text, max 500 characters |
 
-### Required attributes for `housing`
+Each journey has its own attribute set: housing in §7.1, cargo in §7.2, jobs in §7.3. If you
+can't extract a **required** attribute from a post, **reject that listing**. Don't guess. A
+guessed value puts bad data in the feed and breaks the filters for everyone.
+
+### 7.1 Housing — `housing`
+
+#### Required attributes
 
 | Key | Type | Allowed values |
 |---|---|---|
 | `listing_type` | select | `rent` · `roommate` |
 | `property_type` | select | `apartment` · `condo` · `basement` · `studio` · `room` · `house` |
 | `bedrooms` | select | `0` · `1` · `2` · `3` · `4+` (string, not a number) |
-| `price` | number | monthly rent in CAD · 100–10,000 |
+| `price` | number | monthly rent in CAD · 100–10,000 · **required unless `price_negotiable` is `true`** |
 
-If you can't extract any one of these from the post, **reject that listing**. Guessing the
-price or bedroom count puts bad data in the feed and breaks the filters for everyone.
+The only exception to "reject when a required attribute is missing" is a post that says its
+price is negotiable, described below.
 
-### Optional attributes
+#### When the post says the price is negotiable
+
+Rent posts often name no number at all — «توافقی», "negotiable", "price on request". Those used
+to be unpublishable: `price` was required, so the only ways through were inventing a number or
+dropping the listing. Send `price_negotiable: true` instead and the listing goes live with
+**Negotiable** where the rent would be:
+
+```jsonc
+// no "price" key at all
+"attributesJson": "{\"listing_type\":\"rent\",\"property_type\":\"apartment\",\"bedrooms\":\"2\",\"price_negotiable\":true}"
+```
+
+- **It replaces the price, it doesn't accompany it.** Sending both is a `400`
+  (`Monthly Rent (CAD) can't have a value when Negotiable price is on.`). Pick one.
+- **It is not a fallback for a failed extraction.** Send it only when the post itself says the
+  price is open. A post that names a rent your parser couldn't read is still a rejected
+  listing, exactly as before — the flag is the publisher's statement, not your parser's.
+- **A listing with no number is invisible to price filters.** Someone filtering "under $2,000"
+  will not see it. That is deliberate — it has no price to compare — and it is the reason to
+  send a real number every time the post gives one.
+- Cargo has the same flag under the same key, `price_negotiable` (§7.2). Jobs has no such flag
+  (§7.3).
+
+#### Optional attributes
 
 | Key | Type | Allowed values |
 |---|---|---|
+| `price_negotiable` | boolean | `true` when the post says the price is open. **Mutually exclusive with `price`** — see above |
 | `furnishing` | select | `furnished` · `unfurnished` · `partially` |
 | `rental_duration` | select | `daily` · `short_term` · `long_term` |
 | `area` | number | m² · 5–500 |
@@ -344,10 +497,139 @@ price or bedroom count puts bad data in the feed and breaks the filters for ever
 | `age_range` | range | only meaningful for `listing_type: roommate` — `[from, to]`, bounds 18–70 |
 | `lifestyle_tags` | multi-select | only meaningful for `listing_type: roommate` — `quiet` · `early_bird` · `night_owl` · `social` · `party_friendly` · `private` · `student_only` · `professional` · `remote_worker` · `vegetarian` |
 
-**Full, live list:** `GET /api/categories`, then `GET /api/categories/{slug}/attributes`
-(e.g. `/api/categories/housing/attributes`).
+### 7.2 Passenger cargo — `passenger-cargo`
 
-> The path segment is the category **slug** (`housing`), not the `id` GUID returned by
+A trip between two cities. One listing type covers both sides of the trip, and `role` says
+which side the poster is on. The card and the detail page are built entirely from these
+attributes: the side, the route, the date, then any optional details the post gave. The title
+isn't shown anywhere. The description appears on the detail page.
+
+#### Required attributes
+
+| Key | Type | Allowed values |
+|---|---|---|
+| `role` | select | `traveler` — travelling, with space in their luggage · `sender` — has something to send and is looking for a traveller |
+| `origin_country` | select | `IR` · `CA` · `US` · `DE` · `IT` · `GB` · `FR` |
+| `origin` | text | a catalog city of `origin_country` — see *Route cities* below |
+| `destination_country` | select | same list as `origin_country` |
+| `destination` | text | a catalog city of `destination_country` |
+| `travel_date` | date | `YYYY-MM-DD`, Gregorian |
+
+#### Optional attributes
+
+| Key | Type | Allowed values |
+|---|---|---|
+| `cargo_type` | select | `documents` · `clothes` · `electronics` · `food` · `other` |
+| `weight_kg` | number | 0.1–30. For a traveller, the space they have. For a sender, the package's weight |
+| `price` | number | **per kg** on a `traveler` listing, **the total** on a `sender` listing — see *Price and currency* |
+| `price_negotiable` | boolean | same rule as housing (§7.1): send it only when the post says the price is negotiable, and never together with `price` |
+| `currency` | select | `CAD` · `USD` · `EUR` · `GBP`. Send it with every `price` |
+
+#### Route cities
+
+`origin` and `destination` are text fields, but the server only accepts a city from the
+location catalog, in the country given by the matching `*_country` attribute:
+
+- Send the catalog `code` or the English `name`, in any case (`tehran` or `Tehran`). The server
+  stores the catalog's spelling.
+- **Persian names are refused.** The server matches only the code and the English name, so
+  `تهران` returns a `400`. Map Persian names yourself.
+  `GET /api/locations/cities?countryCode=IR&limit=200` returns every city of a country with its
+  `code`, `name`, `nameFa` and `provinceCode`. The whole catalog is about 150 cities across
+  seven countries. Fetch it at startup and build a lookup keyed by **country and name**.
+- The same name can exist in two countries: London is in Ontario and in the UK. The country has
+  to come from the post. If the post doesn't say, reject the listing.
+- If a city isn't on the list, reject the listing. Don't substitute the nearest listed city.
+  Log the city names you keep missing and send them to the team. Adding a city is a one-line
+  change on our side.
+
+#### The listing's own location is the origin
+
+Send `countryCode` = `origin_country`, `province` = the origin city's `provinceCode`, and
+`city` = its `code`. This is the same city as `origin`. Province codes for Iran and Italy are
+words, not ISO numbers (the endpoint returns e.g. `TEHRAN`, `ALBORZ`). Take them from the
+endpoint as they are rather than building them yourself.
+
+#### Dates
+
+Convert Jalali dates (e.g. «۲۰ آبان») to Gregorian. If a post gives no specific date ("next
+week", «اواخر آبان»), reject it: the date is required, and a guessed one sends people to the
+wrong flight. Skip trips whose date has already passed. The feed hides them, so sending them
+only uses up your request budget.
+
+#### Price and currency
+
+- **The unit depends on `role`.** The app never asks for it: a traveller's price is per kg and
+  a sender's is the total. If a post's price doesn't match its side's unit (for example, a
+  traveller quoting a flat fee), leave `price` out. The description still shows it.
+- **Send `currency` with every `price`, and only a currency the post states.** The app picks a
+  currency from the route for its own users, but a figure with no currency is a guess on your
+  side, so leave `price` out.
+- **A price in toman, rial or any other currency has no field.** Leave `price` out and let the
+  description carry it.
+- No `price` and no `price_negotiable` is fine. The card just shows no price.
+
+#### Title and description
+
+Build the title the same way the app does, so crawled and native trips read the same in search
+and in the admin review queue: `{Travelling|Sending} {origin} → {destination} · {d MMM}`, e.g.
+`Travelling Toronto → Tehran · 20 Nov`. The description is always the post text. §4 explains
+why.
+
+### 7.3 Jobs — `jobs`
+
+Covers both sides of the market: `role` says whether the listing is a job opening or a person
+looking for work. Canada only.
+
+#### Required attributes
+
+| Key | Type | Allowed values |
+|---|---|---|
+| `role` | select | `employer` — hiring · `seeker` — looking for work |
+| `job_category` | select | `restaurant_food` · `construction` · `cleaning` · `delivery_driver` · `retail` · `beauty_personal_care` · `office_admin` · `it_tech` · `general_labour` · `warehouse` · `skilled_trades` · `customer_service` · `sales` · `healthcare_support` · `childcare` · `education` · `design_creative` · `other` |
+| `job_type` | select | `full_time` · `part_time` · `contract` · `temporary` |
+
+#### Optional attributes
+
+| Key | Type | Allowed values |
+|---|---|---|
+| `job_title` | text | e.g. `Line cook`. The card shows it first. Without it, the card shows the field |
+| `work_arrangement` | select | `on_site` · `hybrid` · `remote` |
+| `salary` | number | CAD · 1–1,000,000 |
+| `salary_period` | select | `hour` · `month` · `year` |
+
+#### Rules
+
+- **Canada only.** `countryCode` is `CA`, and `province` and `city` are where the job is (for a
+  `seeker`, where they want to work). Reject a post for a job outside Canada. A remote job still
+  needs a Canadian city: use the one the post names, and if it names none, reject the post.
+- **"Remote" is not a `job_type` value.** "Remote, full-time" is `job_type: full_time` plus
+  `work_arrangement: remote`. Sending `job_type: remote` returns a `400`.
+- **Removed keys:** `field`, `salary_min`, `salary_negotiable` and `experience_years` no longer
+  exist. Any of them in `attributesJson` returns a `400` (unknown key).
+- **`job_category: other`** is for a field that genuinely isn't on the list. Don't use it for a
+  post your parser couldn't classify. Reject a post whose field you can't determine, the same
+  way you would reject a housing post with no price.
+- **Pay.** There is no "negotiable" flag. If a post names no pay, or says pay is negotiable,
+  send no `salary`. The listing then shows no pay, rather than a "Negotiable" label the poster
+  never wrote. Send `salary` only together with `salary_period`, and only when the amount is in
+  CAD. If the amount has no period (just "$20") or is in another currency, leave out both
+  fields. For a range ("$18–22/hour"), send the low end; the description keeps the full range.
+
+#### Title and description
+
+Build the title the same way the app does:
+`{Hiring|Looking for work} · {job_title, or the field's label} · {city}`, e.g.
+`Hiring · Line cook · Toronto` or `Looking for work · Restaurant & Food · Vancouver`. Field
+labels come from `GET /api/categories/jobs/attributes`. The description is always the post
+text. §4 explains why.
+
+### Live schema and validation rules (all journeys)
+
+**Full, live list:** `GET /api/categories`, then `GET /api/categories/{slug}/attributes`
+(e.g. `/api/categories/passenger-cargo/attributes`).
+
+> The path segment is the category **slug** (`passenger-cargo`), not the `id` GUID returned by
 > `GET /api/categories` — passing the GUID will not match and returns 404.
 
 If this document ever disagrees with that endpoint, **the endpoint is correct.**
@@ -366,13 +648,21 @@ Validation rules:
 The country/province/city triple is resolved against a reference catalog:
 
 - The city must actually belong to that province and country.
-- Both code and name are accepted.
+- Both code and English name are accepted. Persian names are not.
 - What's stored is the **canonical form** — `"toronto"` and `"Toronto"` both become `Toronto`,
   otherwise the feed's filters would treat them as two different cities.
 - A city that isn't in the catalog ⇒ `400`. Reject the listing.
 
-Coverage today: **Canada only, but nationwide** — all 13 provinces and territories are seeded,
-not just the Toronto area (Toronto/GTA and Vancouver simply get featured UI treatment).
+Coverage today:
+
+| Journey | Countries |
+|---|---|
+| `housing`, `jobs` | **Canada only, but nationwide.** All 13 provinces and territories are seeded, not just the Toronto area (Toronto/GTA and Vancouver simply get featured UI treatment) |
+| `passenger-cargo` | Iran, Canada, United States, Germany, Italy, United Kingdom, France — the main cities only. See §7.2 |
+
+The six countries other than Canada are only for cargo routes. The server won't stop you: a
+housing or jobs listing in Tehran passes the location check today and shows up in the feed,
+next to Canadian listings, in front of an audience that lives in Canada. Don't send one.
 
 Reference lists:
 
@@ -380,33 +670,74 @@ Reference lists:
 GET /api/locations/countries
 GET /api/locations/provinces?countryCode=CA
 GET /api/locations/cities?countryCode=CA&provinceCode=ON
+GET /api/locations/cities?q=tehran          # no countryCode: searches every country
 ```
 
-(The third parameter is `provinceCode`, not `province`.)
+- The parameter is `provinceCode`, not `province`.
+- `q` is a substring match on the code, the English name and the Persian name. It's for
+  finding a city, not for validating one.
+- A list returns 50 rows unless you pass `limit` (up to 200). Canada alone has more than 50
+  cities, so pass `limit=200` when you build your lookup.
 
 ---
 
 ## 9. "Done" checklist
 
-- [ ] `sourceName` is fixed and documented
+All journeys:
+
+- [ ] `sourceName` is fixed and documented, and no source is shared between a housing channel and a cargo or jobs channel
 - [ ] `externalId` comes from a stable identifier (not a hash of the post text)
+- [ ] `categorySlug` is `housing`, `passenger-cargo` or `jobs`, never `services` or `social`
 - [ ] one of `contactHandle` / `sourceUrl` is always populated
+- [ ] `contactHandle` is the **poster's** handle, never the channel's
+- [ ] the handle is left empty whenever ownership is uncertain
+- [ ] `posterTelegramUserId` is the message author's `from.id`, omitted for channel posts
 - [ ] `alreadyExisted: true` is handled as success, not an error
+- [ ] every `alreadyExisted: true` on the **first** send of an `externalId` is logged with both ids (§4)
 - [ ] `400` does not trigger a retry; only `5xx` does
 - [ ] `DELETE` is called when the original post is removed
-- [ ] a listing missing price/bedrooms/type is rejected, not guessed
-- [ ] concurrency is capped at 2–3
-- [ ] starts with `autoPublish: false`
+- [ ] a post missing a required attribute is rejected, not guessed
+- [ ] concurrency is capped at 2–3, and all journeys together stay within the daily budget
+- [ ] each journey starts with `autoPublish: false`
 - [ ] the key lives in an environment variable, not in code
+
+Housing:
+
+- [ ] `price_negotiable` is sent only when the post says the price is open — never to rescue a
+      price the parser couldn't read
+
+Cargo:
+
+- [ ] no photos uploaded; `mediaKeys` is `[]`
+- [ ] `description` always carries the post text
+- [ ] route cities are mapped to catalog codes by country; Persian names never reach the API
+- [ ] an unlisted city, or a name the post doesn't tie to a country, rejects the listing
+- [ ] the listing's location is the origin city
+- [ ] Jalali dates are converted; a post with no specific date is rejected; past trips are skipped
+- [ ] `price` is in the unit set by `role`, sent only with a `currency` the post states
+
+Jobs:
+
+- [ ] no photos uploaded; `mediaKeys` is `[]`
+- [ ] `description` always carries the post text
+- [ ] `countryCode` is `CA`
+- [ ] none of the removed keys (`field`, `salary_min`, `salary_negotiable`, `experience_years`) is sent
+- [ ] `remote` goes in `work_arrangement`, never in `job_type`
+- [ ] `salary` is sent only in CAD and only with `salary_period`
 
 ---
 
-## Example — one full listing with curl
+## Examples — with curl
 
 ```bash
 KEY="…"
 BASE_URL="api.advertio.ir"      # a variable, not hardcoded
 BASE="https://$BASE_URL"
+```
+
+### Housing — one full listing
+
+```bash
 SOURCE="telegram-rent"
 
 # 1 — photo
@@ -436,6 +767,53 @@ curl -sS -X POST "$BASE/api/ingest/leads" \
 curl -sS -X DELETE "$BASE/api/ingest/leads/$SOURCE/4021" -H "X-Ingest-Key: $KEY"
 ```
 
+### Cargo — a traveller, Toronto → Tehran
+
+The post says «۲۰ نوامبر از تورنتو به تهران پرواز دارم، ۱۰ کیلو جا دارم، کیلویی ۱۵ دلار
+کانادا». The Persian city names are mapped to catalog codes before sending. There are no photos,
+so there is no step 1.
+
+```bash
+curl -sS -X POST "$BASE/api/ingest/leads" \
+  -H "X-Ingest-Key: $KEY" \
+  -H "Content-Type: application/json" \
+  -d "$(jq -n '{
+    sourceName: "telegram-cargo",
+    externalId: "8812",
+    sourceUrl: "https://t.me/some_cargo_group/8812",
+    contactHandle: "@traveller",
+    posterTelegramUserId: 123456789,
+    title: "Travelling Toronto → Tehran · 20 Nov",
+    description: "۲۰ نوامبر از تورنتو به تهران پرواز دارم، ۱۰ کیلو جا دارم، کیلویی ۱۵ دلار کانادا",
+    categorySlug: "passenger-cargo",
+    attributesJson: ({role:"traveler", origin_country:"CA", origin:"toronto", destination_country:"IR", destination:"tehran", travel_date:"2026-11-20", weight_kg:10, price:15, currency:"CAD"} | tostring),
+    countryCode: "CA", province: "ON", city: "toronto",
+    mediaKeys: [],
+    autoPublish: false
+  }')"
+```
+
+### Jobs — an opening in Toronto
+
+```bash
+curl -sS -X POST "$BASE/api/ingest/leads" \
+  -H "X-Ingest-Key: $KEY" \
+  -H "Content-Type: application/json" \
+  -d "$(jq -n '{
+    sourceName: "telegram-jobs",
+    externalId: "512",
+    sourceUrl: "https://t.me/some_jobs_channel/512",
+    contactHandle: "@cafe_owner",
+    title: "Hiring · Line cook · Toronto",
+    description: "Part-time line cook, evenings, $20/hour, North York location",
+    categorySlug: "jobs",
+    attributesJson: ({role:"employer", job_category:"restaurant_food", job_type:"part_time", job_title:"Line cook", work_arrangement:"on_site", salary:20, salary_period:"hour"} | tostring),
+    countryCode: "CA", province: "ON", city: "toronto",
+    mediaKeys: [],
+    autoPublish: false
+  }')"
+```
+
 ---
 
 ## Further reading
@@ -443,4 +821,7 @@ curl -sS -X DELETE "$BASE/api/ingest/leads/$SOURCE/4021" -H "X-Ingest-Key: $KEY"
 - Full API contract: [`specs/001-housing-paid-contact/contracts/api.md`](../specs/001-housing-paid-contact/contracts/api.md) §`/api/ingest`
 - Rationale behind the design decisions: [`docs/adr/ADR-0009`](adr/ADR-0009-external-supply-ingestion.md)
 - Why the API moved to its own domain: [`docs/adr/ADR-0012`](adr/ADR-0012-api-subdomain.md)
+- Which journeys are live, and why each one stands alone: [`docs/adr/ADR-0001`](adr/ADR-0001-hub-and-independent-journeys.md)
 - Code: `backend/src/Advertio.Api/Modules/Lead/LeadIngestEndpoints.cs`
+- Every journey's attributes: `backend/src/Modules/Category/Advertio.Modules.Category.Infrastructure/Seed/CategorySeeder.cs`
+- The location catalog: `backend/src/Modules/ReferenceData/Advertio.Modules.ReferenceData.Infrastructure/Seed/LocationSeeder.cs`
