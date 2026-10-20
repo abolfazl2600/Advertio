@@ -1,6 +1,6 @@
 # Jobs — Current Implementation Overview
 
-> **Status:** Implemented in GitLab master on 2026-10-19 (JOBS-01). Current geography is Canada only. This is an implementation summary, not a production deployment audit. The detailed pre-launch proposal is preserved in [pre-launch-design.md](./pre-launch-design.md); where it conflicts with this file, this file describes the shipped scope.
+> **Status:** Implemented in GitLab master on 2026-10-19 (JOBS-01). Current geography is Canada only. This is an implementation summary, not a production deployment audit. The detailed pre-launch proposal is preserved in [pre-launch-design.md](./pre-launch-design.md); where it conflicts with this file, this file describes the shipped scope. Other detailed documents in this directory may retain proposal-level requirements; use this overview and its explicit gap list as the current implementation boundary.
 
 ## Shipped behavior
 
