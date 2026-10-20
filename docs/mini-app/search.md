@@ -1,118 +1,45 @@
-# Mini App — Global Search Current State
+# Global Search — current implementation
 
-> Current implementation documented from the supplied Mini App/Web App UI review on **3 Oct 2026**.
+> Global Search is implemented in the Web Mini App across every live journey. It is separate from each category's feed filters.
 
-This document describes the Global Search experience currently visible in Advertio. It records current product behavior and does not define future Search functionality.
+## Search contract
 
-## Current Search entry point
+- Search matches listing titles and descriptions across Housing, Cargo and Jobs.
+- Every word in the query must appear in the title or description; this is ordinary keyword matching, not semantic/AI search.
+- Minimum query length: 2 characters.
+- Maximum query length: 100 characters.
+- The UI waits 350 ms after typing settles before committing the query.
+- The query is stored in the URL as `?q=`, so the current search is shareable within the app's URL/history behavior.
+- Results load in pages of 20 and support further-page loading.
+- Previous results remain visible while a new query loads; the UI shows a searching state instead of flashing empty results.
+- Returning from a listing restores the same query's cached results and scroll position. Starting a different query starts at the top.
+- Clearing the query removes the active search and returns to the empty prompt.
 
-The Mini App bottom navigation includes:
+## Examples
 
-- Home
-- Search
-- Post
-- Wallet
-- Profile
+- `basement` can find a Housing listing whose title or description contains the word.
+- `Tehran` can find Cargo trips because the generated Cargo title includes route endpoints.
+- `cook` can find a Jobs listing if the word is present in its generated/custom title or description.
 
-The **Search** tab is implemented and opens the Global Search screen.
+## Search versus category filters
 
-## Current Search UI
+Global Search does not inherit or modify the filters in the Housing, Cargo or Jobs feed. Those feeds have their own structured filters:
 
-The reviewed Search screen currently includes:
+- Housing: category attributes, city/location and rent/roommate filters.
+- Cargo: traveller/sender, origin and destination.
+- Jobs: Hiring/Job seekers, field and Canadian city.
 
-- **Search** page title
-- Free-text search input
-- Search icon
-- Clear-input control
-- Current query visible in the input
-- Matching result count
-- Listing result cards
-- Persistent bottom navigation
+A keyword search is not guaranteed to interpret structured values as dedicated filters. For example, a date is not a Cargo travel-date filter in global Search; it is just text if it appears in a title or description.
 
-In the supplied current-state example, the query:
+## Empty and error states
 
-```text
-toro
-```
+- Queries shorter than two characters do not call the feed search endpoint.
+- No matches show the query and an option to clear it.
+- Network/server errors expose a retry action.
+- Pagination is only available when the server reports more results.
 
-displayed:
+## Current boundaries
 
-```text
-7 results for “toro”
-```
-
-## Current result presentation
-
-Matching listings are displayed using listing cards.
-
-The reviewed result card includes:
-
-- Listing image area
-- **No photo** placeholder when no image is available
-- Property/listing type label
-- Listing title
-- Area where available
-- Bedroom count where available
-- Location
-- Price
-- Monthly price suffix where applicable
-- Relative publication time
-
-The reviewed example showed:
-
-```text
-Studio
-North York, Toronto Studio Rental
-37.35 m²
-1 bed
-Toronto
-$1,917/mo
-2 d ago
-```
-
-## Search behavior currently confirmed
-
-The current UI confirms that:
-
-- Users can enter free text in the Search tab.
-- A query returns matching listings.
-- The Search screen displays the number of matches.
-- Results are rendered directly below the search field.
-- Search results use the existing listing-card presentation.
-- The Search experience is separate from the Housing feed filter controls.
-
-## Relationship to Housing filters
-
-Global Search and Housing feed filtering are separate product experiences.
-
-- **Global Search** provides a keyword-oriented Search screen from the main bottom navigation.
-- **Housing filters** remain available inside the Housing listing feed for structured filtering.
-
-The Global Search implementation does not replace the Housing filter system.
-
-## Current scope note
-
-The reviewed result shown in the supplied UI is a Housing listing.
-
-Issue #23 originally defined Housing listings as the first implementation scope. This current-state document does not claim multi-category Search behavior unless separately verified.
-
-## Not verified from the supplied UI
-
-The supplied screenshot does not by itself establish the implementation details of:
-
-- exact searchable database fields;
-- ranking/relevance algorithm;
-- loading-state behavior;
-- error-state behavior;
-- empty-results UI;
-- Search-state preservation after returning from Listing Detail;
-- exact Listing Detail navigation behavior;
-- future multi-category Search.
-
-These should only be documented as current behavior after they are separately verified.
-
-## Related implementation issue
-
-- [#23 — Implement Global Search Experience](https://github.com/abolfazl2600/Advertio/issues/23)
-
-Issue #23 is recorded as completed for the currently implemented Global Search experience.
+- No AI/semantic ranking or natural-language query parsing.
+- No guarantee that searching a value is equivalent to selecting that value in a category filter.
+- Results reflect only the three live Web journeys, not every category record that may exist in the backend seed.
