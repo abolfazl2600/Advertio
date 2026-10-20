@@ -1,43 +1,83 @@
 # Changelog
 
-This log tracks implementation changes confirmed in the Advertio GitLab monorepo. Dates refer to source commits merged into GitLab master; they do not independently confirm a production deployment.
+Monthly summaries of changes recorded in the [Advertio GitLab monorepo](https://gitlab.com/advertio/platform/advertio-monorepo) on its `master` branch. Entries are grouped by the **calendar month of the source commit** (July–October 2026), newest first. Related commits are consolidated into outcomes; linked commits provide representative implementation evidence rather than an exhaustive commit-by-commit log.
 
-## 2026-10-19
+**Scope:** repository implementation and documentation, **not independently verified production deployments**. October 2026 is reported through October 19.
 
-### Cargo journey
+---
 
-- Added a route-based Cargo journey under the passenger-cargo slug.
-- Added traveller/sender role, catalog-backed origin and destination cities, route-derived currency, and role-specific price semantics.
-- Added one-screen posting with four required choices, server-side role/route filtering, Cargo detail UI and shared contact interactions.
-- Added route catalog coverage for Iran, Canada, the United States, Germany, Italy, the United Kingdom and France.
-- Cargo is available through Hub, Post chooser, global Search, Saved and My listings.
-- Not included: Cargo crawler ingestion, multiple active Cargo listings per user, travel-date lifecycle expiration and Telegram bot search redesign.
+## 2026-10 — October
 
-### Jobs journey
+### Marketplace journeys
+- **Passenger Cargo:** implemented route-based traveller/sender listings on the backend, including catalog-validated origin/destination, seven-country city coverage, role-specific pricing and category-scoped policy. Added a one-screen posting flow, trip details, server-side filtering and shared contact handling. [Commit: [585a1fdb](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/585a1fdb98bfc028e7fa9738a6298116e6543e46); [09b569dc](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/09b569dcf117ccfa4bcfde0e5e41ed1b51901845)]
+- **Jobs:** implemented Canada-focused hiring/job-seeking listings with a closed 18-category taxonomy, working arrangements, salary periods and server-side filters. Added a four-choice posting flow, job detail screen and entry through the existing marketplace navigation. [Commit: [8afb46d9](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/8afb46d93a1902f06649823bf5c06b012dd7775b); [06ed0279](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/06ed02799052eadb900ea16ed8ebaacf2bd8450b)]
+- **Shared listing architecture:** moved common listing hooks and actions (contact, save, conversations, reporting and owner actions) out of the Housing journey for reuse across categories. [Commit: [c8016fd1](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/c8016fd1bff54dd87a5967a5caa986fcd5107c5d)]
 
-- Enabled the Jobs journey in Canada.
-- Added a one-screen, four-choice posting flow for Hiring/Looking for work, job category, city and hours.
-- Added a closed 18-value job-category taxonomy, separate work arrangement, salary periods (hour/month/year) and CAD salary handling.
-- Added server-side filtering by role, category and city, job details, shared contact interactions and a job-scam warning.
-- Connected Jobs to Hub, Post chooser, global Search, Saved and My listings.
-- Not included: multiple active jobs per employer, Jobs crawler ingestion, Filled status, external application links/email and Jobs-specific backoffice scam signals.
+### Analytics, reliability and operations
+- **Gate A:** changed listing-based metrics to measure each category independently rather than mixing Housing, Cargo and Jobs. [Commit: [99672dd6](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/99672dd655c3f77de463b97648a00d17f4fa4f24)]
+- **Duplicate prevention:** fixed generated, otherwise-identical listings from *different* publishers being treated as the same listing, while retaining same-publisher duplicate protection. [Commit: [a5db1366](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/a5db136683570af40e0db905be4acbe5d709ead2)]
+- **Backoffice Broadcasts:** introduced audience selection and preview, message drafts, test send, confirmation, asynchronous Telegram delivery, per-recipient delivery reporting, cancellation and retries. [Commit: [94461446](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/9446144651edcc7185b6dc588f6adcbe106f1d6c); [606c3f5b](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/606c3f5bd161d1cd7d8aaa99eedd61021d464178)]
+- **Telegram Mini App:** corrected SDK initialization so phone-sharing and other version-checked Telegram integrations can function. [Commit: [a58379f4](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/a58379f404c621e8f7c05da2e946f176686f8bf5)]
+- **Product/architecture records:** updated the shipped Cargo and Jobs journey specifications, decision records and related documentation. [Commit: [5e9a763a](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/5e9a763ac97fdf6a396dd9d52813933b33284f59); [a274094e](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/a274094ec981ae685ebd1db952ff4fc4ddb672a4)]
 
-### Shared platform and correctness
+---
 
-- Scoped listing-based Gate A metrics to the selected category so Housing, Cargo and Jobs are not mixed.
-- Moved listing contact/unlock, conversation, save, report and owner actions into the shared listing layer.
-- Corrected duplicate detection for bare user-created listings: identical generated listings from different publishers no longer block each other, while same-user double submissions still collide.
+## 2026-09 — September
 
-## 2026-10-09
+### Search, notifications and distribution
+- **Saved Search and Telegram alerts:** added persisted search filters, listing-activation matching and notification delivery via the existing outbox/worker architecture. [Commit: [f45ba47c](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/f45ba47c4912e2fe3cf90ad4c13750e5bb2dd564)]
+- **Mini App Search:** replaced the placeholder Search tab with keyword search over Housing listing titles/descriptions, query URL state, result counts, pagination and restoration when returning from listing details. [Commit: [33d679f0](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/33d679f018b6047277fbe6cf436abc24a76636a7)]
+- **Telegram bot navigation:** added the `/search` command, bot command menu and Back navigation to the **existing step-by-step search wizard**. The later free-text Quick Global Search redesign is **not** implied by this change. [Commit: [3d8d8017](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/3d8d8017c3d23c22e298a2ff9f1233a5da33bc37)]
+- **Telegram channel distribution:** added admin-configured channels with category/location/attribute matching, automated publication of eligible listings, publish history and delivery retries. Added further Backoffice controls for channel filters, test messages, resends and manual backfill. [Commit: [4425b587](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/4425b587a119e8cb24d9eab44e51d1c36d2aec16); [10407139](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/10407139f6954deb7bb15d1468af58714d0558ef); [a7756b8e](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/a7756b8eb700fd2f9d2a13b9c41380a41171a752)]
+- **Mini App entry points:** improved Telegram Mini App buttons, channel post formatting and listing-creation entry links. Fixed Telegram webhook callback delivery so inline buttons work. [Commit: [bb4ee3aa](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/bb4ee3aa3eb2cf8bc90111ac87033903e89fe317); [1e67512c](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/1e67512c1b4a198ddafdf3507b50748b92629f09); [0b275348](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/0b27534861e401b3dfc16180e37391310f970b53)]
 
-### Backoffice Broadcasts
+### Trust, moderation and paid services
+- **Listing reports:** added user reporting from listing details and a Backoffice queue for reviewing reports against the original listing. [Commit: [8e879b31](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/8e879b31d55878fbcdd9ba7faaefd8a10ace5f79)]
+- **Identity verification:** implemented a coin-paid identity-verification flow with Telegram-submitted evidence and admin approve/reject review in the bot and Backoffice. [Commit: [2b3daba0](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/2b3daba042179935544f0f9049131c02f25b6edc)]
+- **Seller trust signals:** added clear verification indicators, member-since information and listing activity to profiles and listing details. [Commit: [61b8167e](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/61b8167e577903df2afeb5acbe7200314e99d1b6)]
+- **Independent inspections:** implemented the Backoffice-side inspection workflow with requests, quotes, payment records, evidence and structured inspection reports. [Commit: [63af5512](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/63af5512c31128d58105ad07f7eca016e06d5d16)]
+- **Manual wallet top-ups:** added non-Stars payment submission through Telegram with admin approval and idempotent wallet crediting. [Commit: [931b0ac1](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/931b0ac107866879b273346a56219d7a28b7e925)]
 
-- Added the Broadcasts page, audience builder, live recipient preview, draft management, test send, recipient-count confirmation and delivery report.
-- Added All, Filtered and Selected audiences, eligibility exclusions, asynchronous rate-limited Telegram delivery, retry/cancel controls, per-recipient outcomes and audit fields.
-- Promotions honor opt-in and provide a one-tap stop-promotions action.
-- Not included in v1: scheduled sends, rich media/HTML/variables, per-language variants, recall/edit after sending, click/open attribution, frequency capping and A/B testing.
+### Backoffice, accounts and data quality
+- **Gate A reporting:** expanded canonical metric explanations, user counts and crawled-versus-user-generated comparisons. [Commit: [e9877157](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/e9877157c36287485c06772636b4270836c59100); [22f747af](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/22f747afcdc6fb71b6395372c1a5d804816cb98d); [e6804377](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/e680437761ca20118afbeb5d81cbdb2dc9cc763c)]
+- **Listing provenance:** made submission/source information visible in the review drawer; added linked Telegram usernames and admin-only numeric author IDs. [Commit: [3d947976](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/3d9479768a8dac9ff1d1f4bcaa7f0d9ac4fc86e8); [c737f263](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/c737f2631d01a1214c0d6c1865ba8d47983092b0); [1321e680](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/1321e680a47b9bfd3465c959870ea1ed43ac878b)]
+- **Administration:** added more user filters, duplicate-listing moderation choices, direct user messaging, channel publication/retry tools and daily management reports with the `/adminreport` command. [Commit: [23d54c73](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/23d54c73fd9c24e1643064c549477ded801c0f60); [e2781eb1](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/e2781eb19a33c247e160e09a0ea9bac7e2450dbe); [eaefd4f9](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/eaefd4f9287455ffea3673c343539458de2e6eb9)]
+- **Accounts and profile:** added user-role management, avatar support/upload and administrator-generated password-setup links. [Commit: [0577ea5b](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/0577ea5b4a1a68bb2ab93ecec88336358291a77b); [5995bd79](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/5995bd79641b9c8f0373a4ecac8f7fe881bdea46); [54b2f1cf](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/54b2f1cfc369dbf9ea799d526ea05a5a9b65a331)]
 
-### Telegram Mini App SDK
+### Foundations and fixes
+- **Localization:** introduced backend translation infrastructure, locale handling and structured error codes. [Commit: [5e967b23](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/5e967b231641f22091223ae799dc0f6724e573ef)]
+- **Duplicate detection:** introduced canonical URL, exact fingerprint and similarity checks for native listing creation and crawler ingestion. [Commit: [f0f3d0c3](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/f0f3d0c349ca262a30471538d81891ad54aa6314)]
+- **Quality and operations:** expanded Telegram bot/notification test coverage, corrected listing state/count issues, repaired Notification migrations and worked around MinIO image availability in CI. [Commit: [1864a4bc](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/1864a4bc38f40ba5ecbd09cf9b3f5ed917992be7); [ba0d350a](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/ba0d350a1e54b0f6c59c6a148ef2bf3558f6f847); [6000e5b5](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/6000e5b568d510e1777acf8a1183e7cd511aa41b)]
+- **Governance:** added Privacy, Terms and Data Governance specifications for the Canada launch, including documented compliance and implementation gaps. [Commit: [0ec83424](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/0ec83424a79c0b369be92910abb30f35ace52555)]
 
-- Initialize the Telegram Mini App SDK once before React mounts when running inside Telegram.
-- Fixed the SDK initialization failure that prevented phone sharing and degraded invoice URL handling, Telegram links, haptics and Mini App mounting.
+---
+
+## 2026-08 — August
+
+### Marketplace and operations
+- **Backoffice:** expanded the administrative console for listing moderation/performance, payments, category policy, crawled sources and user management; redesigned pricing to compare categories side by side. [Commit: [1d9056d8](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/1d9056d879374f148b6a1a3ca464dc3dc230ece0); [e7cce0d9](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/e7cce0d9368aacee130d03275a22b8838c942e76)]
+- **User experience:** added profile editing, My Listings status visibility and end-to-end listing bookmark/save functionality. [Commit: [1d9056d8](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/1d9056d879374f148b6a1a3ca464dc3dc230ece0); [e56a1564](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/e56a156467363d17e34fe2c5a9ab11189d995698)]
+- **Crawler ownership claims:** implemented transferring crawled listings to the matching verified publisher while retaining source provenance and preventing orphan-account creation. [Commit: [e943731c](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/e943731c4ef501a242c4293d5fd393169fea5a38)]
+- **Telegram admin chat linking:** introduced report/notification chat linking and fixed reconnect handling, repeated-link errors and cross-account collisions. [Commit: [05cf9862](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/05cf9862c002454226b9b6bbd09c6fac2cf03fc6); [4ce0081b](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/4ce0081bce691a9f38e9c5c5293f0ab955dbdcdb); [277103d6](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/277103d61c90ba65d40efe2d103efa6ada4275d0)]
+- **Housing pricing:** added a negotiated-price option and conditional price validation for listings that explicitly have negotiable rent. [Commit: [0c30ee42](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/0c30ee42f8302f2f1ed00558f834073614157cf3)]
+
+### Delivery, infrastructure and tooling
+- **Production-edge and server setup:** added hardened host provisioning, nginx/Cloudflare-aware edge configuration, repeatable deployment scripts and documented branch/merge policy. [Commit: [402fd2e4](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/402fd2e472ba1d1abfa259e46c4f18461283c15a); [0aea97ee](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/0aea97ee3fed5c205967899e6d09f274bba18eed)]
+- **CI/CD:** moved application image builds to GitLab runners and the container registry; added tagged image deployments, rollback support and pipeline/test reliability fixes. [Commit: [a6c518f3](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/a6c518f318bbb205f766259581e538eb1cedb0b9); [e0a42f23](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/e0a42f2396af534f2ffc729f51122c375a2194f5)]
+- **Maintenance:** added EF database migration tooling, fixed crawled-source statistics queries and improved application health checks and Docker build caching. [Commit: [61fba1df](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/61fba1df0aa4eec84497ee227708475999f1d49a); [3d9e7efd](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/3d9e7efd3e3b76f0bd8d7903588a52183f76fff9); [82a5189b](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/82a5189b1ca86a8f0815dcedae1dd18c9aacd0ed)]
+- **Development workflow:** added specification/task-generation skills and improved developer tooling and documentation. [Commit: [3da1fe2d](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/3da1fe2d0ba0af62c0db017924ec8597029269cf)]
+
+---
+
+## 2026-07 — July
+
+### Platform foundation
+- **Initial project setup:** created the Advertio platform scaffold and initial architecture. [Commit: [d55d0927](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/d55d092792bd1eb4a57e16a7234cd488ec45b647); [dbc0d419](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/dbc0d41978da28c2701876ef13de531e0ed91ae0)]
+- **Unified identity:** built provider-based authentication with verified phone as the account key, Telegram authentication and phone verification; integrated web authentication without gating public browsing. [Commit: [f264d5cc](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/f264d5ccc4ef322a88bec29f7c7d4d55d858bdfe); [21775cb6](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/21775cb6ea7fa87b4ce5f898ddd0c56313ad19c2)]
+- **Additional sign-in options:** added browser-to-Telegram deep-link/OTP sign-in and optional Google sign-in with account-linking and orphan-user merge handling. [Commit: [4c0bfb1d](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/4c0bfb1d68805799005d3a0ebc050fb2b1751c6f); [2bd7c30f](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/2bd7c30f1d1a869b198ea0b1aa4ae6282168ff6c)]
+- **Wallet top-ups:** introduced Telegram Stars as a self-service coin purchase option with payment recording and idempotent credits. [Commit: [22c28ac8](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/22c28ac8851a6b472505a8b30f99585dcc349c23)]
+
+### Listings and developer foundations
+- **Structured listings:** expanded Housing attribute/filter schemas, added the location reference catalog and made listing/contact events measurable for Gate A analytics. [Commit: [fc4288de](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/fc4288de8ab189fa39bd9de005cd91c1cd8ca207); [30ac672e](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/30ac672e3ccd3bdda5026b5795c70f8499eb587f)]
+- **Media and UI:** introduced object-storage-backed photo uploads and variants, real images in listing cards/details, Telegram theme integration and a platform-independent web shell. [Commit: [9b9dc99c](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/9b9dc99c6a4c8e366f3c96cf05fcfedae6079b0d); [15bc20e1](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/15bc20e1bf4eef5cdeb03fc8f55b87ca39205cff)]
+- **Local development:** added one-command development-stack startup and Telegram bot polling/webhook support for development. [Commit: [8f9af280](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/8f9af28001ecda6ef6574e751ee3ccf360c38521); [62afcd07](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/62afcd0781377f575e887c5afa61551865ead7b0); [6a9b85c0](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/6a9b85c05a7c282804647b15e8e12a9db5509dd7)]
