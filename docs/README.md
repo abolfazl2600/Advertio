@@ -75,6 +75,16 @@ The pages below provide implementation detail for each subsystem. The catalogue 
 - [Identity-verification review](./backoffice/verifications.md)
 - [Admin account and Telegram linking](./backoffice/account.md)
 
+## عملیات و پشتیبانی (فارسی)
+
+- [راهنمای عملیات Advertio](../12-operations/operations-overview.md)
+- [تأیید، رد و برداشتن آگهی](../12-operations/listing-approval.md)
+- [رسیدگی به تقلب و گزارش سوءاستفاده](../12-operations/fraud-handling.md)
+- [پشتیبانی و پیگیری مشکلات کاربران](../12-operations/customer-support.md)
+- [بررسی دستی هویت و مدارک](../12-operations/manual-verification.md)
+
+این دستورالعمل‌ها میان قابلیت‌های تأییدشده در کد و رویه‌های پیشنهادی نیازمند تصویب تفکیک می‌کنند. SLA یا گردش‌کار رسمی تیکت که در منابع تأیید نشده، به‌عنوان قابلیت موجود معرفی نشده است.
+
 ## Integrations and architecture
 
 - [Crawler ingestion contract](./integrations/crawler.md)
