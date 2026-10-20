@@ -1,231 +1,79 @@
-# Mini App — Profile Current State
+# Profile — current implementation
 
-> Current implementation documented from the Mini App/Web App UI review on 24 Sep 2026.
+> Current Web profile behavior as of 2026-10-20.
 
-This document describes the Profile, My Listings, and Saved Listings experiences currently visible in Advertio. It records the observed implementation only and does not define future profile behavior.
+## 1. Sign-in state
 
-## Profile entry point
+The Profile page handles these session states:
 
-Profile is available from the persistent bottom navigation.
+- **Needs login:** shows sign-in choices.
+- **Authenticating / loading:** shows a loading state.
+- **Failed:** shows the server/client sign-in error and a retry action.
+- **Authenticated:** loads the current profile and displays profile controls.
 
-The current Profile screen contains:
+Profile data is loaded from the current-user endpoint. A profile failure has its own retry action; it does not silently display a different user's cached data.
 
-- Profile title
-- User identity card
-- Verification badge
-- Telegram-style username
-- Profile image
-- Profile image change affordance
-- Edit action
-- Verified phone section
-- My Listings entry
-- Saved Listings entry
-- Appearance selector
-- Bottom navigation
+## 2. Identity card
 
-## User identity card
+The identity card displays:
 
-The top profile card currently displays:
+- Avatar or initials fallback.
+- Display name, or **Unnamed** when no name is set.
+- Telegram username when a Telegram identity is linked.
+- Edit action for the display name.
+- Change-photo action for the avatar.
 
-- Profile image/avatar
-- User display name
-- `Verified` badge
-- Username
-- `Edit` action
+The display name is the name shown on listings. The name form validates a minimum length and surfaces server validation errors. Avatar upload accepts a file up to 8 MiB at the client, then sends it to the server for validation/processing; rate-limit and file-processing errors are shown to the user.
 
-A small camera control is shown over the profile image, indicating that the avatar/profile photo can be changed.
+The profile does not currently provide ratings, reviews or deal-history screens.
 
-The observed account displayed a verified profile state.
+## 3. Phone number
 
-## Verification state
+The phone row shows a verified phone number when the account passes the phone-verification gate. Otherwise it explains why verification is needed and provides the available route:
 
-A dedicated verification section is currently shown below the profile identity card.
+- Inside Telegram: request the user's own Telegram contact through the Mini App SDK.
+- In an ordinary browser: continue the verification hand-off in Telegram.
 
-Observed content:
+Phone verification is separate from identity-document verification. It is the account/trading gate used by listing creation, contact/paid actions and wallet access.
 
-- Shield/verification icon
-- `Verified phone` label
-- Verified phone number
+## 4. Identity verification
 
-This confirms that phone verification status is currently surfaced directly in the Profile UI.
+The Identity verification card shows the current request and the action appropriate to its state.
 
-## My Listings
+| State | User-facing next step |
+|---|---|
+| No request / rejected request eligible to restart | Review the price and requirements, then start a request |
+| `AwaitingPayment` | Pay the configured service price in Advertio Coins |
+| `AwaitingSubmission` | Continue in Telegram and send the requested identity document and challenge video |
+| `Submitted` | Wait for manual admin review; the bot notifies the user |
+| `Approved` | Identity Verified badge is shown on the profile and listings |
+| `Rejected` | The rejection reason is shown when available; the next action depends on current request state |
 
-The Profile page links to a dedicated **My listings** screen.
+Identity verification requires a phone-verified account and a linked Telegram identity. Evidence stays in Telegram; it is not uploaded through the Mini App form. Payment does not guarantee approval. See [Authentication and verification](./authentication.md) and [Backoffice Verifications](../backoffice/verifications.md).
 
-### Current listing status tabs
+## 5. Account links
 
-The My Listings screen currently exposes four status tabs:
+For an authenticated user, Profile links to:
 
-- Active
-- Pending
-- Rejected
-- Inactive
+- **My listings:** all of the user's own listings across live journeys, grouped by status.
+- **Saved listings:** listings bookmarked across live journeys.
+- **Sign out:** clears the current local session and returns the user to a non-authenticated state.
 
-Each tab displays the number of listings in that state.
+These are listing bookmarks and listing ownership views, not saved-search alerts. Saved-search alerts are managed through the Telegram bot.
 
-Observed example counts:
+## 6. Appearance
 
-- Active: 0
-- Pending: 0
-- Rejected: 2
-- Inactive: 0
+The Appearance control has three choices:
 
-## Active listings empty state
+- **System:** follow the platform/Telegram theme.
+- **Light**
+- **Dark**
 
-When there are no active listings, the current screen displays an empty state containing:
+The preference is held by the theme store and synchronized with the host platform where supported.
 
-- Listing/document icon
-- `Nothing live right now`
-- Supporting text explaining that listings which passed review and have not expired appear here
-- `Post a listing` action
+## Related pages
 
-This gives the user a direct path from the empty state into the listing creation flow.
-
-## Rejected listings
-
-The Rejected tab currently displays rejected listing cards.
-
-Observed rejected listing card content includes:
-
-- Listing image
-- Property type
-- Listing title
-- Bedroom count
-- Location
-- Price
-- Relative listing age
-
-Below the rejected listing card, the UI displays a dedicated rejection-reason panel.
-
-### Rejection reason
-
-The current rejection panel contains:
-
-- Error/warning icon
-- `Why it was rejected` heading
-- Admin-provided rejection reason text
-
-An observed example rejection reason was:
-
-- `chek picture`
-
-This confirms that the current product exposes the moderation rejection reason directly to the listing owner.
-
-## Pending listings
-
-A Pending tab is present and includes a count.
-
-No pending listing details were included in the reviewed screenshots, so this document does not assume additional pending-specific behavior beyond the visible tab/state.
-
-## Inactive listings
-
-An Inactive tab is present and includes a count.
-
-No inactive listing details were included in the reviewed screenshots, so this document does not assume additional inactive-specific behavior beyond the visible tab/state.
-
-## Saved Listings
-
-The Profile screen links to a dedicated **Saved** page.
-
-The current Saved page displays saved listing cards using the same general marketplace card style.
-
-Observed saved listing content includes:
-
-- Listing image
-- Property type
-- Listing title
-- Bedroom count
-- Location
-- Price
-- Relative publish time
-
-An observed saved listing example displayed:
-
-- Property type: Apartment
-- Title: Fully furnished one-bedroom unit in West Vancouver
-- 1 bed
-- West Vancouver
-- $2,400/mo
-- 14 h ago
-
-## Appearance settings
-
-The current Profile screen includes an **Appearance** section.
-
-Observed options:
-
-- System
-- Light
-- Dark
-
-The selector is implemented as a segmented control.
-
-The reviewed screenshot shows **System** selected.
-
-## Navigation behavior
-
-The My Listings and Saved pages preserve the persistent bottom navigation:
-
-- Home
-- Search
-- Post
-- Wallet
-- Profile
-
-The central Post action remains visually emphasized.
-
-Back navigation is available from both My Listings and Saved.
-
-## Current functional map
-
-### Implemented and visible
-
-- Profile page in bottom navigation
-- Display name
-- Username
-- Profile photo
-- Verified badge
-- Phone verification status
-- Verified phone number display
-- Profile edit entry point
-- Avatar/photo change affordance
-- My Listings entry point
-- Saved Listings entry point
-- Appearance selection
-- My Listings status tabs
-- Status counts
-- Active empty state
-- Post Listing CTA from Active empty state
-- Rejected listing cards
-- Rejection reason display
-- Saved listing feed/cards
-
-### Visible but not fully documented from the current screenshots
-
-The following controls are visible, but their deeper flows were not reviewed in the provided UI evidence:
-
-- Profile Edit flow
-- Profile image upload/change flow
-- Pending-listing detail behavior
-- Inactive-listing detail behavior
-- Saved-listing removal/unsave interaction
-- Appearance persistence behavior across sessions/devices
-
-These should not be treated as fully documented until their UI/behavior is reviewed.
-
-## Product-state boundary
-
-This document intentionally does not assume future profile features such as:
-
-- ratings and reviews;
-- advanced trust badges;
-- Last Active metrics;
-- Deals Count;
-- social verification;
-- video verification management;
-- referral profile UI;
-- public user history;
-- profile analytics.
-
-Those features belong to future work unless already implemented and reviewed separately.
+- [Authentication](./authentication.md)
+- [Wallet](./wallet.md)
+- [Shared listing interactions](./listing-interactions.md)
+- [Telegram bot settings](../telegram-bot/settings.md)
