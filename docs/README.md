@@ -79,7 +79,7 @@ The pages below provide implementation detail for each subsystem. The catalogue 
 - [Crawler ingestion contract](./integrations/crawler.md)
 - [Current platform boundaries and shared architecture](./architecture/current-platform.md)
 - [Repository changelog](../CHANGELOG.md)
-- [Production deployment and operational requirements](../10-integrations/telegram.md) — this category document describes the integration; the GitLab deployment guide remains the operational source.
+- [Telegram integration and operational boundaries](./integrations/telegram.md) — SDK, authentication, Stars, bot modes, notifications and deployment checks.
 
 ## Known implementation gaps
 
