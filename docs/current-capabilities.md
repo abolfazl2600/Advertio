@@ -1,0 +1,293 @@
+# Advertio — detailed capability catalogue
+
+> **Reviewed:** 2026-10-20. This catalogue consolidates the small and large capabilities documented in this `docs/` directory and verified against implementation notes/code in GitLab `master`. It describes repository implementation, not verified Production deployment. Configuration-dependent features are marked as such; planned work and known gaps are not described as shipped.
+
+## 1. Product scope and architecture
+
+### Live Web journeys
+- **Housing** — Canadian rental and roommate listings; canonical slug `housing`.
+- **Cargo** — traveller/sender route listings; display label Cargo, canonical slug `passenger-cargo`.
+- **Jobs** — Canadian hiring and job-seeker listings; canonical slug `jobs`.
+- Services and Social may exist in backend category definitions, but they are not registered as live Web journeys.
+
+### Shared Mini App navigation
+- Home/Hub with cards for live journeys.
+- Post chooser when the user has more than one live journey.
+- Global keyword Search.
+- Saved listings across journeys.
+- My listings across journeys.
+- Wallet and payment history.
+- Profile, sign-in, verification and sign-out.
+- Journey-specific feed, create form and listing detail routes. Current public routes include `/housing`, `/passenger-cargo`, `/jobs`; create routes end in `/new`.
+
+### Shared technical and interaction boundaries
+- Journeys are independent features and reuse a shared listing layer rather than importing another journey's UI.
+- Shared listing layer owns API interactions, contact/unlock, conversation, save, report and publisher actions.
+- Server validation and category policy are authoritative. Client-displayed prices or stale UI state do not override the server.
+- Current server rule: at most one active listing per user per category.
+- Code merged to GitLab `master` does not, by itself, prove Production deployment.
+
+## 2. Housing
+
+- Canadian rental and roommate marketplace.
+- Listing types: Rent and Roommate.
+- Required structured attributes: listing type; property type (Apartment, Condo, Basement, Studio, Room, House); bedrooms (Studio, 1, 2, 3, 4+); monthly CAD price unless negotiable is explicitly set.
+- Optional/conditional schema attributes include furnishing, gender preference and other category-defined fields; the server uses the same schema to validate submissions and render supported filters.
+- Price validation for numeric monthly rent: CAD 100–10,000; a negotiable listing uses `price_negotiable=true` instead of inventing a number.
+- Wizard-style listing creation with optional photo upload.
+- Category feed supports schema-driven structured filters, listing cards, detail pages and pagination/loading states as implemented by the journey.
+- Uses shared contact/unlock, conversation, save, report and publisher actions.
+- Housing is the default category for Gate A listing-based metrics.
+- Market scope remains Canada; other countries in the shared location catalogue do not automatically expand Housing geography.
+
+Detailed source: [Mini App — Housing](./mini-app/housing.md).
+
+## 3. Cargo
+
+- One category/listing model with `role`: traveller (`traveler`) or sender (`sender`); not two separate categories.
+- Purpose is matching travellers carrying items with people sending items; it is not passenger ride-sharing or commercial freight management.
+- One-screen posting flow with four required choices: role, origin city, destination city and travel date. Title is generated from these answers; no free-text title is required.
+- Origin/destination cities must come from the location catalogue. Supported countries: Iran, Canada, United States, Germany, Italy, United Kingdom and France. The backend rejects cities outside the catalogue.
+- Listing location is resolved from the origin city.
+- Optional fields: cargo type (Documents, Clothes, Electronics, Food, Other), weight (schema range 0.1–30 kg), positive price, negotiable-price flag and description/note.
+- Currency is derived from the route. Traveller price is per kilogram; sender price is a total amount.
+- Feed filters by role, origin and destination on the server.
+- Trips with a past travel date are hidden from the feed; this does not expire the listing lifecycle based on travel date.
+- Detail shows route, date, item/cargo details and price, then uses the shared contact flow.
+- Available from Hub, Post chooser, global Search, Saved and My listings.
+- Category-specific policy is configurable; its initial values were seeded from Housing's then-current policy.
+
+Detailed source: [Mini App — Cargo](./mini-app/cargo.md).
+
+## 4. Jobs
+
+- Canada only.
+- One category/listing model supports Hiring (`role=employer`) and Looking for work (`role=seeker`).
+- One-screen posting with four required choices: role, job category, Canadian city and hours/employment type. Title is generated from answers; no free-text title is required.
+- Closed 18-value job taxonomy: Restaurant & Food; Construction; Cleaning; Delivery & Driving; Retail & Store; Beauty & Salon; Office & Admin; IT & Tech; General Labour; Warehouse; Skilled Trades; Customer Service; Sales; Healthcare & Care; Childcare; Teaching & Tutoring; Design & Creative; Other.
+- Eight common categories are surfaced first as chips; the remaining categories are available through the additional-fields control.
+- Optional fields include custom job title (up to 60 characters), salary, salary period, work arrangement and note.
+- Salary is stored in CAD and can specify hour, month or year. Missing salary is not replaced with an invented “negotiable” value.
+- Work arrangement is distinct from employment type: on-site, hybrid or remote.
+- City selection uses the Canadian catalogue and returns the province with the city; no separate province step is required.
+- Feed filters by role, job category and city on the server.
+- Detail shows role/job information, location, disclosed pay and key facts; it then uses shared contact interactions and displays a job-scam warning.
+- Available from Hub, Post chooser, global Search, Saved and My listings.
+- Category policy is configurable; initial values were seeded from Housing's then-current policy.
+
+Detailed source: [Mini App — Jobs](./mini-app/jobs.md).
+
+## 5. Global Search, Saved and My listings
+
+### Global Search
+- Searches titles and descriptions across Housing, Cargo and Jobs.
+- Keyword search only; not semantic/AI search.
+- Every query word must appear in the title or description.
+- Query length: 2–100 characters; 350 ms debounce after typing settles.
+- Query is reflected in the `?q=` URL parameter.
+- Results are paged in groups of 20 with further-page loading.
+- Keeps previous results visible while the next query loads.
+- Returning from a detail restores cached results and scroll position for the same query; a new query starts at the top.
+- Clearing the query returns to the empty prompt.
+- Search is separate from each journey's structured feed filters.
+
+### Saved listings and My listings
+- Saved listings are cross-journey and require sign-in.
+- My listings shows the signed-in user's listings across live journeys.
+- Save and owner actions are shared across categories.
+- Listing creation refreshes the feed for the journey that was actually published to, not always Housing.
+
+Detailed sources: [Search](./mini-app/search.md), [shared listing interactions](./mini-app/listing-interactions.md).
+
+## 6. Shared listing lifecycle, moderation and contact
+
+### Lifecycle and policy
+- Listing states include PendingReview, Active, Rejected, Deactivated and Expired.
+- User-created listings enter review on creation.
+- On approval, the listing snapshots its contact-unlock coin cost and expiry TTL.
+- Seeded defaults documented in the implementation: 30-day listing TTL and 72-hour boost duration; Backoffice policy can change them.
+- Changing policy does not silently rewrite a live listing's snapshotted contact cost/expiry.
+- Create, renew and boost prices are read at action time; backend rechecks price and state.
+
+### Contact and conversations
+- Shared contact flow orchestrates sign-in, phone verification, price confirmation and contact unlock.
+- UI checks the user's balance and current contact cost, and offers top-up if the balance is insufficient.
+- Server policy and listing state determine whether contact is free or paid.
+- Successful contact opens or reuses the shared conversation path.
+- Crawled listings are a distinct path: contact opens the original Telegram handle when available, otherwise the source URL, and does not deduct Advertio Coins.
+- Save, report and publisher/owner actions are part of the shared listing layer.
+
+### Duplicate detection
+- Bare user-created listings with no description and no photos include publisher identity in the exact fingerprint.
+- The same publisher's repeated submission still collides; two different publishers can create identical generated titles.
+- Similarity alone marks a bare listing as Similar at most, rather than refusing it.
+- Listings with text/photos and crawled listings retain their previous exact-match behavior.
+
+Detailed source: [Shared listing interactions](./mini-app/listing-interactions.md).
+
+## 7. Authentication, Profile and trust
+
+### Sign-in
+- Telegram Mini App authentication uses Telegram launch credentials.
+- Browser sign-in can hand off to Telegram through a deep link and one-time code.
+- Phone-code login delivers the code through the linked Advertio Telegram bot, not SMS.
+- Google sign-in is offered only when configured; Google alone does not establish phone verification.
+- A browsing session without a verified phone can exist, but phone-gated marketplace/financial actions require phone verification.
+- Telegram is an identity provider/delivery channel; the verified phone number is the account identity key.
+
+### Phone and identity verification
+- Phone verification and identity-document verification are separate trust levels.
+- Phone verification is used for listing creation, contact/paid actions and wallet access.
+- Inside Telegram, the Mini App requests the user's own contact through Telegram SDK; in an ordinary browser, the user completes the hand-off in Telegram.
+- Paid identity verification supports a request lifecycle, payment, document and challenge-video submission through Telegram, manual admin review, approval/rejection and an Identity Verified badge after approval.
+
+### Profile
+- Handles needs-login, loading, failure/retry and authenticated states.
+- Displays avatar/initials, display name or “Unnamed”, and linked Telegram username.
+- Supports editing display name and uploading an avatar (client limit 8 MiB; server validates/processes it).
+- Shows phone verification status and identity-verification status/actions.
+- Provides links to Saved/My listings and sign-out.
+- Ratings, reviews and deal-history screens are not implemented.
+
+Detailed sources: [Authentication](./mini-app/authentication.md), [Profile](./mini-app/profile.md).
+
+## 8. Wallet, coins and payments
+
+- Wallet is a top-level Mini App destination and requires a phone-verified account.
+- Shows coin balance and purchase/payment history; errors have retry states.
+- Coin packs and manual-payment methods are loaded from the server, not hardcoded as authoritative client data.
+- Inside Telegram, the online rail is Telegram Stars. In an ordinary browser, Stripe Checkout and Telegram Stars are offered when configured.
+- Manual payment appears only when a method is enabled and an active admin with linked Telegram chat can review it.
+- Online top-up: load packs, choose a pack, start checkout, open returned URL, wait for server/webhook confirmation, then show credited/pending/failed state. Returning from checkout is not proof of payment.
+- Manual top-up: user starts request, sends text and/or receipt photo through the bot, request is routed to linked active admins, admin approves/rejects, user is notified; coins are credited only on approval.
+- Payment records and coin-ledger transactions are separate records.
+- Eligible self-service refunds depend on server policy/payment state; not every payment is refundable.
+- Backoffice can inspect online payments, refund successful payments through the original rail, review manual payments, and inspect whether text/receipt evidence and admin delivery succeeded.
+- Coin flow is a ledger of credits/debits. Admin wallet adjustments and refunds are audited actions.
+- Provider credentials, package prices, manual payment methods and refund eligibility are configuration/server dependent.
+
+Detailed source: [Wallet and payments](./mini-app/wallet.md).
+
+## 9. Telegram bot
+
+### Entry, locale and menu
+- `/start` creates/refreshes Telegram-linked user context and shows language selection or Main Menu.
+- Main Menu: Create Listing (Mini App hand-off), Search Listings, Your saved searches, Settings and Help.
+- Create Listing does not use a chat-based category form; the Mini App handles listing creation.
+- Language options: Persian (`fa`), English (`en`), French (`fr`), Russian (`ru`) and Hindi (`hi`); missing Persian category/attribute labels fall back to English.
+- Settings toggles persisted marketing opt-in and returns to menu.
+- Commands include `/start`, `/search`, `/paysupport` and admin-only `/adminreport`.
+
+### Search wizard
+- Asks category, city (typed or Any), price (typed or Any), supported category attributes, then shows result count and compact results.
+- Single numeric price means maximum; hyphenated input means min–max; invalid input clears the constraint.
+- Only hard/soft filterable Select and Boolean attributes are asked. Range, Number, Date and MultiSelect are skipped.
+- Results show title, numeric price (or em dash) and city; buttons open the matching listing in Mini App.
+
+### Saved-search alerts
+- Saved-search wizard asks category, city, price, supported Select/Boolean attributes and frequency.
+- Frequency options: Instant or Digest.
+- Instant alerts are queued when matching listings activate; digest groups matches and sends once per day at a configured UTC hour (documented default 09:00 UTC).
+- Matching supports category, city text, price min/max and scalar equality for supported attributes.
+- List/view/pause/resume/delete are supported.
+- The bot does not ask for custom saved-search names, keywords, country or province in v1.
+- Full range/number/date/multi-select operators are not implemented in the current bot wizard/matcher.
+
+### Payments, identity and admin reporting
+- `/paysupport` is registered for Telegram Stars payment support.
+- Bot hand-off supports manual payment evidence submission and identity-verification evidence flows.
+- `/adminreport` is restricted to active admins in private chat and can be scheduled daily (default 06:00 UTC); displayed timestamps use configured timezone (documented default Asia/Tehran).
+- A separate operational lead digest is scheduled four times daily at 00:00, 06:00, 12:00 and 18:00 Tehran time for configured admin IDs with linked chats.
+- Admin reports include users, listing lifecycle/supply by city, saved searches, listing reports and crawler freshness/operations as documented.
+
+Detailed sources: [Telegram bot overview](./telegram-bot/overview.md), [Search](./telegram-bot/search.md), [Saved searches](./telegram-bot/saved-searches.md), [Settings](./telegram-bot/settings.md), [Payments and verification](./telegram-bot/payments-and-verification.md), [Admin report](./telegram-bot/admin-report.md).
+
+## 10. Backoffice
+
+### Users and account
+- Search and filter users by status (All/Active/Disabled), verified state and whether they have posted.
+- User search works together with filters; crawled/unowned listings do not make an unrelated user count as a publisher.
+- Inspect users, access account details, initiate direct Telegram messages and pass selected users into a pre-filled Broadcast composer.
+- Backoffice account supports username/password changes with server-confirmed updates and inline validation.
+- Admin Telegram linking is used by notification and review workflows.
+
+### Listing moderation
+- Views/queues include Pending, Live, Rejected, Taken down, Expired, All and Possible Duplicate.
+- Search by title, city and listing ID.
+- Pending review drawer exposes title/classification, photos, description, attributes and listing details.
+- Moderation actions approve/reject; live listing drawer shows listing/payment details, performance, views per day, publication lifecycle and moderation controls.
+- Possible Duplicate queue supports inspecting and resolving duplicate candidates and understanding exact/similarity behavior.
+- User reports can be reviewed from listing moderation.
+
+### Category policy and pricing
+- Per-category action prices: create listing, renew listing, boost listing and contact unlock.
+- Paid-contact phase can be Early or Late, with configurable early window.
+- Listing TTL/renewal duration and boost duration are configurable within server-supported limits.
+- Service prices are managed separately.
+- Existing live listings keep snapshotted contact cost/expiry; backend revalidates price/state at action time.
+
+### Gate A metrics
+- Tracks user population/activity, paid-contact conversion, failure attribution, real vs crawled supply, photo coverage, contact-demand allocation, crawled-vs-user-generated performance, payment friction, experiment monitoring, duplicate-charge monitoring and instrumentation health.
+- Listing-based metrics can be scoped to Housing, Cargo or Jobs; Housing is default. User counts and instrumentation health remain platform-wide.
+- Includes “Is crawled supply eating demand?” comparison and “Why they did not pay” failure attribution.
+- Includes C1 early-vs-late experiment and duplicate-charge monitoring.
+- Metric definitions and data windows matter; displayed sample values in screenshots are historical snapshots, not current live counts.
+
+### Broadcasts
+- Send direct Telegram messages to All, Filtered or Selected users.
+- Filters include phone/identity verification, whether a user has posted, join dates, language and saved-search interest.
+- Disabled users and users without Telegram are excluded; Promotions also exclude users without marketing opt-in.
+- Draft create/edit/delete, recipient preview and exclusion counts, message preview, test send to acting admin and explicit recipient-count confirmation.
+- Server rejects send if audience changed after confirmation.
+- Asynchronous rate-limited delivery, Telegram 429 retry-after handling, per-recipient outcomes, live report, cancel, retry failed and duplicate actions.
+- Audit fields record creator/sender and timestamps; Promotion includes one-tap Stop promotions.
+- V1 text limit 4,096 characters; optional one button (label max 40 characters) opens configured Mini App entry.
+- Not implemented: scheduled sends, rich media, HTML/Markdown templates, variables, language variants, recall/edit after send, click/open attribution, frequency caps and A/B tests.
+
+### Telegram channel publishing
+- Configure channels/groups, destination/handle, status and matching filters.
+- Automatic publication for listings matching configured filters, including schema attributes/tags.
+- Inspect historical matches and distinguish not-sent/already-sent/all matching states.
+- View publish history/source/status and manually retry failed publish records.
+- Channel publishing is different from Broadcasts: one publishes listings to channels; the other sends direct messages to users.
+
+### Crawled sources
+- Source table shows stable source name, live/total listing counts and last-ingested timestamp.
+- Source marked Stale when last ingest is over 48 hours old.
+- Source-wide deactivation affects Advertio's ingested listings; it does not delete the external Telegram post or stop the upstream crawler.
+- Crawled listing contact links to Telegram handle when available, otherwise source URL; no coin deduction for opening original source.
+- Crawled supply is excluded from user-generated Gate A conversion metrics except the explicit supply-competition comparison.
+
+### Payments, coins, verification and operations
+- Payments page lists All/Pending/Succeeded/Failed/Refunded online payments, failure reason, provider/currency, refund amount and actor when relevant; successful payments expose the standard refund action.
+- Manual-payment queue tracks Draft/Submitted/Approved/Rejected, method, text/receipt evidence and admin delivery status; failed admin delivery can be retried.
+- Coin flow exposes the credit/debit ledger; wallet actions provide audited admin coin credits and payment refunds.
+- Identity-verification queue tracks Awaiting payment, Awaiting evidence, Submitted, Approved and Rejected; admins inspect evidence and decide.
+- Listing inspections support request queue/status, scope/notes, quote/payment, operations, evidence, report, publication, notes and history.
+- Admin account page supports credentials and Telegram-linked scheduled reports.
+
+Detailed sources: [Backoffice overview](./backoffice/overview.md), [Gate A](./backoffice/gate-a.md), [Listings](./backoffice/listings.md), [Users](./backoffice/users.md), [Policy & pricing](./backoffice/policy-pricing.md), [Broadcasts](./backoffice/broadcasts.md), [Channels](./backoffice/channels.md), [Crawled sources](./backoffice/crawled-sources.md), [Payments](./backoffice/payments.md), [Coin flow](./backoffice/coin-flow.md), [Wallet actions](./backoffice/wallet-actions.md), [Verifications](./backoffice/verifications.md), [Inspections](./backoffice/inspections.md), [Account](./backoffice/account.md).
+
+## 11. Recent implementation changes (6–20 October 2026)
+
+- **Cargo:** route-based traveller/sender journey; catalog-backed cities; route-derived currency; role-specific price semantics; server-side route/role filters; past-date trips hidden from feed; connected to Hub, Post, Search, Saved and My listings.
+- **Jobs:** Canada-only hiring/job-seeker journey; one-screen four-choice posting; 18-value closed taxonomy; salary periods hour/month/year in CAD; separate on-site/hybrid/remote work arrangement; server-side filters; shared contact flow and scam warning.
+- **Shared listing architecture:** contact/unlock, conversation, save, report and owner actions moved to the shared listing layer for all journeys.
+- **Gate A:** listing-based metrics scoped to selected category so Housing, Cargo and Jobs are not mixed.
+- **Duplicate detection:** identical bare generated listings from different users no longer block each other; same-user double submissions still collide.
+- **Broadcasts:** audience builder, live recipient preview, confirmation, test send, asynchronous rate-limited delivery, reporting, retry/cancel and promotion opt-out.
+- **Telegram Mini App SDK:** initialized once before React mounts inside Telegram, restoring phone sharing and other version-gated SDK methods.
+
+Commit-level details: [Repository CHANGELOG](../CHANGELOG.md).
+
+## 12. Known gaps — do not describe as shipped
+
+- Cargo/Jobs crawler ingestion.
+- Multiple active listings per user within the same category; one-active-listing server rule remains.
+- Cargo lifecycle expiration based on travel date (past-date trips are only hidden from the feed).
+- Jobs Filled status, external application links/email and Jobs-specific Backoffice scam signals.
+- Telegram bot search redesign specific to Cargo; bot wizard skips Date/Range/Number/MultiSelect attribute types.
+- Broadcast scheduling, rich media/templates/variables, language variants, recall/edit after send, click/open attribution, frequency capping and A/B testing.
+- Ratings, reviews and deal-history profile screens.
+- AI/semantic search.
+- Production deployment of latest GitLab `master` is not verified by this catalogue.
