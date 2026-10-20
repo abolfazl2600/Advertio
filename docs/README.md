@@ -86,6 +86,10 @@ The pages below provide implementation detail for each subsystem. The catalogue 
 
 این دستورالعمل‌ها میان قابلیت‌های تأییدشده در کد و رویه‌های پیشنهادی نیازمند تصویب تفکیک می‌کنند. SLA یا گردش‌کار رسمی تیکت که در منابع تأیید نشده، به‌عنوان قابلیت موجود معرفی نشده است.
 
+## نقشهٔ راه آینده — دامنهٔ کانادایی (فعلاً غیرفوری)
+
+- [شرایط ثبت دامنهٔ .ca و برنامهٔ فنی احتمالی](./roadmap/ca-domain.md) — **Deferred / Not now**؛ مرتبط با [Jira AD-7](https://advertio24.atlassian.net/browse/AD-7). این قابلیت هنوز اجرا نشده و هیچ تغییر DNS یا Production به‌عنوان بخشی از این مستندات درخواست نشده است.
+
 ## Integrations and architecture
 
 - [Crawler ingestion contract](./integrations/crawler.md)
