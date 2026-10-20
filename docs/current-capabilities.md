@@ -205,11 +205,12 @@ Detailed sources: [Telegram bot overview](./telegram-bot/overview.md), [Search](
 ## 10. Backoffice
 
 ### Users and account
-- Search and filter users by status (All/Active/Disabled), verified state and whether they have posted.
-- User search works together with filters; crawled/unowned listings do not make an unrelated user count as a publisher.
-- Inspect users, access account details, initiate direct Telegram messages and pass selected users into a pre-filled Broadcast composer.
-- Backoffice account supports username/password changes with server-confirmed updates and inline validation.
-- Admin Telegram linking is used by notification and review workflows.
+- Filters: All, Active, Disabled, Verified and Posted. Search works together with the filters and accepts name, username, phone or user ID.
+- The table exposes display name, Telegram-style username, phone, status, role, reputation and join date; missing usernames/phones use a neutral empty-value placeholder.
+- The Posted filter uses the canonical listing creator/owner relationship; crawled/unowned listings do not make an unrelated user count as a publisher.
+- Admins can inspect users, send a direct Telegram message, or pass selected users to a prefilled Broadcast composer. Direct messages and Broadcasts are separate workflows.
+- Backoffice account supports server-confirmed username/password updates with inline validation, one-time password setup and Telegram linking for reports.
+- The UI includes a row-actions menu, but detailed disable/enable, role-editing and reputation-editing behavior is not fully documented by the reviewed source; do not infer those operations from the visible columns.
 
 ### Listing moderation
 - Views/queues include Pending, Live, Rejected, Taken down, Expired, All and Possible Duplicate.
@@ -245,10 +246,12 @@ Detailed sources: [Telegram bot overview](./telegram-bot/overview.md), [Search](
 - Not implemented: scheduled sends, rich media, HTML/Markdown templates, variables, language variants, recall/edit after send, click/open attribution, frequency caps and A/B tests.
 
 ### Telegram channel publishing
-- Configure channels/groups, destination/handle, status and matching filters.
-- Automatic publication for listings matching configured filters, including schema attributes/tags.
-- Inspect historical matches and distinguish not-sent/already-sent/all matching states.
-- View publish history/source/status and manually retry failed publish records.
+- Configure Telegram channels/groups, destination/handle, active status and matching filters.
+- Filters include category, country, province, city, outgoing language and schema-backed attribute equality. Conditions combine with AND semantics; blank dimensions act as wildcards and the same attribute key cannot be repeated in multiple rows.
+- Send a test message to validate a destination. Automatic publication runs for Active listings matching every configured filter.
+- Inspect historical matches and distinguish not-sent, already-sent and all-matching states; historical-match actions support manual backfill/re-send.
+- View publish history with listing link, source and delivery status; manually retry failed publication records.
+- Total Sent is a cumulative successful-delivery count, not a count of unique listings. Channel publishing is separate from direct-user Broadcasts.
 - Channel publishing is different from Broadcasts: one publishes listings to channels; the other sends direct messages to users.
 
 ### Crawled sources
@@ -318,7 +321,7 @@ The older implementation history contains several capabilities that were not cal
 
 ### Reports, inspections and moderation safety
 
-- Signed-in users can report another user's listing, with a reason and optional note. Repeat pending reports from the same user/listing do not create duplicate pending records.
+- Signed-in users can report another user's listing, with one of the current reasons (Scam, Wrong information, Duplicate, Already rented, Offensive or Other) and an optional note up to 500 characters. Repeat pending reports from the same user/listing do not create duplicate pending records.
 - Backoffice review includes listing reports, possible duplicates, moderation decisions and source/provenance details. A possible duplicate is a review queue; similarity is not automatically equivalent to an exact duplicate.
 - Independent Listing Inspection is a separate Backoffice-only operational workflow: request intake, scope/quote, payment tracking, inspector/visit scheduling, evidence, structured report, publication readiness, notes and history. It is not the standard listing-approval queue and is not a complete public self-service ordering flow.
 - Identity verification is a separate paid service. Its configured/seeded reference price is 80 Coins in the reviewed docs, but the live service price is authoritative; payment alone never grants the Identity Verified badge.
@@ -364,4 +367,5 @@ See [Implementation history and legacy-spec reconciliation](./implementation-his
 - A canonical source-defined Early Access timeline, the full legacy ranking formula, Urgent action, advertiser-facing daily/weekly performance reports, referral rewards and promo/gift-code programs are not confirmed as shipped.
 - Premium accounts, escrow, business landing pages, partner APIs, enterprise dashboards, automated paid-acquisition integrations, email notifications and WhatsApp notifications.
 - National ID, GPS, social-media, financial and cargo-ticket verification flows.
+- A complete Backoffice category/schema CRUD editor is not confirmed; current code evidence supports backend category schemas/reference data and a policy/pricing UI, not a full category-definition management interface.
 - Production deployment of latest GitLab `master` is not verified by this catalogue.
