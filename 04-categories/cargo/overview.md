@@ -1,6 +1,6 @@
 # Cargo — Current Implementation Overview
 
-> **Status:** Implemented in GitLab master on 2026-10-19 (CARGO-01). This is the current implementation summary, not a production deployment audit. Older pre-shipment design notes are preserved in [pre-launch-design.md](./pre-launch-design.md).
+> **Status:** Implemented in GitLab master on 2026-10-19 (CARGO-01). This is the current implementation summary, not a production deployment audit. Older pre-shipment design notes are preserved in [pre-launch-design.md](./pre-launch-design.md). Some attribute/filter/rules documents retain pre-shipment proposals; where they conflict with this overview, this shipped-scope summary is authoritative. Cargo crawler mapping is not evidence that Cargo crawler ingestion is implemented.
 
 ## Canonical shipped model
 
