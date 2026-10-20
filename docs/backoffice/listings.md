@@ -1,6 +1,6 @@
 # Backoffice — Listings
 
-> Current-state documentation based on the reviewed Backoffice behavior as of 3 Oct 2026.
+> The detailed UI observations below are from 3 Oct 2026, supplemented by current implementation updates reviewed on 20 Oct 2026.
 
 ## Current Implementation
 
@@ -302,3 +302,31 @@ The detailed behavior of the following views has not yet been reviewed:
 - All
 
 Do not infer their detailed behavior from this document.
+
+
+## Current implementation update — reports and duplicate detection (2026-10-20)
+
+### Listing reports queue
+
+The Listings area includes a **Reports** review surface with status filters:
+
+- Open
+- Under review
+- Resolved
+- Dismissed
+- All
+
+Reports can also be filtered by reason or by a specific listing. Reasons are Scam, Wrong information, Duplicate, Already rented, Offensive and Other. The review drawer includes the reported listing, reporter details, the reporter's note, other reports on the same listing, duplicate-detection flags and audit history. Reviewers can start/take over review, dismiss a report or resolve it by taking the listing down where the listing state allows it.
+
+A report count is a review signal, not an automatic moderation decision. Multiple reports do not remove a listing by themselves. A confirmed takedown can also resolve other open reports on that listing.
+
+### Current duplicate-detection correction
+
+The duplicate check runs before coin charge or listing write.
+
+- Exact duplicates are rejected without charging or leaving a new listing behind.
+- Similarity-only findings can be queued for human review.
+- For user-created listings with no description and no photos, the exact fingerprint includes the publisher. Two different users can therefore create identical generated Cargo/Jobs titles without blocking each other; the same user's double submission still collides.
+- The Possible Duplicate review panel compares the candidate and matched listing, shows similarity, lets the admin choose which listing to remove, and records a resolution/dismissal. Removing a native user listing requires an explicit confirmation because it is not a crawler repost.
+
+Source: [duplicate-detection correction](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/a5db136683570af40e0db905be4acbe5d709ead2).
