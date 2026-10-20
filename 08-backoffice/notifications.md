@@ -1,5 +1,23 @@
 # Notifications
 
+
+## Current implementation status — Broadcasts (2026-10-09)
+
+Broadcasts is implemented in GitLab master as a Telegram group-messaging feature in the backoffice. This current status supersedes older source-level statements below that describe mass notifications as a future capability.
+
+Implemented in v1:
+
+- Audience types: All, Filtered and Selected users.
+- Filters include phone/identity verification, whether the user has posted, join dates, language and saved-search interest.
+- Disabled users and users without Telegram are excluded; Promotions also exclude users who have not opted in.
+- Draft create/edit/delete, live audience preview and exclusion breakdown, message preview, test send to the calling admin, and exact recipient-count confirmation.
+- The server refuses a send if the audience changed after confirmation.
+- Asynchronous rate-limited delivery, Telegram 429 retry-after handling, per-recipient outcomes, live reporting, cancel, retry failed and duplicate actions.
+- Audit fields for who created/sent a broadcast and when; Promotions include a one-tap stop-promotions action.
+
+Not included in v1: scheduled sending, rich media/HTML/variables, per-language variants, recall/edit after sending, click/open attribution, frequency capping and A/B tests. Broadcasts currently uses Telegram; this is not evidence that WhatsApp or email notifications are implemented.
+
+
 Source Document Notificationها را در چند بخش تعریف کرده است: lifecycle، Saved Search، Listing analytics، Wallet و پیام‌های Admin.
 
 ## Notification channels
