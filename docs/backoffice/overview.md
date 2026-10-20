@@ -1,96 +1,37 @@
-# Advertio Backoffice — Current State
+# Advertio Backoffice — current implementation
 
-> Last documented from the current production/backoffice state on 3 Oct 2026.
+> **Reviewed:** 2026-10-20 against the executable Backoffice in GitLab `master`. This is code-level implementation documentation, not a Production deployment audit.
 
-This documentation records **what is currently visible/implemented in the Advertio Backoffice**. It is intended to be a development reference alongside the codebase.
+## Navigation and feature map
 
-## Documentation rules
+| Backoffice area | Current purpose | Detailed documentation |
+|---|---|---|
+| Gate A | Marketplace validation, supply/contact/payment funnel and instrumentation health | [Gate A](./gate-a.md) |
+| Listings | Moderation, live listing inspection, reports, possible duplicates and listing performance | [Listings](./listings.md) |
+| Policy & pricing | Per-category action prices, paid-contact phase, early window, listing TTL and boost duration; service prices | [Policy & pricing](./policy-pricing.md) |
+| Inspections | Operational inspection requests, quotes/payments, visit/evidence/report/publication workflow | [Inspections](./inspections.md) |
+| Crawled sources | Monitor ingestion freshness and deactivate a source's listings | [Crawled sources](./crawled-sources.md) |
+| Channels | Automatic publication of matching listings to Telegram channels/groups | [Channels](./channels.md) |
+| Users | Search/filter users, inspect accounts, direct Telegram message and hand selected users to Broadcasts | [Users](./users.md) |
+| Broadcasts | One Telegram message to all, filtered or selected users, with recipient preview and delivery report | [Broadcasts](./broadcasts.md) |
+| Verifications | Review paid identity-verification requests and evidence | [Verifications](./verifications.md) |
+| Payments | Online payment history, refunds and manual-payment review/delivery | [Payments](./payments.md) |
+| Coin flow | Credit/debit ledger of Advertio Coins | [Coin flow](./coin-flow.md) |
+| Wallet actions | Audited admin coin credit and payment refund tools | [Wallet actions](./wallet-actions.md) |
+| Your account | Admin username/password and Telegram report connection | [Account](./account.md) |
 
-- **Current Implementation** describes behavior observed in the current Backoffice.
-- **Known Changes** links to GitHub issues for approved work that is not yet part of the current implementation.
-- GitHub Issues are the source for work to be implemented; this documentation should not describe planned work as already implemented.
-- Update these documents when the corresponding behavior changes.
+## Important distinctions
 
-## Current navigation observed
+- **Payment** means money moved through a provider. **Coin flow** means Advertio Coins moved in a wallet. They are separate records and can be linked by a payment reference.
+- **Channels** publish matching listings to configured Telegram destinations. **Broadcasts** send a message directly to selected users through the Advertio bot. They are different delivery features.
+- **Crawled listings** are not user-created supply: they do not deduct coins to reach the original Telegram contact and are excluded from Gate A user-generated listing/contact metrics, except the explicit crawled-supply substitution comparison.
+- **Identity verification** is not phone verification. It is a paid document/video workflow reviewed by an admin.
+- Category action prices are configurable. A zero price means free; values shown in documentation as seed defaults are not necessarily the current live configuration.
 
-The Backoffice sidebar currently contains:
+## Current product scope
 
-- Gate A
-- Listings
-- Policy & pricing
-- Crawled sources
-- Channels
-- Users
-- Payments
-- Coin flow
-- Wallet actions
-- Your account
+The three live Web journeys are Housing (`housing`), Cargo (`passenger-cargo`) and Jobs (`jobs`). Cargo and Jobs were enabled by product-owner decision before Gate A; that decision does not mean Gate A passed. The current one-active-listing-per-user-per-category rule still applies.
 
-The **Gate A**, **Listings**, **Users**, and **Channels** sections have been documented in detail so far. The remaining sections should be documented after their current UI/behavior has been reviewed.
+## Source and deployment boundary
 
-### Current Gate A capability note
-
-Gate A provides current product-validation and marketplace-health metrics including:
-
-- **Total Users · all time**;
-- **New Users · current window**;
-- **Active Users · current window**;
-- paid-contact conversion and failure attribution;
-- real/user-generated supply and photo coverage;
-- crawled-demand concentration;
-- detailed **Crawled vs user-generated** views/contact/payment comparison;
-- payment-reason visibility;
-- C1 early-vs-late experiment monitoring;
-- double-charge monitoring;
-- all-time instrumentation health.
-
-In the reviewed 3 Oct 2026 state, Active Users are defined in the UI as accounts that **viewed, contacted, signed in, or posted** during the window.
-
-The current Gate A UI exposes `ⓘ` metric-definition controls across the KPI dashboard. The opened definition UI has been verified and includes calculation metadata such as formula, numerator, denominator, inclusion rules, crawled-listing treatment, time-window behavior, No-data semantics, and source data/fields.
-
-See [Gate A](./gate-a.md) for the current metric definitions and observed UI state.
-
-### Current Listings capability note
-
-The Backoffice **Possible Duplicate** workflow includes admin-controlled duplicate resolution: the admin explicitly selects which listing in a duplicate pair should be removed, while the other listing remains unchanged. The `Not a duplicate` action resolves the review item without removing either listing.
-
-See [Listings](./listings.md) for the current behavior.
-
-### Current Users capability note
-
-The Backoffice Users table includes a dedicated **Username** column alongside display name, phone, status, role, reputation, joined date, and row actions. Stored usernames are shown with the `@` prefix, while missing usernames use the neutral `—` placeholder.
-
-The current Users UI also exposes **All**, **Active**, **Disabled**, **Verified**, and **Posted** filters, with search by name, username, phone, or ID.
-
-**Verified** uses the canonical Advertio verification state. **Posted** identifies users who have created at least one listing through the canonical listing ownership/creator relationship.
-
-Backoffice admins can also send a direct plain-text Telegram message to an individual Advertio user from the **Users** section using the existing Advertio bot integration.
-
-See [Users](./users.md) for the current behavior.
-
-### Current Channels capability note
-
-The Backoffice Channels area supports automatic filtered publishing to configured Telegram destinations and now includes the following documented operational capabilities:
-
-- destination verification through **Send test message**;
-- data-driven Language/Country/Province/City selectors with dependent geographic filtering;
-- schema-driven Category/Attribute filtering;
-- per-channel **Total Sent** successful-delivery count;
-- **Matches / Historical matches** with Not sent yet / Already sent / All matching;
-- manual historical/backfill sends and intentional re-send path;
-- per-listing Sent here / Latest delivery visibility;
-- Publish History with human-readable listing titles and Listing IDs;
-- listing-title navigation to Backoffice Listing Detail;
-- Backfill status visibility;
-- manual recovery of eligible failed deliveries;
-- Attempts semantics based on actual delivery attempts.
-
-See [Channels](./channels.md) for the current behavior.
-
-## Detailed documentation
-
-- [Gate A](./gate-a.md)
-
-- [Listings](./listings.md)
-- [Users](./users.md)
-- [Channels](./channels.md)
+The reviewed behavior is present in GitLab `master` as of 2026-10-20. This documentation does not establish that the same revision has been deployed to Production or that every environment has all provider secrets/configuration set.
