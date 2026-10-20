@@ -1,6 +1,6 @@
 # Backoffice — Gate A
 
-> Current-state documentation based on the reviewed Backoffice UI as of **3 Oct 2026**.
+> UI value examples are historical snapshots from 3 Oct 2026; implementation updates below were reviewed against GitLab `master` on 20 Oct 2026.
 
 ## Purpose
 
@@ -384,3 +384,29 @@ The reviewed UI does not establish:
 - configuration location for target thresholds where the definition modal does not expose it.
 
 Do not infer undocumented implementation details beyond the metric-definition UI and observed dashboard state.
+
+
+## Current implementation update — 2026-10-20
+
+### Category-scoped listing metrics
+
+Gate A now has a category selector for:
+
+- Housing (`housing`)
+- Cargo (`passenger-cargo`)
+- Jobs (`jobs`)
+
+The selected category applies to listing-based metrics and queries so Housing, Cargo and Jobs are measured independently rather than combined. This includes user-generated supply, photo coverage, paid-contact conversion, failure attribution, crawled-vs-user-generated comparison, phase split and double-charge checks tied to listing/contact events.
+
+### Time windows and platform-wide metrics
+
+- The available metric windows are 7, 30 and 90 days.
+- **Total users** remains an all-time platform count.
+- **New users** and **Active users** are platform-wide for the selected time window; Active means an account viewed, contacted, signed in or posted during that window.
+- Instrumentation-health metrics remain platform-wide; they are not narrowed to the selected listing category.
+
+### Interpretation boundary
+
+Cargo and Jobs were enabled by product-owner decision before Gate A. Their presence in the selector does not mean Gate A passed. Values copied from the 3 Oct screenshots remain historical snapshots, not current counts.
+
+Source: [category-scoped Gate A implementation](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/99672dd655c3f77de463b97648a00d17f4fa4f24).
