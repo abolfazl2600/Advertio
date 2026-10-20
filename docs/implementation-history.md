@@ -89,6 +89,7 @@ The repository's top-level product documents are useful as design history, but s
 |---|---|
 | Housing, Cargo and Jobs | Current live Web journeys. Housing is Canada-focused; Cargo is route-based; Jobs is Canada-only. |
 | Services and Social | Backend category definitions may exist, but neither is a live Web journey. |
+| Backoffice category/schema editor | Not confirmed; the reviewed Backoffice has policy/pricing controls, while category schemas/reference data are supplied by the backend. |
 | Human Connections and Peer Exchange | Design/category documents only for this status review; not live Web journeys. |
 | Crawler | Implemented ingest contract for Housing. Cargo/Jobs ingestion is not confirmed. |
 | Saved filters | Telegram bot saved-search wizard is implemented; the full old Web saved-filter workflow is not confirmed. |
