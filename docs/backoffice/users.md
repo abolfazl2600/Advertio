@@ -1,6 +1,6 @@
 # Backoffice — Users
 
-> Current-state documentation based on the reviewed Backoffice UI as of 3 Oct 2026.
+> The detailed UI observations below are from 3 Oct 2026, supplemented by current implementation updates reviewed on 20 Oct 2026.
 
 ## Current Implementation
 
@@ -156,3 +156,14 @@ The following behavior has not yet been reviewed and should not be inferred from
 - Disable/enable workflow details
 - Role-management workflow, if any
 - Reputation-management workflow, if any
+
+
+## Current implementation update — Broadcasts hand-off (2026-10-20)
+
+The Users page can pass a selected group of users into the Broadcasts composer via **Message selected**. The new Broadcast starts with audience type **Selected** and the selected user IDs prefilled; the admin then writes/validates the message and confirms the exact eligible recipient count. The Broadcast composer supports up to 500 selected user IDs.
+
+This bulk hand-off is separate from the existing one-to-one **Send message** action, which opens a direct Telegram message to an individual user.
+
+Broadcast eligibility is still enforced at send time: disabled accounts and users without Telegram are excluded; Promotions additionally exclude users who have not opted in. The Users selection does not bypass these rules.
+
+See [Broadcasts](./broadcasts.md) for audience filters, preview, confirmation, delivery reports and retry/cancel behavior.
