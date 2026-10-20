@@ -512,14 +512,12 @@ Current-state docs record what the runtime UI actually shows.
 
 Target product/category docs record the canonical model being developed.
 
-Example:
+Example, as of 2026-10-19:
 
-- current Telegram UI may still show `Passenger Cargo`;
-- target taxonomy is `Cargo`.
+- the Mini App label is `Cargo`;
+- the backend journey slug remains `passenger-cargo` for routing and category identity.
 
-Do not edit Current State documentation to pretend the runtime already changed.
-
-Implementation work should eventually align UI/runtime labels with accepted target decisions.
+Current-state documentation should record the actual label and route slug separately. Do not infer a backend slug from a user-facing label or change the slug casually; it is part of the journey registry and category contract.
 
 ---
 
