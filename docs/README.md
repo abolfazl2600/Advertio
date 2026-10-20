@@ -92,7 +92,7 @@ These are intentionally not presented as shipped capabilities:
 - A dedicated Jobs `Filled` status, external application links/email, and Jobs-specific Backoffice scam signals.
 - Scheduled Broadcast sends, rich-media/HTML/variable templates, recall/edit after sending, click/open attribution, frequency caps and A/B testing.
 - Advanced saved-search operators for range, number, date and multi-select attributes in the Telegram bot.
-- The older product specs also describe features that are not confirmed as shipped: AI/semantic search and translation, reviews/ratings/deal history, referral/gift-code rewards, Urgent listing action, the full legacy ranking formula, advertiser-facing daily/weekly performance reports, Premium/escrow/business platform features, email/WhatsApp delivery and verification layers beyond phone plus paid Identity Verification. See [Implementation history and legacy-spec reconciliation](./implementation-history.md) for the full status matrix.
+- The older product specs also describe features that are not confirmed as shipped: AI/semantic search and translation, reviews/ratings/deal history, referral/gift-code rewards, Urgent listing action, the full legacy ranking formula, advertiser-facing daily/weekly performance reports, Premium/escrow/business platform features, email/WhatsApp delivery, a full Backoffice category/schema editor and verification layers beyond phone plus paid Identity Verification. See [Implementation history and legacy-spec reconciliation](./implementation-history.md) for the full status matrix.
 - Production deployment of the latest GitLab `master` revision has not been verified by this documentation update.
 
 ## Implementation references
