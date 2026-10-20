@@ -1,6 +1,6 @@
 # Jobs — Posting Flow
 
-> Status: **Jobs V1 proposed flow**, built on Advertio's source-defined generic listing workflow.
+> **Status (2026-10-19):** The Jobs journey is implemented in GitLab master. The multi-step flow below is a pre-launch proposal, not the shipped form. The shipped form is a single-screen, four-choice flow described in [overview.md](./overview.md). Remaining gaps are listed there.
 
 ## Entry
 
@@ -9,7 +9,7 @@ Post
 → Jobs
 ```
 
-Jobs is already present in Telegram Bot category selection, but a complete Jobs-specific posting experience is not yet verified.
+The Jobs-specific posting journey is implemented. The multi-step form below is retained as pre-launch design reference and does not describe the shipped form.
 
 ## V1 step flow
 
