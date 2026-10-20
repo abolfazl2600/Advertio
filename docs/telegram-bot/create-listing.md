@@ -1,151 +1,28 @@
-# Advertio Telegram Bot — Create Listing Current State
+# Telegram bot — Create Listing hand-off
 
-> Current-state documentation as of **25 Sep 2026**.
->
-> This document records only UI behavior visible in the supplied Telegram Bot screenshots. It does not infer hidden state transitions or backend behavior.
+> **Current behavior:** listing creation happens in the Web Mini App. The bot intentionally does not host a category-by-category listing form.
 
 ## Entry point
 
-The reviewed Create Listing flow starts from the Main Menu:
+The Main Menu's **Create Listing** button is rendered as a Telegram Mini App/web-app or URL button when the Mini App entry can be resolved. Telegram opens the Web app client-side; no bot callback is required for the normal path.
 
-```text
-Main Menu
-   ↓
-🏠 Create Listing
-```
+The Mini App entry uses the configured create-listing start parameter. Once in the Mini App, the Post chooser routes to the selected live journey:
 
-The bot then displays:
+- Housing → `/housing/new`
+- Cargo → `/passenger-cargo/new`
+- Jobs → `/jobs/new`
 
-> **Which category?**
+## Fallback and stale keyboards
 
-## Category selection
+- If the Mini App is not configured/reachable, the bot renders a callback that leads to an unavailable message and a Back button.
+- If the bot receives an old `menu:create_listing` callback from a keyboard created before the Mini App was configured, it resolves the current Mini App entry and offers the working link.
+- The normal create flow is not an in-chat wizard; screenshots of older category/type/city prompts should not be used as the current implementation specification.
 
-The currently visible category buttons are:
+## Why the hand-off matters
 
-- **Housing & Roommate**
-- **Passenger Cargo**
-- **Jobs**
-- **Services**
-- **Social & Events**
-- **Cancel**
+Each live journey owns its own create form and category schema. Housing has a structured wizard and photos; Cargo and Jobs use short single-screen forms. The Mini App performs server-backed validation, configured pricing, duplicate detection and the shared listing lifecycle.
 
-### Current UI
+## Related pages
 
-```text
-Which category?
-
-Housing & Roommate
-Passenger Cargo
-Jobs
-Services
-Social & Events
-✖ Cancel
-```
-
-The exact button labels above are transcribed from the supplied screenshot.
-
-## Housing & Roommate
-
-The supplied screenshots include a subsequent screen with:
-
-> **Listing Type**
-
-The visible buttons are:
-
-- **Rent**
-- **Roommate**
-- **Skip**
-- **Cancel**
-
-### Current UI
-
-```text
-Listing Type
-
-Rent
-Roommate
-Skip
-Cancel
-```
-
-The screenshots do not show the user's tap between the category screen and this screen. Therefore, the exact callback/state transition is **Not Verified**.
-
-## City selection
-
-The next reviewed screen displays:
-
-> **Which city? Type a name, or tap Any.**
-
-The visible buttons are:
-
-- **Any**
-- **Cancel**
-
-### Current UI
-
-```text
-Which city? Type a name, or tap Any.
-
-Any
-Cancel
-```
-
-The screenshot sequence does not show which Listing Type button was selected immediately before this screen. Therefore, the exact Listing Type → City transition is **Not Verified**.
-
-The message itself confirms that the screen accepts a city name as typed input or provides an **Any** button. The screenshots do not show the result of either action.
-
-## Current reviewed flow
-
-Only the following screens are confirmed by the supplied screenshots:
-
-```text
-Main Menu
-   ↓
-🏠 Create Listing
-   ↓
-Which category?
-   ├── Housing & Roommate
-   ├── Passenger Cargo
-   ├── Jobs
-   ├── Services
-   ├── Social & Events
-   └── Cancel
-
-Housing & Roommate
-   ↓
-Listing Type
-   ├── Rent
-   ├── Roommate
-   ├── Skip
-   └── Cancel
-
-[following reviewed screen]
-   ↓
-Which city? Type a name, or tap Any.
-   ├── Any
-   └── Cancel
-```
-
-The bracketed transition is intentionally not assigned to a specific button because the supplied screenshots do not show the intervening user action.
-
-## Not Verified
-
-The reviewed material does not establish:
-
-- callback data or handler names;
-- the exact transition from each category;
-- the exact transition from each Listing Type option;
-- the result of **Any**;
-- city-name validation;
-- what happens after a city is entered;
-- additional listing fields;
-- image upload behavior;
-- listing preview;
-- listing submission;
-- moderation status;
-- persistence/API calls;
-- error messages;
-- **Cancel** behavior;
-- back navigation inside the Create Listing flow.
-
-The `feature/telegram-bot-flow` branch contains no executable Telegram Bot source files, so implementation-level handler references cannot be verified from the repository.
+- [Mini App overview](../mini-app/overview.md)
+- [Housing](../mini-app/housing.md) · [Cargo](../mini-app/cargo.md) · [Jobs](../mini-app/jobs.md)
