@@ -263,6 +263,12 @@ Listing rules and monetization can differ by category and country.
 
 ---
 
+## Documentation
+
+The detailed, current implementation reference for the Web Mini App, Telegram bot, Backoffice, integrations and known gaps is maintained in the [docs directory](./docs/README.md). This is the feature-level source of truth; the product roadmap and historical design notes may include unshipped work.
+
+---
+
 ## Recommended Starting Points
 
 For a fast introduction to the project:
