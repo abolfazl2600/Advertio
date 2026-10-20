@@ -1,6 +1,6 @@
 # Additional profile snapshots — 2026-10-20
 
-All 10 profiles below are screenshots supplied by the user in conversation, complementing [the initial snapshot](2026-10-20.md).
+All 11 profiles below are screenshots supplied by the user in conversation, complementing [the initial snapshot](2026-10-20.md).
 Their original images are not committed to the public repository.
 The timestamps shown are from screenshot names, not Telegram’s independently verified observation time.
 
@@ -15,7 +15,8 @@ The timestamps shown are from screenshot names, not Telegram’s independently v
 | `Screenshot 2026-10-20 at 4.37.02 PM.png` | Advertio Shop | فروشگاه کالای وارداتی | Channel | `4374556291` | 3 subscribers | https://t.me/advertio_shop |
 | `Screenshot 2026-10-20 at 4.37.35 PM.png` | Ontario Jobs | Advertio 🇨🇦 | Channel | `3985033871` | 4 subscribers | https://t.me/Ontario_Job |
 | `Screenshot 2026-10-20 at 4.38.10 PM.png` | Canada house Toronto | Group | `4421494690` | 3 members | https://t.me/canada_house_toronto |
-| `Screenshot 2026-10-20 at 4.38.20 PM.png` | Toronto Jobs | Advertio 🇨🇦 | Channel | `4472881303` | 3 subscribers | https://t.me/Toronto_Advertio |
+| `Screenshot 2026-10-20 at 4.38.20 PM.png` | Toronto Jobs — Advertio 🇨🇦 | Channel | `4472881303` | 3 subscribers | https://t.me/Toronto_Advertio |
+| `Screenshot 2026-10-20 at 4.42.00 PM.png` | Advertio خانه کانادا 🇨🇦 | Channel | `4311610249` | 6 subscribers | https://t.me/canada_advertio |
 
 ## Observed relationships and descriptive information
 
@@ -31,9 +32,16 @@ The timestamps shown are from screenshot names, not Telegram’s independently v
 - `Canada house Toronto`: 3 members; `@canada_house_toronto`; Telegram ID `4421494690`; viewer-join label `September 25 at 4:53 PM`; no bio shown.
 - `Toronto Jobs | Advertio 🇨🇦`: 3 subscribers; `@Toronto_Advertio`; Telegram ID `4472881303`; description lists Toronto employment opportunities (full-time, part-time, contract), and links to `@Advertio_bot` for posting.
 
+## General Canada Marketplace Channel
+
+- Display name: `Advertio خانه کانادا 🇨🇦`; username `@canada_advertio`; numeric ID `4311610249`; 6 subscribers at capture.
+- Self-description: Canadian marketplace for buying/selling, housing, vehicles, jobs, services, and opportunities; Persian-speaking audience across Canada.
+- Bio CTA: `@AdvertioBot` (without underscore). **Different string from registered `@advertio_bot`**. This is an unresolved link-integrity issue, not an asserted alias.
+- Community banner: Canada Advertio Community / 15 chats. No live ownership or content publishing verification.
+
 ## Count reconciliation
 
 - Original snapshot: 5 distinct assets (2 bots, 1 channel, 1 Community, 1 support contact).
-- Additional batch: 10 distinct groups/channels (5 groups, 5 channels).
-- Current registry: **15 distinct assets**, comprising **6 channels, 5 groups, 2 bots, 1 Community, 1 support contact**.
-- Community banner says **15 chats**; do not confuse this label with the 15 registered assets, nor assume all 11 recorded groups/channels exhaust the actual Community membership.
+- Additional batch: 11 distinct groups/channels (5 groups, 6 channels).
+- Current registry: **16 distinct assets**, comprising **7 channels, 5 groups, 2 bots, 1 Community, 1 support contact**.
+- Community banner says **15 chats**; do not confuse this label with the 15 registered assets, nor assume all 12 recorded groups/channels exhaust the actual Community membership.
