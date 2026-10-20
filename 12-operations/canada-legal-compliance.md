@@ -1,102 +1,253 @@
-# چارچوب انطباق قانونی و آمادگی راه‌اندازی Advertio در کانادا
+# ارزیابی انطباق قانونی و آمادگی عرضه Advertio در کانادا
 
-> **وضعیت: پیش‌نویس برای بررسی و تکمیل تدریجی — نه سیاست مصوب، نه مشاورهٔ حقوقی.**
+> **بازبینی پژوهشی:** ۲۱ اکتبر ۲۰۲۶ | **وضعیت:** تحقیق مستند و برنامهٔ اجرایی پیشنهادی، **نه تأیید نهایی حقوقی و نه تأیید آمادگی Production**.
 >
-> این سند یک محل متمرکز برای پرسش‌ها، حوزه‌های بررسی، شواهد و تصمیم‌های حقوقی/عملیاتی مربوط به عرضهٔ Advertio در کاناداست. هنوز نتیجه‌گیری حقوقی، تشخیص قطعی قوانین لازم‌الاجرا، تأیید وکیل یا تعهد رسمی محصول را ثبت نمی‌کند.
+> **پیش‌نیاز تصویب:** مشخص‌شدن شخصیت حقوقی/محل استقرار کسب‌وکار، استان‌های هدف، محل واقعی داده‌ها، طرف قرارداد پرداخت و تصویب مسئول حریم خصوصی. نتیجه‌های مشروط این سند جای نظر وکیل کانادایی یا مشاور مالیات را نمی‌گیرند.
 >
-> **مبنای تدوین اولیه:** محدوده و خروجی‌های [Jira AD-10](https://advertio24.atlassian.net/browse/AD-10) با عنوان «Canada Legal & Compliance Research for Advertio». پژوهش مفصل و راستی‌آزمایی منابع رسمی در مراحل بعد انجام می‌شود.
+> **دامنه:** محصول فعلی، نه کلیهٔ برنامه‌های آینده. سرچشمهٔ درخواست: [Jira AD-10](https://advertio24.atlassian.net/browse/AD-10). قوانین و راهنماهای رسمی در هر بند لینک شده‌اند؛ **منابع محصول** جدا از **منابع حقوقی** مشخص شده‌اند.
 
-## ۱. هدف و محدوده
+## ۱. جمع‌بندی مدیریتی و تصمیم‌های پیش از عرضه
 
-فقط الزاماتی بررسی شوند که مستقیماً به **نسخهٔ فعلی Advertio و راه‌اندازی/فعالیت در کانادا** مربوط هستند؛ نه سناریوهای فرضی یا امکانات دوردست Roadmap.
+Advertio یک Marketplace آگهی است و لزوماً فروشنده، مؤجر، استخدام‌کننده یا متصدی حمل‌ونقلِ معاملهٔ بین کاربران نیست؛ بااین‌حال **برای داده‌هایی که خودش جمع‌آوری، ذخیره، بازنشر یا پردازش می‌کند و برای خدماتی که خودش می‌فروشد** مسئولیت‌هایی دارد. محدودکردن مسئولیت در Terms، وظایف قانونی را خودبه‌خود حذف نمی‌کند. مرجع کلی: [PIPEDA / OPC](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/)؛ [قوانین تبلیغات گمراه‌کننده / Competition Bureau](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/types-deceptive-marketing-practices/misleading-representations-and-deceptive-marketing-practices).
 
-موضوعات محصول که باید در ارزیابی لحاظ شوند:
-- حساب کاربری، پروفایل، شماره تلفن و روش‌های احراز/تأیید هویت؛
-- آگهی‌های کاربران، دسته‌بندی Housing و اطلاعات احتمالی اشخاص دیگر در محتوای آگهی؛
-- آگهی‌های جمع‌آوری‌شده از منابع ثالث و Telegram، با تفکیک دادهٔ خود کاربر از دادهٔ اشخاص غیراعضو؛
-- جست‌وجو و نمایش آگهی، پیام‌رسانی بین کاربران، Moderation، گزارش تخلف و تعلیق حساب؛
-- Wallet/Coin، ویژگی‌های پولی مثل انتشار/Boost، درگاه‌های پرداخت و بازپرداخت؛
-- نگهداری، امنیت، پردازش، اشتراک‌گذاری و حذف اطلاعات کاربران.
+### تصمیم‌های اجرایی پیشنهادی (اولویت‌گذاری، نظر محصول/Compliance است نه تشخیص قطعی نقض قانون)
 
-**مرزبندی منابع:** این مخزن GitHub محل ثبت تصمیم‌های محصول/عملیات و چارچوب ارزیابی است. [کاتالوگ قابلیت‌های فعلی](../docs/current-capabilities.md) و سند فنی [Privacy & Data Governance در GitLab](https://gitlab.com/advertio/platform/advertio-monorepo/-/blob/master/docs/legal/PRIVACY-DATA-GOVERNANCE.md) منابع زمینه‌ای هستند؛ سند GitLab فعلاً Draft و بدون تأیید حقوقی است. وجود قابلیت در کد یا وجود بند در سند Draft، تأیید انطباق با قانون نیست.
+| شناسه | موضوع | تصمیم عملیاتی پیش از عرضه/گسترش | اولویت پیشنهادی | وضعیت مستند | منبع |
+| --- | --- | --- | --- | --- | --- |
+| G-01 | تعیین رژیم حریم خصوصی | ثبت استان‌ها، ساختار شرکت، جریان انتقال بین‌استانی/کشوری و تعیین Privacy Lead | Critical | باز؛ نامشخص | [OPC — provincial laws](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/r_o_p/prov-pipeda/) |
+| G-02 | اطلاع‌رسانی و رضایت | انتشار Notice/Privacy Policy منطبق با عمل واقعی؛ ثبت اهداف، رضایت‌ها و گردش داده | Critical | تأیید نشده | [OPC — meaningful consent](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/appropriate-handling-of-personal-information/collecting-personal-information-and-consent/consent/gl_omc_201805/) |
+| G-03 | Crawler و آگهی‌های اشخاص ثالث | ارزیابی قانونی *تک‌تک* منابع، داده‌های شخصی، اطلاع‌رسانی، حذف/اعتراض و مجوزهای استفاده؛ فعلاً منبعِ بی‌مدرک را برای نشر جدید تأیید نکنید | Critical | باز | [OPC — scraping](https://www.priv.gc.ca/en/opc-news/speeches-and-statements/2023/js-dc_20230824/)؛ [Clearview](https://www.priv.gc.ca/en/opc-actions-and-decisions/investigations/investigations-into-businesses/2021/pipeda-2021-001/) |
+| G-04 | Wallet و خرید | روشن‌کردن ماهیت Coin، افشای هزینهٔ نهایی، قواعد Refund/Chargeback، محل فروش و بررسی شمول مقررات پرداخت | Critical | باز | [Competition Bureau — drip pricing](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/drip-pricing)؛ [Bank of Canada — RPAA](https://www.bankofcanada.ca/2026/06/criteria-for-registering-payment-service-providers/) |
+| G-05 | پاسخ به درخواست کاربر و رخداد امنیتی | ایجاد کانال Contact، فرآیند DSAR، ثبت رخداد و ارزیابی آستانهٔ اعلان | Critical | باز | [OPC — 10 principles](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/)؛ [مقررات breach](https://laws-lois.justice.gc.ca/eng/Regulations/SOR-2018-64/page-1.html) |
+| G-06 | Housing | قواعد Moderation برای آگهی‌های تبعیض‌آمیز و هشدار عدم ضمانت صحت ادعاها | High | نیازمند ارزیابی استان | [OHRC — rental ads](https://www.ohrc.on.ca/en/writing-fair-rental-housing-ad-fact-sheet) |
+| G-07 | Telegram و بازاریابی | تفکیک اعلان خدماتی، Saved Search و پیام تبلیغاتی؛ ارزیابی CASL و سازوکار opt-in/لغو اشتراک | High | باز | [CRTC — CASL](https://crtc.gc.ca/eng/com500/faq500.htm) |
+| G-08 | فعالیت در Québec | تعیین دامنهٔ مشتری/فعالیت، الزامات Law 25، تجارت آنلاین و زبان فرانسه | **Critical اگر Québec هدف عرضه است** | مشروط و باز | [CAI](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/sujets-et-domaines-dinteret/principaux-changements-loi-25)؛ [OQLF](https://www.oqlf.gouv.qc.ca/francisation/droits_linguistiques/droits/langue-du-commerce-et-des-affaires.html) |
+| G-09 | مالیات و دفاتر | تعیین محل عرضه/نوع خدمت و وضعیت ثبت GST/HST با حسابدار؛ نگهداری اسناد مالی | High | باز | [CRA — registration](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html)؛ [CRA — records](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/keeping-records/where-keep-your-records-long-request-permission-destroy-them-early.html) |
+| G-10 | Cargo مرتبط با ایران | پیشگیری از تسهیل نقل‌وانتقال اقلام/طرف‌های تحریمی؛ تعیین دقیق نقش Advertio در حمل یا صرفاً معرفی افراد | High؛ **Critical اگر خود پلتفرم حمل/پرداخت حمل را انجام دهد** | باز | [Global Affairs Canada — Iran sanctions](https://www.international.gc.ca/world-monde/international_relations-relations_internationales/sanctions/iran.aspx?lang=eng) |
 
-## ۲. محورهای پژوهش
+**قاعدهٔ استفاده:** «Critical» یعنی **پیشنهاد مدیریت ریسک برای بررسی/حل قبل از عرضهٔ مربوطه**؛ نمی‌گوید قانون در هر وضعیت الزاماً چنین برچسبی دارد. مسئول اجرایی و نتیجهٔ حقوقی باید در جلسهٔ تصویب تعیین شود.
 
-| محور | پرسش‌ها و موضوعات لازم برای بررسی | خروجی مورد انتظار | وضعیت |
+## ۲. دامنهٔ محصول و مرز شواهد
+
+**وضعیت مشاهده‌شده در مستندات کد GitLab (تا بازبینی ۲۰ اکتبر ۲۰۲۶؛ نه ممیزی تازهٔ Production):** Housing (اجاره/هم‌خانه)، Cargo (تطبیق مسافر و فرستنده)، Jobs، پروفایل و تأیید شماره/هویت، آگهی کاربر و خزیده‌شده، فید و جست‌وجو، پیام‌رسانی و Contact Unlock، گزارش تخلف و Moderation، کانال/بات تلگرام، Wallet، سکه، Stripe و Telegram Stars. Services و Social در schema وجود دارند ولی Journey فعال Web تأیید نشده است. منبع: [کاتالوگ قابلیت‌های فعلی](../docs/current-capabilities.md)، [راهنمای محصول](../03-product/product-overview.md) و [Wallet و پرداخت](../docs/mini-app/wallet.md).
+
+**تفکیک با Roadmap:** Review/Rating عمومی، ویژگی‌های AI، escrow/تضمین معامله، چند آگهی فعالِ پولی و سایر طرح‌های آینده را در این سند به‌عنوان قابلیت فعال یا مبنای نتیجهٔ قانونی فرض نمی‌کنیم. منبع: [Implementation history](../docs/implementation-history.md) و [Current capabilities](../docs/current-capabilities.md).
+
+**اطلاعاتی که بدون دریافت آن‌ها نمی‌توان نتیجهٔ قطعی داد:** نام و کشور ثبت شرکت؛ استان محل انجام تجارت؛ استان‌های کاربران هدف؛ محل سرور/بکاپ و اپراتورهای پردازش؛ سازوکار قراردادی با Telegram، Stripe، سرویس‌دهندهٔ Hosting و Crawler؛ این‌که Coin فقط اعتبار خرج‌کردنی در Advertio است یا به شخص ثالث منتقل/نقد می‌شود؛ اینکه Advertio خود قرارداد حمل/اجاره/اشتغال می‌بندد یا صرفاً واسطهٔ معرفی است. تأثیر این متغیرها در منابع رسمی شرح داده شده است: [OPC — territorial application](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/r_o_p/prov-pipeda/)؛ [Bank of Canada — PSP scope](https://www.bankofcanada.ca/2026/06/criteria-for-registering-payment-service-providers/)؛ [CRA — GST/HST](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html).
+
+## ۳. قوانین قابل بررسی و شرایط اعمال آن‌ها
+
+| حوزه و مرجع | چه زمانی ممکن است اعمال شود؟ | نتیجه برای Advertio | قبل از عرضه؟ | منبع رسمی |
+| --- | --- | --- | --- | --- |
+| **PIPEDA** — فدرال | اطلاعات شخصی در فعالیت تجاری؛ با درنظرگرفتن معافیت‌های استانی و جریان‌های بین‌استانی/بین‌المللی | ۱۰ اصل از جمله هدف مشخص، رضایت، کمینه‌سازی، حفاظت، دسترسی و پاسخگویی | بله، در قلمرو اعمال | [OPC PIPEDA brief](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/) |
+| **PIPA** آلبرتا و بریتیش‌کلمبیا | فعالیت‌های خصوصی مشمول قانون استان؛ PIPEDA ممکن است برای جریان‌های برون‌استانی هم مطرح باشد | نقشهٔ جریان داده و محل پردازش؛ تعیین قانون هر فعالیت | در صورت شمول | [OPC provincial laws](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/r_o_p/prov-pipeda/) |
+| **قانون حریم خصوصی بخش خصوصی Québec / Law 25** | کسب‌وکاری که در Québec فعالیت اقتصادیِ مشمول و پردازش دادهٔ مرتبط انجام می‌دهد، حتی ممکن است بیرون استان مستقر باشد | افشای اطلاعات، مسئول حریم خصوصی، PIA، نقل داده برون‌استانی، مدیریت incident و حقوق کاربر | در صورت شمول | [CAI — scope](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/information-entreprises-privees/champ-application-loi_entreprises)، [Law 25](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/sujets-et-domaines-dinteret/principaux-changements-loi-25) |
+| **CASL** | پیام الکترونیکی با هدف تجاری به نشانی الکترونیکی و بدون استثنای مربوط؛ کانال Telegram را نیز از نظر ماهیت پیام/روش ارسال بررسی کنید | Consent، معرفی فرستنده، لغو اشتراک و ثبت شواهد رضایت در موارد مشمول | پیش از Marketing | [CRTC FAQ](https://crtc.gc.ca/eng/com500/faq500.htm)، [CRTC exceptions](https://crtc.gc.ca/eng/com500/info.htm) |
+| **Competition Act** — ادعاهای گمراه‌کننده | نمایش قیمت/تخفیف، نقش پلتفرم، رتبه/Boost، Verified badge و بازاریابی خدمات | حذف قیمت غیرقابل‌دستیابی، ادعای جعلی و نشانه‌های کمبود ساختگی | بله | [Competition Bureau](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/types-deceptive-marketing-practices/misleading-representations-and-deceptive-marketing-practices)، [Drip pricing](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/drip-pricing) |
+| **Consumer Protection** استان‌ها | فروش Coin/Boost/Listing به مصرف‌کنندهٔ استان؛ جزئیات بسته به استان و نوع قرارداد | پیش‌اطلاع، خلاصه و رسید خرید، لغو/Refund مطابق قوانین محل، نه صرفاً ToS | پیش از فروش | [Ontario online](https://www.ontario.ca/page/safe-online-shopping)، [Québec online](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/) |
+| **GST/HST / Excise Tax Act** | عرضهٔ مشمول مالیات؛ آستانه و شرایط ثبت بسته به وضعیت واقعی کسب‌وکار | نرخ/محل عرضه، ثبت و صدور رسید درست و نگهداری سوابق | پیش از الزام قانونی به وصول | [CRA registration](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html)، [CRA records](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/calculate-prepare-report/gst-hst-records-keep.html) |
+| **RPAA** | اگر عملیات Advertio واقعاً مصداق PSP و انتقال الکترونیکی وجوه مشمول باشد؛ استثناهای incidental/closed-loop وجود دارند | بررسی طبقه‌بندی عملیاتی Wallet و رابطه با PSPها؛ نه فرض ثبت‌نام خودکار | اگر مشمول، پیش از عملیات مربوط | [Bank of Canada — criteria](https://www.bankofcanada.ca/2026/06/criteria-for-registering-payment-service-providers/) |
+| **FINTRAC/PCMLTFA** | صرفاً در صورت انجام فعالیت تعریف‌شدهٔ Money Services Business یا Foreign MSB | بررسی اینکه اعتبار داخلی قابل نقد/انتقال/تبادل است یا خیر؛ اگر نیست، MSB بودن را فرض نکنید | در صورت شمول | [FINTRAC — registration](https://fintrac-canafe.canada.ca/msb-esm/register-inscrire/reg-ins-eng) |
+| **Human Rights Code / Housing** انتاریو | انتشار آگهی اجاره/هم‌خانه در انتاریو؛ استثناهای خاص مثل اشتراک آشپزخانه/حمام با مالک به واقعیت بستگی دارد | سیاست ضدتبعیض، گزینه‌های Report و راهنمای Moderation | در بازار هدف | [OHRC fair rental ads](https://www.ohrc.on.ca/en/writing-fair-rental-housing-ad-fact-sheet) |
+| **Charter of the French Language** کبک | انجام فعالیت تجاری مشمول در کبک | بررسی نسخهٔ فرانسوی وب، اطلاعات خدمات، پشتیبانی، تبلیغات و قراردادها | اگر Québec هدف است | [OQLF rights](https://www.oqlf.gouv.qc.ca/francisation/droits_linguistiques/droits/langue-du-commerce-et-des-affaires.html) |
+| **تحریم‌های اقتصادی ایران** | عرضهٔ خدمات یا تسهیل مبادله/حمل با طرف‌ها، کالاها و خدمات مشمول تحریم | فهرست اقلام/فعالیت‌های ممنوع، due diligence و مسیر شکایت برای Cargo/پرداخت | برای فعالیت مربوط به ایران | [Global Affairs Canada](https://www.international.gc.ca/world-monde/international_relations-relations_internationales/sanctions/iran.aspx?lang=eng) |
+
+## ۴. Privacy: داده‌ها، رضایت، امنیت و انتقال
+
+### ۴.۱ ثبت دارایی و اهداف پردازش
+
+**الزام حقوقی در قلمرو PIPEDA:** تعیین هدف جمع‌آوری قبل/هنگام گردآوری، محدودکردن جمع‌آوری به ضرورت، استفاده و افشا مطابق هدف و حفاظت متناسب با حساسیت؛ سازمان باید مسئول پاسخگویی مشخص داشته باشد. **اقدام پیشنهادی:** ثبت inventory با ستون‌های «داده | هدف | مالک | منبع | گیرنده | محل | مبنای استفاده/رضایت | نگهداری | حذف». منابع: [۱۰ اصل PIPEDA](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/)، [OPC — accountability](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda-compliance-help/pipeda-compliance-and-training-tools/gl_acc_201204/).
+
+| نوع داده در Advertio | هدف عملی فعلی/محتمل | کنترل پیشنهادی متناسب با هدف | منبع زمینهٔ محصول و مبنای حریم خصوصی |
 | --- | --- | --- | --- |
-| حریم خصوصی و اطلاعات شخصی | قوانین فدرال/استانی مرتبط؛ تعریف دادهٔ شخصی؛ مبنای جمع‌آوری و رضایت؛ هدف استفاده؛ اشتراک‌گذاری؛ امنیت؛ حقوق دسترسی/تصحیح/حذف/انصراف | جدول الزام، منبع رسمی، تغییر لازم در محصول/عملیات و نیاز به تأیید مشاور | در انتظار پژوهش |
-| Privacy Policy | دسته‌های داده، هدف پردازش، ارائه‌دهندگان خدمات و پرداخت، پردازش/میزبانی برون‌مرزی، نگهداری، امنیت، حقوق کاربر، شکایت و راه‌های تماس | فهرست حداقلی بندهای لازم برای سند قابل انتشار، تفکیک الزام قانونی از توصیه | در انتظار پژوهش |
-| Terms & Conditions | مسئولیت کاربر و صحت آگهی، محتوای ممنوع، کلاهبرداری، نقش پلتفرم، حذف آگهی/تعلیق، معاملهٔ کاربران، خدمات پولی، محدودیت مسئولیت در حدود مجاز | بندهای ضروری یا توصیه‌شده با تعیین مبنا و ریسک | در انتظار پژوهش |
-| پرداخت و حمایت مصرف‌کننده | اعلام قیمت، روش دریافت وجه، Coin و اعتبار دیجیتال، Paid Listing/Boost، استرداد/لغو، Chargeback، مالیات قابل اعمال، وابستگی به استان/مدل درآمدی/ساختار شرکت/درگاه | الزامات پرداخت و UX قبل از خرید، موارد نیازمند بررسی تخصصی مالیاتی/حقوقی | در انتظار پژوهش |
-| چرخهٔ عمر داده و درخواست کاربران | نگهداری داده، حذف حساب، حذف اطلاعات، دسترسی/اصلاح، انصراف از رضایت، نگهداری سوابق پرداخت، احراز هویت، آگهی و Audit | جدول داده/هدف/مالک/سیاست نگهداری و درخواست‌های کاربر؛ بدون فرض دورهٔ نگهداری اجباری | در انتظار پژوهش |
+| Telegram ID/handle، شماره و پروفایل | ورود، تأیید تماس، مدیریت حساب | عدم نمایش عمومی پیش‌فرض، نقش‌های دسترسی، قابلیت اصلاح | [Current capabilities](../docs/current-capabilities.md)؛ [OPC — safeguards](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/) |
+| تصاویر آگهی، شرح و Contact | ثبت و جست‌وجو، گفتگو و تطبیق کاربران | اخطار پیش از انتشار عمومی، حذف دادهٔ غیرضروری/مدارک حساس از آگهی | [Housing](../docs/mini-app/housing.md)؛ [OPC — consent](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/appropriate-handling-of-personal-information/collecting-personal-information-and-consent/consent/gl_omc_201805/) |
+| مدارک و ویدئوی احراز هویت | ارزیابی هویت، مقابله با جعل | دسترسی محدود، ذخیرهٔ امن، منع استفادهٔ ثانوی، حذف براساس جدول مصوب | [Verification](../docs/backoffice/verifications.md)؛ [OPC — sensitive consent](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/appropriate-handling-of-personal-information/collecting-personal-information-and-consent/consent/gl_omc_201805/) |
+| مکاتبه و گزارش تخلف | گفتگو، پاسخ به شکایت و بررسی سوءاستفاده | حفظ محرمانگی گزارش‌دهنده، حداقل‌سازی نمایش به طرف مقابل | [Fraud handling](./fraud-handling.md)؛ [OPC — PIPEDA](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/) |
+| پرداخت، Ledger و Refund | رسیدگی مالی و رسید تراکنش | جداسازی مشخصات پرداخت PSP از تراکنش داخلی، کنترل دسترسی، منع حذف زودهنگام اسناد مالی | [Wallet](../docs/mini-app/wallet.md)؛ [CRA — records](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/calculate-prepare-report/gst-hst-records-keep.html) |
+| دادهٔ Crawler و آگهی اشخاص غیراعضو | نمایش منبع و جست‌وجو | ارزیابی حق استفاده، منبع/زمان و فرآیند اعتراض/حذف، کاهش تماس‌ها و شناسه‌های غیرضروری | [Crawler integration](../docs/integrations/crawler.md)؛ [OPC — scraping](https://www.priv.gc.ca/en/opc-news/speeches-and-statements/2023/js-dc_20230824/) |
+| logs / telemetry / IP و خطاها | امنیت، عیب‌یابی و حسابرسی | جلوگیری از ثبت Token، مدرک، شماره کامل یا محتوای خصوصی؛ TTL مبتنی بر هدف | [OPC — limiting retention](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/) |
 
-### نکات بین‌بخشی که نباید گم شوند
+### ۴.۲ رضایت آگاهانه و تجربهٔ کاربری
 
-- **اطلاعات Crawler/Telegram:** حقوق و اطلاع‌رسانی مربوط به داده‌های شخص ثالث را جداگانه ارزیابی کنیم؛ عمومی‌بودن یک آگهی به‌تنهایی به معنی مجازبودن تمام استفاده‌ها فرض نشود.
-- **احراز هویت:** نسبت میان اطلاعات تأیید شماره/هویت، سطح دسترسی اپراتورها، داده‌های حساس و حذف/نگهداری بررسی شود.
-- **پرداخت با سکه:** تعاریف Coin و اعتبار، نحوهٔ نمایش هزینهٔ نهایی و شرایط Refund/Chargeback با پیاده‌سازی فعلی مطابقت داده شود.
-- **استان و محل استقرار:** حوزهٔ عرضهٔ اولیه، استان‌های هدف، محل نگهداری داده و ساختار حقوقی کسب‌وکار پیش از هر نتیجه‌گیری قطعی ثبت شوند.
-- **محتوای کاربر و Housing:** قواعد ممنوعیت آگهی، گزارش تخلف و ریسک‌های اختصاصی بازار اجاره فقط تا حدی بررسی شوند که برای فعالیت جاری و لانچ ضرورت دارند.
+**الزام/راهنمای رسمی:** در مواردی که رضایت مبنای مشروع پردازش است، کاربر باید به اطلاعات کلیدی دربارهٔ ماهیت، هدف و پیامد پردازش دسترسی روشن داشته باشد؛ برای دادهٔ حساس و استفادهٔ دور از انتظار معمولاً **رضایت صریح** مقتضی است. به‌ویژه تصویر مدرک/ویدئو، نمایش عمومی شماره/شناسه، انتقال محتوا به کانال و استفادهٔ بازاریابی را به‌صورت یک رضایت مبهم ترکیب نکنید. [OPC — meaningful consent](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/appropriate-handling-of-personal-information/collecting-personal-information-and-consent/consent/gl_omc_201805/).
 
-## ۳. استاندارد ثبت نتیجهٔ هر بررسی
+**اقدام مشخص:** در Signup و قبل از Publish پیوند قابل‌دسترس Privacy/Terms و توضیح «چه اطلاعاتی ممکن است عمومی شوند یا در کانال Telegram نمایش داده شوند» ارائه شود؛ برای Marketing preference کنترل مجزا، نسخهٔ متن و تاریخ/روش رضایت ذخیره شود. این طراحی **توصیهٔ پیاده‌سازی مبتنی بر الزامات شفافیت** است، نه ادعای اینکه همهٔ این چک‌باکس‌ها عیناً توسط قانون الزام شده‌اند. [OPC — meaningful consent](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/appropriate-handling-of-personal-information/collecting-personal-information-and-consent/consent/gl_omc_201805/)؛ [CRTC — CASL consent proof](https://crtc.gc.ca/eng/com500/faq500.htm).
 
-برای هر موضوع یا الزام جدید، ابتدا این اطلاعات را ثبت کنیم:
+### ۴.۳ انتقال داده و پیمانکارها
 
-| فیلد | نحوهٔ ثبت |
-| --- | --- |
-| موضوع و سناریوی Advertio | ویژگی واقعی محصول و نوع داده/تراکنش مربوط |
-| حوزهٔ قضایی | فدرال / استان مشخص / نامشخص |
-| نتیجهٔ بررسی | متن دقیق و محدود نتیجه، بدون تعمیم |
-| نوع | «الزام قانونیِ مستند» / «توصیهٔ محصول» / «نیازمند نظر وکیل» |
-| منبع | لینک رسمی، عنوان مرجع و تاریخ بررسی |
-| اقدام عملی | تغییر متن حقوقی، UI، Backend، عملیات، قرارداد یا هیچ |
-| اولویت | Critical / High / Post-Launch؛ *فقط پس از تحلیل و ذکر دلیل* |
-| مالک و وضعیت | مالک پیشنهادی، مسئول تأیید، وضعیت و مدرک پایان کار |
+PIPEDA سازمان را برای اطلاعات تحت کنترل خود پاسخگو می‌داند، حتی وقتی پردازش به طرف ثالث برون‌سپاری می‌شود؛ در قرارداد یا اقدامات دیگر باید سطح حفاظت قابل مقایسه در نظر گرفته شود. بنابراین فهرست Telegram، PSP، Hosting، نگهداری عکس و ابزارهای Analytics با مقصد کشور و بندهای قراردادی ضروری است. **انتقال برون‌مرزی در PIPEDA به‌طور عمومی ممنوع نیست**، اما الزامات شفافیت و مسئولیت ادامه دارند. منابع: [OPC — accountability](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda-compliance-help/pipeda-compliance-and-training-tools/gl_acc_201204/)؛ [OPC — PIPEDA](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/).
 
-هر چیزی که **منبع کافی ندارد** با «در انتظار بررسی» بماند؛ مورد نامطمئن نباید به‌عنوان «قانون کانادا الزام می‌کند» مطرح شود.
+در Québec و در وضعیت شمول قانون آن، **قبل از انتقال دادهٔ شخصی به خارج Québec ارزیابی اثرات حریم خصوصی (PIA/ÉFVP)** و شروط مربوط مطرح است؛ Law 25 همچنین PIA برای پروژه‌های معین توسعه/بازطراحی سامانه را مقرر کرده است. [CAI — Law 25](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/sujets-et-domaines-dinteret/principaux-changements-loi-25)؛ [حوزهٔ اعمال Québec](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/information-entreprises-privees/champ-application-loi_entreprises).
 
-## ۴. خروجی‌هایی که این بخش باید در نهایت داشته باشد
+### ۴.۴ درخواست دسترسی، تصحیح و انصراف
 
-1. **Executive Summary:** الزامات مهم، ریسک‌ها، موانع احتمالی لانچ و تغییرات لازم.
-2. **Applicable Laws:** جدول «حوزه | قانون قابل اعمال | چرا برای Advertio مرتبط است | اقدام لازم | قبل از لانچ؟» همراه منابع رسمی.
-3. **Pre-Launch Compliance Checklist:** «الزام | اولویت | اقدام | مالک | وضعیت | شاهد/منبع» با تفکیک کارهای بعد از لانچ.
-4. **Legal Documents:** نسخه‌ها و وضعیت بازبینی **Privacy Policy**، **Terms & Conditions** و **Payment/Refund Terms** فقط در صورت ضرورت.
-5. **Counsel Review:** فهرست کوتاه مسائل تفسیری، استانی، مالیاتی یا پرریسک که باید به مشاور حقوقی کانادایی ارجاع شوند.
+در قلمرو PIPEDA حق دسترسی و تصحیح و امکان طرح شکایت وجود دارد؛ پاسخ به درخواست دسترسی اصولاً **حداکثر ۳۰ روز** با امکان تمدید قانونمند در شرایط خاص است. از حق «حذف همهٔ سوابق فوراً و بدون استثنا» نتیجه‌گیری نکنید؛ نگهداری قانونی مالی و ادلهٔ ضروری ممکن است استثنا ایجاد کند. **اقدام:** endpoint/کانال حمایت برای Access، Correction، Delete/Close Account و Withdraw Consent؛ احراز هویت درخواست‌کننده، ثبت زمان، گردش تأیید و پاسخ قابل استناد. [OPC — PIPEDA](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/)؛ [OPC 2026 — 30-day access](https://www.priv.gc.ca/en/opc-actions-and-decisions/investigations/investigations-into-businesses/2026/pipeda-2026-003)؛ [CRA records](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/keeping-records/where-keep-your-records-long-request-permission-destroy-them-early.html).
 
-این خروجی‌ها **فعلاً آماده یا تأییدشده محسوب نمی‌شوند** و با ادامهٔ پژوهش، باید به اسناد/بخش‌های مربوط پیوند داده شوند.
+### ۴.۵ Incident response و مدت نگهداری گزارش رخداد
 
-## ۵. منابع مجاز برای پژوهش بعدی
+در PIPEDA رخداد حفاظتی با **real risk of significant harm** نیازمند گزارش به نهاد ناظر و اطلاع‌رسانی به اشخاص مرتبط است. سازمان باید برای **همهٔ رخدادهای نقض تدابیر امنیتی** ثبت داشته باشد و مطابق مقررات، آن را **۲۴ ماه از زمان احراز وقوع رخداد** نگه دارد. در Québec، آستانهٔ اطلاع‌رسانی **risk of serious injury** و ثبت رخدادهای محرمانگی مطرح است؛ مرجع Québec نگهداری ثبت رخداد را **حداقل پنج سال** مقرر کرده است. این دوره‌ها دربارهٔ **دفتر رخداد** هستند، نه همهٔ داده‌های حساب. منابع: [PIPEDA regulations §6](https://laws-lois.justice.gc.ca/eng/Regulations/SOR-2018-64/page-1.html)؛ [OPC breach records](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/privacy-breaches-at-your-business/breach_101/breach_records/)؛ [CAI incidents](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/information-entreprises-privees/incidents-confidentialite-mesures-securite-entreprises).
 
-برای نتیجه‌های مهم، از مرجع رسمی و منبع تاریخ‌دار استفاده شود. ترتیب اولویت مطابق AD-10:
-1. وب‌سایت‌های رسمی دولت کانادا؛
-2. Office of the Privacy Commissioner of Canada؛
-3. نهادهای حریم خصوصی و حمایت مصرف‌کنندهٔ استان‌ها؛
-4. Competition Bureau Canada؛
-5. CRTC در موضوعات مرتبط؛
-6. مراجع رسمی مالیاتی کانادا؛
-7. سایر تنظیم‌گران رسمی مرتبط.
+**اقدام:** Incident Register، ماتریس Severity/Privacy Risk، مسئول امنیت، زمان کشف/تشخیص، انواع داده، کاربران درگیر، تصمیم دربارهٔ اعلان، لاگ اقدامات و تمرین پاسخ. این کنترل‌ها پیشنهاد عملی برای اجرای قواعد بالا هستند، نه ادعای پیاده‌سازی‌شدن در Advertio. همان منابع بالا.
 
-از وبلاگ‌ها/مطالب تبلیغاتی نمی‌توان به‌تنهایی نتیجهٔ حقوقی قطعی گرفت. ارزیابی GST/HST، استردادها، کاربرد قانون استانی و امکان حذف دادهٔ مالی باید با مستندات و در صورت لزوم نظر حرفه‌ای انجام شود.
+## ۵. Crawler و بازنشر آگهی‌های Telegram — ریسک اختصاصی مهم Advertio
 
-## ۶. موارد باز برای جلسه‌های بعد
+**نتیجهٔ مستند:** اینترنتی و قابل مشاهده بودن یک شماره تلفن، شناسه Telegram، متن یا تصویر **به‌خودی‌خود آن را از الزامات حفاظت داده خارج نمی‌کند**. در PIPEDA استثنای «publicly available» معنای حقوقی محدود دارد و نباید با «روی وب قابل مشاهده است» اشتباه شود. این موضوع حتی اگر یک کاربر در کانال عمومی آگهی گذاشته باشد باید جداگانه ارزیابی شود. [OPC — joint scraping statement](https://www.priv.gc.ca/en/opc-news/speeches-and-statements/2023/js-dc_20230824/)؛ [OPC — Clearview findings §44–45](https://www.priv.gc.ca/en/opc-actions-and-decisions/investigations/investigations-into-businesses/2021/pipeda-2021-001/).
 
-- محدودهٔ دقیق جغرافیایی عرضهٔ اولیه در کانادا و استان‌های هدف چیست؟
-- ساختار حقوقی و محل ثبت کسب‌وکار چیست؟
-- محل واقعی میزبانی پایگاه داده، فایل‌ها و پردازش شخص ثالث کجاست؟
-- کدام اطلاعات شخصی از منابع Crawler به دست می‌آید و چه مجوز/اطلاع‌رسانی‌ای وجود دارد؟
-- کاربران چگونه Privacy Policy و Terms را می‌بینند و تأیید می‌کنند؟
-- قواعد واقعی خرید سکه، Refund، انقضا/بازگشت اعتبار و معاملهٔ بین کاربران چیست؟
-- چه کسی پاسخ‌گوی درخواست‌های حریم خصوصی و شکایات است؟
-- کدام الزامات واقعاً مانع لانچ‌اند و کدام را می‌توان پس از لانچ اجرا کرد؟
+**کنترل پیشنهادی به ازای هر Source:** هویت/مالک منبع، شرایط قرارداد یا مجوز، نوع دادهٔ شخصی، هدف اولیهٔ آگهی‌دهنده، دامنهٔ بازنشر مجاز، تاریخ گردآوری، حذف از منبع، زمان بازبینی، روش اعتراض و حذف آگهی شخص غیراعضو را ثبت کنید. موارد بی‌سند، مبنای انتشار خودکارِ دادهٔ شناسایی‌کننده نشوند. **این یک راهبرد محافظه‌کارانه برای کاهش ریسک است، نه اعلام منع قانونیِ مطلق تمامی Crawlها.** [OPC scraping 2023](https://www.priv.gc.ca/en/opc-news/speeches-and-statements/2023/js-dc_20230824/)؛ [OPC concluding statement 2024](https://www.priv.gc.ca/en/opc-news/speeches-and-statements/2024/js-dc_20241028/).
 
-این پرسش‌ها عمداً **بدون پاسخ و بدون اولویت قطعی** ثبت شده‌اند تا در بررسی‌های جامع بعدی تکمیل شوند.
+**تفکیک محصولی:** `supplySource=Crawled` و کاربر صاحب آگهی/نمایندهٔ واقعی یک چیز نیستند. Badge «Verified» یا انتساب ownership برای آگهی Crawled نباید به شکل نادرست اعتمادسازی کند. این **کنترل ضد گمراهی پیشنهادی** است؛ مرجع حقوقی دربارهٔ ادعاهای گمراه‌کننده: [Competition Bureau](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/types-deceptive-marketing-practices/misleading-representations-and-deceptive-marketing-practices) و زمینهٔ پیاده‌سازی: [Fraud handling](./fraud-handling.md).
 
-## ۷. اسناد مرتبط
+## ۶. Terms & Conditions و سیاست محتوای آگهی
 
-- [راهنمای عملیات Advertio](./operations-overview.md)
-- [پشتیبانی کاربران](./customer-support.md)
-- [رسیدگی به تقلب](./fraud-handling.md)
-- [مدل Wallet و Coin](../05-monetization/wallet.md)
-- [کاتالوگ قابلیت‌های فعلی در کد](../docs/current-capabilities.md)
-- [Privacy/Data Governance — پیش‌نویس فنی GitLab](https://gitlab.com/advertio/platform/advertio-monorepo/-/blob/master/docs/legal/PRIVACY-DATA-GOVERNANCE.md)
-- [Jira AD-10 — زمینه و حدود بررسی](https://advertio24.atlassian.net/browse/AD-10)
+**تمایز لازم:** هیچ نتیجهٔ کلی نگرفته‌ایم که «برای هر Marketplace کانادایی یک سند Terms مستقل با دقیقاً N بند به موجب قانون لازم است». برخی **افشاسازی‌ها و شرایط معامله** در فروش آنلاین الزام‌آور می‌شوند؛ بسیاری از بندهای عمومی، سازوکار **حفاظت قراردادی پیشنهادی** هستند. [Ontario Consumer Protection](https://www.ontario.ca/page/safe-online-shopping)؛ [Québec online contracts](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/).
+
+| بند پیشنهادی | نوع و توضیح | منبع |
+| --- | --- | --- |
+| نام شخصیت حقوقی/راه تماس، محدودهٔ جغرافیایی و نسخهٔ Terms | الزام اطلاع‌رسانی در قراردادهای مشمول و کنترل شفافیت؛ وابسته به استان | [Québec disclosure](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/)، [Ontario online](https://www.ontario.ca/page/safe-online-shopping) |
+| Advertio صرفاً بستر معرفی است و معاملهٔ مستقیم کاربران را تضمین نمی‌کند، **تا جایی که واقعاً چنین باشد** | حمایت قراردادی توصیه‌شده؛ نباید حقوق غیرقابل اسقاط مصرف‌کننده را نفی کند | [Ontario CPA rights](https://www.ontario.ca/page/your-rights-under-consumer-protection-act)، [Québec online](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/) |
+| صحت، مالکیت حقوق انتشار تصاویر/آگهی، منع جعل، تقلب، اطلاعات تماس غیرمجاز و کالای غیرقانونی | سیاست محصول/کنترل ریسک؛ قانون حریم خصوصی و منع بازاریابی گمراه‌کننده در موارد مربوط | [OPC PIPEDA](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/)، [Competition Bureau](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/types-deceptive-marketing-practices/misleading-representations-and-deceptive-marketing-practices) |
+| Moderation، حذف آگهی، تعلیق و مسیر گزارش/اعتراض | سیاست قراردادی/عملیاتی پیشنهادی؛ اجرا باید با آنچه واقعاً در محصول وجود دارد تطبیق داده شود | [Moderation](./listing-approval.md)، [Fraud handling](./fraud-handling.md) |
+| هزینه، ماهیت Coin، Boost، مدت خدمت، لغو/Refund، خطای پرداخت | شرایط معامله و افشای مصرف‌کننده در موارد مشمول؛ نباید با «عدم بازپرداخت تحت هر شرایط» حقوق قانونی را حذف کرد | [Québec online disclosure](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/)، [Ontario online](https://www.ontario.ca/page/safe-online-shopping) |
+| محدودیت مسئولیت و روش اختلاف | بند قراردادیِ نیازمند تدوین/بازبینی وکیل؛ قابلیت استناد به استان و وضعیت طرفین وابسته است | [Ontario CPA rights](https://www.ontario.ca/page/your-rights-under-consumer-protection-act) |
+| Housing: منع تبعیض و معیارهای قابل قبول محتوای اجاره | برای آگهی‌های مشمول حقوق بشر استان مهم است؛ استثناها باید موردی بررسی شوند | [OHRC housing ads](https://www.ohrc.on.ca/en/writing-fair-rental-housing-ad-fact-sheet) |
+| Cargo: مسئولیت کالا/بسته، محتوای ممنوع و محدودیت‌های حمل/گمرک | در شرایط نقش واقعی Advertio؛ راهنمای استفاده، جایگزین بررسی تحریم یا مجوزهای حمل نیست | [Global Affairs — Iran sanctions](https://www.international.gc.ca/world-monde/international_relations-relations_internationales/sanctions/iran.aspx?lang=eng) |
+
+**Housing — اقدام ویژه:** راهنمای آگهی منصفانهٔ Ontario نمونه‌های شروط آشکارا تبعیض‌آمیز را توضیح می‌دهد و **استثنای موردی** برای اشتراک آشپزخانه یا حمام با مالک/خانوادهٔ او را نیز بیان می‌کند؛ در نتیجه نباید تمام «هم‌خانه»ها را یک‌طرفه آزاد یا ممنوع فرض کرد. **اقدام:** قواعد Help text، Report reason، Moderation و راه ارجاع پرونده‌های مبهم به انسان. [OHRC — writing a fair rental housing ad](https://www.ohrc.on.ca/en/writing-fair-rental-housing-ad-fact-sheet).
+
+**Jobs — اقدام پیشنهادی:** نمایش «Advertio تضمین‌کنندهٔ استخدام یا صحت کارفرما نیست» نباید مجوز آگهی شغلی متقلبانه یا تبعیض‌آمیز تلقی شود؛ تا پیش از تعیین استان‌های فعالیت، برای محدودیت‌های استانی اشتغال نتیجهٔ قطعی نمی‌دهیم. مبنای کنترل ادعاهای غیرواقعی: [Competition Bureau — employment opportunity claims](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/types-deceptive-marketing-practices/false-or-misleading-representations) و [Fraud handling](./fraud-handling.md).
+
+## ۷. Wallet، Coin، Boost، قیمت‌گذاری و حقوق مصرف‌کننده
+
+### ۷.۱ شفافیت در لحظهٔ خرید
+
+**الزام مرتبط:** در تبلیغات قیمت، قیمتِ غیرقابل‌دستیابی بر اثر اضافه‌شدن هزینه‌های اجباری ثابتِ غیرمالیاتی می‌تواند گمراه‌کننده باشد. **اقدام برای Advertio:** قبل از تأیید پرداخت، قیمت واقعی بستهٔ Coin با ارز و مالیات/کارمزد قابل اعمال، تعداد سکه، ارزش قابل مصرف، بهای هر خدمت و در صورت تفاوت بهای «آگهی دوم» از Boost را آشکار نشان دهید. [Competition Bureau — drip pricing](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/drip-pricing).
+
+**نکتهٔ کسب‌وکار:** Coin، عدد کیف پول داخلی است، نه لزوماً «پول»، «سپردهٔ بانکی»، «رمزارز» یا «کارت هدیه» به معنای حقوقی؛ طبقه‌بندی به امکان انتقال به کاربران/اشخاص ثالث، نقدکردن، استفاده در خارج پلتفرم و ساختار قرارداد بستگی دارد. **اقدام:** صریحاً در Terms/UX روشن کنید Coin چگونه خریداری، مصرف، منقضی یا Refund می‌شود و آیا قابل انتقال/بازخرید است یا خیر. نتیجهٔ شمول RPAA/FINTRAC را وکیل بر مبنای جریان واقعی وجوه تعیین کند. [Bank of Canada — RPAA scope and exclusions](https://www.bankofcanada.ca/2026/06/criteria-for-registering-payment-service-providers/)؛ [FINTRAC — MSB scope](https://fintrac-canafe.canada.ca/msb-esm/register-inscrire/reg-ins-eng).
+
+### ۷.۲ خرید آنلاین و Refund بر اساس استان
+
+**Ontario:** دولت انتاریو برای «Internet agreements» بالای **۵۰ دلار** اطلاعات قراردادی و حقوق مرتبط را توضیح می‌دهد؛ اینکه تراکنش خاص Advertio در این دسته قرار می‌گیرد یا نه باید بررسی شود. این آستانه مجوز گمراه‌کردن در فروش‌های کوچک‌تر نیست. [Ontario — safe online shopping](https://www.ontario.ca/page/safe-online-shopping).
+
+**Québec:** راهنمای رسمی برای قراردادهای خرید از راه دور اطلاعات پیش از سفارش، امکان قبول/اصلاح/رد پیشنهاد و ارائهٔ نسخهٔ قابل نگهداری قرارداد حداکثر طی **۱۵ روز** را بیان می‌کند؛ محدودیت‌های مهمی برای **گرفتن پول پیش از ارائهٔ کالا/خدمت با روش غیر از کارت اعتباری** وجود دارد، با استثناهای قانونی. فروش Coin با روش دستی/Interac یا Stars به مصرف‌کنندهٔ Québec باید **پیش از عرضهٔ آن روش در Québec** مورد بررسی تخصصی قرار گیرد؛ نمی‌توان از راهنما نتیجه گرفت همهٔ خدمات Advertio قطعاً در هر وضعیت مشمول همان قاعده‌اند. [Québec — before buying](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/)؛ [copy of contract](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/contract/)؛ [cancellation](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/cancelling).
+
+**Refund و Chargeback:** «سکه خرج‌شده هیچ‌گاه برگشت ندارد» را بدون تحلیل استان/تعهد واقعی در Terms قرار ندهید. باید میان (۱) لغو خرید سکه از PSP، (۲) بازگرداندن سکهٔ خدمت ناموفق، (۳) Chargeback کارت/Stars، (۴) لغو معاملهٔ بین دو کاربر تفکیک شود. **اقدام محصول:** Ledger transaction ID، Purchase ID، Service reference، وضعیت تحویل خدمت و مسیر شکایت را به هم پیوند دهید. حقوق لغو مصرف‌کننده بسته به قرارداد و استان ممکن است اعمال شود. [Ontario rights](https://www.ontario.ca/page/your-rights-under-consumer-protection-act)، [Québec cancellation](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/cancelling)، [Wallet implementation](../docs/mini-app/wallet.md).
+
+### ۷.۳ مالیات، PSP و فعالیت‌های پولی
+
+**GST/HST:** راهنمای عمومی CRA برای اکثر بنگاه‌ها حد **۳۰٬۰۰۰ دلار** عرضهٔ مشمول در یک فصل یا چهار فصل متوالی را در ارزیابی Small Supplier مطرح می‌کند؛ محاسبه و زمان ثبت بسته به حقایق و استثناها فرق دارد. مبلغ تراکنش Coin یا «درآمد کل» را بدون تحلیل لحظه و ماهیت عرضه، خودکار معادل پایهٔ مالیات فرض نکنید. **اقدام:** تعیین tax residency، محل ارائهٔ خدمات، نوع supply، استان مشتری، زمان tax point و رژیم عادی/ویژهٔ دیجیتال توسط حسابدار. [CRA registration](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html)، [CRA small suppliers](https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/2-2/small-suppliers.html).
+
+**ثبت/حفظ دفاتر مالی:** CRA برای اسناد مالی مرتبط با Income Tax و GST/HST عموماً **۶ سال از پایان سال مالیاتی مربوط** را توضیح می‌دهد، با استثناهای متعدد؛ این عدد **Retention عمومی عکس، چت یا مدرک هویت** نیست. CRA همچنین دربارهٔ محل و شکل نگهداری سوابق حسابداری الزامات خاص دارد که در صورت ذخیرهٔ بیرون کانادا باید بررسی شود. [CRA records](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/keeping-records/where-keep-your-records-long-request-permission-destroy-them-early.html)، [GST/HST records](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/calculate-prepare-report/gst-hst-records-keep.html).
+
+**RPAA:** Bank of Canada چهار معیار اصلی شامل «فعالیت واقعی PSP»، «عملیات مرتبط با EFT»، «ارتباط جغرافیایی» و «عدم استثنا» را بیان کرده و دربارهٔ فعالیت‌های incidental و closed-loop استثناها دارد. **نتیجه:** صرف داشتن کیف پول داخلی دلیل قطعیِ الزام به ثبت PSP یا معافیت نیست. [Bank of Canada — criteria 2026](https://www.bankofcanada.ca/2026/06/criteria-for-registering-payment-service-providers/).
+
+**FINTRAC:** فهرست خدمات مشمول MSB شامل انتقال وجه، صرافی، ارز مجازی و موارد تعریف‌شده است. **نتیجه:** قبل از افزودن امکان تبدیل، انتقال Coin به شخص ثالث، برداشت نقدی یا نگهداری/انتقال وجوه کاربران، طبقه‌بندی و ثبت احتمالی را دوباره بررسی کنید؛ در مدل بستهٔ فعلی ثبت‌بودن یا نبودن را بدون دادهٔ دقیق تأیید نمی‌کنیم. [FINTRAC — MSB registration](https://fintrac-canafe.canada.ca/msb-esm/register-inscrire/reg-ins-eng).
+
+## ۸. پیام‌های Telegram، تبلیغات و CASL
+
+CASL برای **Commercial Electronic Messages** در محدودهٔ شمول، اصولاً رضایت معتبر (express یا implied در شرایط محدود)، اطلاعات هویتی فرستنده و unsubscribe می‌خواهد. استثناها و مقررات خاص برای برخی پیام‌های پاسخ به درخواست، transactional و سرویس‌های پیام‌رسان وجود دارد و باید بر اساس **هدف هر پیام** بررسی شود؛ صرف اینکه پیام از Bot ارسال می‌شود به معنی معافیت عمومی نیست. [CRTC FAQ](https://crtc.gc.ca/eng/com500/faq500.htm)، [CRTC exceptions](https://crtc.gc.ca/eng/com500/info.htm)، [CRTC implied consent](https://crtc.gc.ca/eng/com500/guide.htm).
+
+| نوع پیام Advertio | طبقه‌بندی پیشنهادی برای بررسی | اقدام |
+| --- | --- | --- |
+| OTP، وضعیت پرداخت، پاسخ به درخواست پشتیبانی | خدماتی/درخواستی؛ شمول و استثنا باید تأیید شود | جدا نگه‌داشتن از تبلیغات |
+| Saved Search و اعلان انتشار آگهی مرتبط با خواست کاربر | ممکن است ماهیت اطلاع‌رسانی درخواستی داشته باشد؛ محتوا/opt-in مهم است | ثبت خواست کاربر، توقف آسان اعلان |
+| Broadcast تبلیغاتی، تخفیف Coin، تشویق Boost | CEM محتمل؛ کنترل CASL لازم است | consent جدا، معرفی فرستنده، Unsubscribe، سابقهٔ رضایت |
+| پست کانال عمومی Telegram | ماهیت پیام و نحوهٔ عضویت/ارسال باید تحلیل شود؛ نباید آن را با DM یکسان فرض کرد | ارزیابی حقوقی کانال و تبلیغ به تفکیک |
+
+**اقدام پیشنهادی:** eventهای `marketing_opt_in`، `marketing_opt_out`، منبع/زمان رضایت و نوع پیام را ثبت و در «Broadcast» فیلتر suppression اعمال کنید. CRTC تأکید می‌کند بار اثبات consent بر فرستنده است و درخواست unsubscribe باید در بازهٔ قانونی (در راهنمای CRTC **۱۰ روز کاری**) رعایت شود. [CRTC guidance](https://crtc.gc.ca/eng/com500/guide.htm).
+
+## ۹. Québec — بررسی مشروط اما تعیین‌کننده
+
+در صورت فعالیت مشمول در Québec، حتی شرکتِ مستقر بیرون Québec نیز ممکن است تحت قانون بخش خصوصی استان قرار گیرد. Law 25 الزامات افزوده دربارهٔ مسئول Privacy، شفافیت، Consent، پیش‌فرض‌های حریم خصوصی، PIA و اعلان incident دارد. **اقدام:** پیش از اعلام «عرضهٔ Quebec» ماتریس مستقلی از داده‌ها، انتقال، زبان و قرارداد خرید تهیه شود. [CAI — scope](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/information-entreprises-privees/champ-application-loi_entreprises)، [CAI — changes](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/sujets-et-domaines-dinteret/principaux-changements-loi-25).
+
+**زبان فرانسه:** OQLF می‌گوید مشتریان کسب‌وکار فعال در Québec حق دریافت خدمات/اطلاعات به فرانسوی، از جمله وب‌سایت، محتوای تجاری و پشتیبانی دارند؛ دربارهٔ کاربرد، استثناها و نسخهٔ قراردادهای الحاقی بررسی حقوقی لازم است. با توجه به اینکه مستندات فعلی، UI کامل فرانسوی را تأیید نمی‌کنند، «پشتیبانی Quebec» را بدون ارزیابی زبان، آماده فرض نکنید. [OQLF — customer language rights](https://www.oqlf.gouv.qc.ca/francisation/droits_linguistiques/droits/langue-du-commerce-et-des-affaires.html)، [OQLF — business changes](https://www.oqlf.gouv.qc.ca/francisation/entreprises/)، [current capabilities](../docs/current-capabilities.md).
+
+**پرداخت:** در قرارداد اینترنتی مشمولِ Québec، قواعد افشا، پذیرش/اصلاح و دریافت پیش‌پرداخت ممکن است طراحی Wallet/Manual Payment فعلی را تحت تأثیر قرار دهد؛ موضوع باید پیش از فعال‌سازی مسیر Québec تعیین تکلیف شود. [Québec consumer office](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/).
+
+## ۱۰. Cargo ایران ↔ کانادا و مرزبندی مسئولیت
+
+**دامنهٔ فعلی:** طبق مستندات محصول، Cargo برای معرفی مسافر و فرستنده است؛ از این واقعیت نمی‌توان نتیجه گرفت Advertio خود «شرکت حمل»، «ترخیص‌کار»، «ضامن تحویل بسته» یا «ارائه‌دهندهٔ حوالهٔ پول» است. هر خدمتی که Advertio خودش انجام دهد (به‌ویژه دریافت وجه حمل، تحویل گرفتن سند/بسته، هماهنگی لجستیکی یا تضمین تحویل) نیازمند ارزیابی جداگانه است. [Cargo capability](../docs/mini-app/cargo.md)، [product overview](../03-product/product-overview.md).
+
+**ریسک مستند:** کانادا تحریم‌های مشخصی علیه ایران/اشخاص فهرست‌شده، انتقال کالاهای مشمول، خدمات مالی و برخی معاملات دارد؛ این‌ها **تحریم مطلق تمام تماس‌ها/ارسال مدارک شخصی** نیستند و باید به کالا، طرف معامله و نوع خدمت تفکیک شوند. **اقدام:** ممنوعیت انتشار/تسهیل موارد تحریمی یا کالای ممنوع، متن هشدار در Cargo، سازوکار Report و مسیر ارجاع مورد مشکوک به بررسی حقوقی؛ برای خدمات واقعی حمل/گمرک مقررات جدا بررسی شود. [Global Affairs Canada — Iran sanctions, amendments through 2026](https://www.international.gc.ca/world-monde/international_relations-relations_internationales/sanctions/iran.aspx?lang=eng)، [راهنمای کنترل صادرات](https://www.international.gc.ca/controls-controles/about-a_propos/expor/destination.aspx?lang=eng).
+
+## ۱۱. سیاست نگهداری داده — تفکیک دورهٔ قانونی و تصمیم داخلی
+
+**قاعدهٔ عمومی:** در PIPEDA اطلاعات شخصی فقط تا زمانی که برای اهداف اعلام‌شده لازم است نگهداری شود و پس از آن با فرآیند قابل دفاع حذف/ناشناس شود؛ این قاعده **یک عدد عمومی ۳۰، ۹۰ یا ۳۶۵ روز** برای همهٔ داده‌ها تعیین نمی‌کند. استثناهای قانونی و دعوا/تحقیق باید جداگانه ثبت شوند. [OPC PIPEDA principle 5](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/).
+
+| داده | مبنای قابل استناد نگهداری | سیاست عملیاتی موقت پیشنهادی، **بدون فرض TTL قطعی** | مرجع |
+| --- | --- | --- | --- |
+| پروفایل/شماره/شناسه Telegram | هدف حساب، consent و حقوق کاربر | نگهداری تا زمان ضرورت حساب؛ فرآیند حذف/اصلاح و استثنای قانونی مستند | [OPC PIPEDA](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/) |
+| آگهی/عکس/Contact و مکالمه | هدف خدمت، شکایت و پیشگیری از سوءاستفاده | TTL جدا برای آگهی فعال و دادهٔ خصوصی؛ حذف هدف‌مند پس از پایان هدف و پایان Legal Hold | [OPC PIPEDA](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/) |
+| مدرک هویت و ویدئو | ضرورت بررسی حساسیت بالا | حداقل دسترسی و کوتاه‌ترین دورهٔ مستند قابل دفاع؛ سیاست مشخص پس از نتیجهٔ تأیید | [OPC meaningful consent](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/appropriate-handling-of-personal-information/collecting-personal-information-and-consent/consent/gl_omc_201805/) |
+| سوابق مالی و تراکنش | مالیات و حسابرسی | بررسی معمول **۶ سال** از سال مالیاتی مربوط با استثناها؛ جداکردن اطلاعات مالی از فایل/دادهٔ غیرضروری | [CRA records](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/keeping-records/where-keep-your-records-long-request-permission-destroy-them-early.html) |
+| دفتر رخدادهای امنیتی | الزام ثبت رخداد | **PIPEDA: ۲۴ ماه** از تشخیص رخداد؛ **Québec در صورت شمول: حداقل ۵ سال**؛ اجرای دورهٔ مؤثرتر را با counsel تأیید کنید | [Federal regulations](https://laws-lois.justice.gc.ca/eng/Regulations/SOR-2018-64/page-1.html)، [CAI register](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/information-entreprises-privees/incidents-confidentialite-mesures-securite-entreprises) |
+| Logs/Analytics/Marketing consents | امنیت، سنجش و اثبات رضایت | تعیین retention براساس حداقل ضرورت، شکایت/الزام خاص و امکان اثبات consent؛ هنوز عدد مصوب ندارد | [OPC principles](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/)، [CRTC consent evidence](https://crtc.gc.ca/eng/com500/guide.htm) |
+
+**توجه:** حذف از UI با حذف دادهٔ Backend، backup، log، Telegram channel، تراکنش PSP و cache یکسان نیست. در فرآیند «حذف حساب/آگهی» باید با محدودیت واقعی هر سامانه شفاف برخورد و به کاربر اطلاع داده شود. این توصیهٔ طراحی مبتنی بر اصل **limiting retention** است. [OPC PIPEDA](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/).
+
+## ۱۲. حداقل اسناد کاربرمحور و مسئول تأیید
+
+| سند/آرتیفکت | کاربرد | طبقه‌بندی | حداقل موارد | وضعیت |
+| --- | --- | --- | --- | --- |
+| **Privacy Policy / Collection Notice** | توضیح پردازش داده | اطلاع‌رسانیِ حقوقی لازم در قلمرو قوانین مربوط؛ قالب دقیق وابسته به قانون و روش گردآوری | داده، اهداف، رضایت، طرف ثالث، انتقال، نگهداری، حقوق، تماس مسئول، شکایت | Draft؛ انتشار/صحت عملیاتی تأیید نشده — [OPC](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/) |
+| **Terms & Conditions** | نقش پلتفرم، استفاده و رفتار مجاز | سند قراردادی توصیه‌شده؛ بندهای الزامی خرید/مصرف‌کننده در محل لازم اعمال شوند | هویت طرف، آگهی، محتوا، مسدودسازی، حل اختلاف، مسئولیت در حدود مجاز | نیازمند تدوین/تأیید — [Ontario](https://www.ontario.ca/page/safe-online-shopping) |
+| **Paid Services / Coin / Refund Terms** | شفافیت در خرید سکه و خدمت | افشاهای موردنیازِ معاملات مشمول؛ سند می‌تواند در Terms ادغام شود اگر الزامات را برآورده کند | واحد/مبلغ، اعتبار/امکان استفاده، تاریخ/شرایط مصرف، لغو، Refund/Chargeback و پشتیبانی | نیازمند تدوین/تأیید — [Québec](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/)، [Competition Bureau](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/drip-pricing) |
+| **Privacy Incident Procedure** | ثبت، ارزیابی و اعلان رخداد | سند اجرایی برای انجام تعهدات مربوط | log، مسئول، threshold، اطلاع‌رسانی و مدت نگهداری | باز — [Federal regulations](https://laws-lois.justice.gc.ca/eng/Regulations/SOR-2018-64/page-1.html) |
+| **Data Retention + DSAR Procedure** | زمان‌بندی نگهداری/حذف و پاسخ حقوق کاربر | فرآیند اجرایی برای انطباق | رده داده، مقصد، مدت، استثنا، verification، گردش پاسخ | باز — [OPC](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/)، [CRA](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/keeping-records.html) |
+
+**نباید** متن نهایی Terms/Policy را قبل از تطبیق با رفتار واقعی محصول و تأیید مسئول منصوب‌شده، «مصوب و منتشرشده» معرفی کرد.
+
+## ۱۳. چک‌لیست قابل اجرا و تحویل
+
+مالک‌ها در جدول **نقش پیشنهادی** هستند، نه انتساب واقعی شخص. «Done» فقط با لینک شاهد پذیرفته شود.
+
+| ID | اقدام/معیار اتمام | Owner پیشنهادی | اولویت | وضعیت | مرجع |
+| --- | --- | --- | --- | --- | --- |
+| C-01 | نام/محل ثبت شرکت، استان‌های هدف و مسئول حریم خصوصی ثبت و تأیید شده | Management + Counsel | Critical | Open | [OPC jurisdiction](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/r_o_p/prov-pipeda/) |
+| C-02 | Data map برای حساب، آگهی، chat، crawler، identity، wallet، backup و transfer تهیه شده | Engineering + Privacy | Critical | Open | [OPC accountability](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda-compliance-help/pipeda-compliance-and-training-tools/gl_acc_201204/) |
+| C-03 | Privacy Notice و consent flows با Test Evidence و نسخهٔ مصوب موجودند | Product + Counsel | Critical | Open | [Meaningful consent](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/appropriate-handling-of-personal-information/collecting-personal-information-and-consent/consent/gl_omc_201805/) |
+| C-04 | مجازبودن هر منبع crawler، نوع داده و فرآیند حذف/اعتراض قابل اثبات است | Operations + Privacy | Critical | Open | [Scraping](https://www.priv.gc.ca/en/opc-news/speeches-and-statements/2023/js-dc_20230824/) |
+| C-05 | صفحه/جریان درخواست دسترسی، اصلاح و حذف با کنترل هویت و ثبت زمان کار می‌کند | Product + Engineering | Critical | Open | [PIPEDA access](https://www.priv.gc.ca/en/opc-actions-and-decisions/investigations/investigations-into-businesses/2026/pipeda-2026-003) |
+| C-06 | Incident register، طبقه‌بندی ریسک، مسئول و روال اعلان تدوین/تمرین شده | Security + Privacy | Critical | Open | [Federal breach](https://laws-lois.justice.gc.ca/eng/Regulations/SOR-2018-64/page-1.html) |
+| C-07 | Coin/Boost/Refund/هزینه‌ها و Receipt کاربر تست شده، PSP/FINTRAC و حق مصرف‌کننده تعیین‌تکلیف شده | Product + Finance + Counsel | Critical | Open | [Québec online](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/)؛ [RPAA](https://www.bankofcanada.ca/2026/06/criteria-for-registering-payment-service-providers/) |
+| C-08 | Terms/Privacy/Payment documents بازبینی‌شده با نسخه و تاریخ در محصول قابل دسترس‌اند | Legal + Product | Critical | Open | [OPC](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/)، [Ontario](https://www.ontario.ca/page/safe-online-shopping) |
+| C-09 | Mapping CASL برای Broadcast/Alerts و opt-out/ثبت رضایت تست شده است | Marketing + Engineering | High | Open | [CRTC](https://crtc.gc.ca/eng/com500/faq500.htm) |
+| C-10 | Rules آگهی اجاره، تخلف و ادعای Verified از نظر عدم‌گمراهی/تبعیض بازبینی شده‌اند | Trust & Safety + Counsel | High | Open | [OHRC](https://www.ohrc.on.ca/en/writing-fair-rental-housing-ad-fact-sheet)، [Competition Bureau](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/types-deceptive-marketing-practices/misleading-representations-and-deceptive-marketing-practices) |
+| C-11 | وضعیت GST/HST، رسید و دورهٔ نگهداری اسناد مالی توسط حسابدار ثبت شده | Finance | High | Open | [CRA](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html) |
+| C-12 | دامنهٔ عرضه در Québec، زبان فرانسوی، PIA، Rule پرداخت تعیین‌تکلیف شده | Management + Quebec Counsel | **Critical اگر Québec هدف است** | Conditional | [CAI](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/sujets-et-domaines-dinteret/principaux-changements-loi-25)، [OQLF](https://www.oqlf.gouv.qc.ca/francisation/droits_linguistiques/droits/langue-du-commerce-et-des-affaires.html) |
+| C-13 | نقش Cargo و سیاست کالای مجاز/طرف تحریمی برای مسیر ایران به‌صورت مکتوب مشخص است | Product + Operations + Counsel | High | Open | [GAC](https://www.international.gc.ca/world-monde/international_relations-relations_internationales/sanctions/iran.aspx?lang=eng) |
+| C-14 | بازنگری سالانه قوانین، تأیید vendorهای جدید و آزمایش دوره‌ای DSAR/Incident تعریف شده | Privacy + Operations | Post-Launch (پس از کنترل‌های پیش از لانچ) | Planned | [OPC privacy program](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda-compliance-help/pipeda-compliance-and-training-tools/gl_acc_201204/) |
+
+## ۱۴. ارجاعات به وکیل/مشاور — فقط موارد با ابهام مؤثر
+
+1. **ساختار و قلمرو کسب‌وکار:** تعیین اینکه کدام رژیم‌های PIPEDA/استانی/Québec و کدام تعهدات متن و زبان در فعالیت واقعی اعمال می‌شوند. [OPC provincial laws](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/r_o_p/prov-pipeda/)؛ [CAI territorial scope](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/information-entreprises-privees/champ-application-loi_entreprises).
+2. **خزش/بازنشر اطلاعات:** تمایز رضایت، اطلاعات «publicly available» و مجوز/شرایط منابع؛ به‌ویژه شماره تماس و شناسهٔ کاربران تلگرام. [OPC Clearview](https://www.priv.gc.ca/en/opc-actions-and-decisions/investigations/investigations-into-businesses/2021/pipeda-2021-001/).
+3. **خدمات پرداخت/اعتبار داخلی:** تعیین RPAA/FINTRAC و محدودیت‌های استان‌ها، به‌ویژه پیش‌پرداخت با روش غیرکارت در Québec، Refund و حقوق مصرف‌کننده. [Bank of Canada](https://www.bankofcanada.ca/2026/06/criteria-for-registering-payment-service-providers/)؛ [FINTRAC](https://fintrac-canafe.canada.ca/msb-esm/register-inscrire/reg-ins-eng)؛ [Québec](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/).
+4. **مالیات:** انواع supply و لحظهٔ مالیات برای Coin، Boost، انتشار و refund، GST/HST و مالیات‌های استانی/Québec. [CRA](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html).
+5. **حدود مسئولیت Marketplace:** قانونی‌بودن متن disclaimers، moderation در Housing/Jobs و نقش واقعی در Cargo، خصوصاً انتقال/پرداخت مرتبط با ایران. [Ontario CPA](https://www.ontario.ca/page/your-rights-under-consumer-protection-act)، [OHRC](https://www.ohrc.on.ca/en/writing-fair-rental-housing-ad-fact-sheet)، [GAC Iran sanctions](https://www.international.gc.ca/world-monde/international_relations-relations_internationales/sanctions/iran.aspx?lang=eng).
+
+## ۱۵. تصمیمات باز و شیوهٔ به‌روزرسانی
+
+| سؤال تصمیم‌گیری | چرا پاسخ لازم است؟ | صاحب تصمیم پیشنهادی |
+| --- | --- | --- |
+| شرکت کجا ثبت و قراردادها به نام چه شخصی بسته می‌شود؟ | تعیین مسئول Privacy/Tax/Terms | Management |
+| بازار اولیه Ontario است، Québec نیز پوشش داده می‌شود یا سراسری عرضه می‌کنیم؟ | حقوق مصرف‌کننده، زبان فرانسه و Law 25 | Management + Legal |
+| مسیر واقعی سرور، Cloud Backup، Telegram، Stripe و Service Providers چیست؟ | انتقال برون‌مرزی/PIA/قرارداد Processor | Engineering + Privacy |
+| آیا Crawler صرفاً منبع عمومی مجاز را می‌خواند و Notice/Opt-out چگونه است؟ | حقوق اشخاص ثالث و کنترل بازنشر | Operations + Legal |
+| آیا Coin transferable/redeemable است؟ آیا Advertio برای دیگران پول نگه می‌دارد؟ | RPAA/FINTRAC/Consumer Protection | Finance + Product |
+| آیا Advertio حمل بسته انجام می‌دهد یا فقط دو کاربر را معرفی می‌کند؟ | مسئولیت Cargo، تحریم و چارچوب قرارداد | Management + Operations |
+| چه کسی privacy requests را دریافت و پاسخ می‌دهد؟ | پاسخگویی، نگهداری و حق دسترسی | Operations + Privacy |
+
+**پروتکل ویرایش بعدی:** هر تصمیم حقوقی جدید باید به بخش موضوعی همین سند افزوده شود و **ادعای حقوقی → حوزهٔ قضایی → منبع رسمی و تاریخ بررسی → کاربرد Advertio → اقدام/مالک → وضعیت تأیید** داشته باشد. مواردی که صرفاً فرضیه هستند با «نیازمند بررسی» باقی بمانند. اگر در GitLab کد تغییر کرد، ادعای قابلیت موجود این سند باید دوباره با [کاتالوگ واقعی](../docs/current-capabilities.md) مقایسه شود.
+
+## ۱۶. منابع مرجع اصلی (رسمی)
+
+این لینک‌ها در محل استفاده هم درج شده‌اند؛ فهرست زیر برای جست‌وجو و بازبینی دوباره است:
+
+- **Privacy / قانون فدرال:** [OPC: PIPEDA Requirements](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/)، [OPC: Province-specific rules](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/r_o_p/prov-pipeda/)، [Meaningful Consent](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/appropriate-handling-of-personal-information/collecting-personal-information-and-consent/consent/gl_omc_201805/)، [Mandatory Breach Regulation](https://laws-lois.justice.gc.ca/eng/Regulations/SOR-2018-64/page-1.html).
+- **Crawler / Telegram:** [OPC Scraping Joint Statement](https://www.priv.gc.ca/en/opc-news/speeches-and-statements/2023/js-dc_20230824/)، [OPC Clearview Investigation](https://www.priv.gc.ca/en/opc-actions-and-decisions/investigations/investigations-into-businesses/2021/pipeda-2021-001/)، [CRTC CASL FAQ](https://crtc.gc.ca/eng/com500/faq500.htm).
+- **Québec:** [CAI Law 25](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/sujets-et-domaines-dinteret/principaux-changements-loi-25)، [Québec Consumer Protection](https://www.opc.gouv.qc.ca/en/consumer/topic/purchase/online-purchase/advice/)، [OQLF language requirements](https://www.oqlf.gouv.qc.ca/francisation/droits_linguistiques/droits/langue-du-commerce-et-des-affaires.html).
+- **Consumer/Tax:** [Competition Bureau — Drip Pricing](https://competition-bureau.canada.ca/en/deceptive-marketing-practices/drip-pricing)، [Ontario Online Shopping](https://www.ontario.ca/page/safe-online-shopping)، [CRA GST/HST](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html)، [CRA Records](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/keeping-records/where-keep-your-records-long-request-permission-destroy-them-early.html).
+- **پرداخت، Housing، Cargo:** [Bank of Canada — RPAA](https://www.bankofcanada.ca/2026/06/criteria-for-registering-payment-service-providers/)، [FINTRAC MSB](https://fintrac-canafe.canada.ca/msb-esm/register-inscrire/reg-ins-eng)، [OHRC Housing Ads](https://www.ohrc.on.ca/en/writing-fair-rental-housing-ad-fact-sheet)، [Canada Iran Sanctions](https://www.international.gc.ca/world-monde/international_relations-relations_internationales/sanctions/iran.aspx?lang=eng).
+
+**مراجع محصول:** [GitHub business model](../01-business/business-model.md)، [Current capabilities](../docs/current-capabilities.md)، [Fraud handling](./fraud-handling.md)، [Wallet](../docs/mini-app/wallet.md)، [Jira AD-10](https://advertio24.atlassian.net/browse/AD-10). یافته‌های این مراجع *وضعیت محصول* را توصیف می‌کنند، نه تفسیر قانون.
