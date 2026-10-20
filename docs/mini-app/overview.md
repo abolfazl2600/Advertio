@@ -18,15 +18,14 @@ Services and Social have backend category definitions, but are deliberately abse
 
 ## 2. Top-level navigation
 
-The shell provides these top-level destinations:
+The shell's main tabs are **Home, Search, Post, Wallet and Profile**.
 
 - **Home / Hub:** category cards for the live journeys.
 - **Search:** global keyword search across listings from every live journey.
 - **Post:** because three journeys are live, opens a chooser for Housing, Cargo or Jobs.
-- **Saved:** saved listings across journeys; requires sign-in.
-- **My listings:** the signed-in user's listings across journeys.
 - **Wallet:** coin balance, top-up entry points and payment history; phone verification is required.
-- **Profile:** display name, avatar, phone verification, identity verification, links to Saved/My listings and sign-out.
+- **Profile:** display name, avatar, phone verification, identity verification, and links to Saved/My listings and sign-out.
+- **Saved listings** and **My listings** are separate routes linked from Profile; they are not separate items in the main tab bar.
 
 Category journey pages have their own header/back navigation. The shell's tab bar is not guaranteed to remain visible inside every journey route.
 
