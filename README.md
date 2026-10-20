@@ -34,20 +34,33 @@ Advertio aims to provide a more structured and trust-oriented marketplace experi
 
 ## Initial Market
 
-Advertio's initial market focus is **rental housing in Canada**, especially rental and roommate discovery.
-
-The next major category is **Jobs**, with additional categories planned or explored over time.
+Advertio's initial market focus was **rental housing in Canada**, especially rental and roommate discovery. Housing remains the baseline journey, while the implementation has since expanded to include Cargo and Jobs.
 
 Current and planned category areas include:
 
 - Housing & Roommates
 - Jobs
-- Services
 - Passenger Cargo
+- Services
 - Social & Events
 - Human Matching / Activity Partners
 
-Some categories and capabilities are exploratory and are not part of the first release.
+Some categories and capabilities remain exploratory and are not part of the current implementation. See the status snapshot below before treating a category document or roadmap section as a statement of shipped behavior.
+
+## Current implementation status (2026-10-20)
+
+The current codebase has expanded beyond the original roadmap sequence. Cargo and Jobs journeys, category-scoped Gate A metrics, and Backoffice Broadcasts are implemented in GitLab master. This records repository implementation status, not verified production deployment.
+
+| Area | Current status |
+| --- | --- |
+| Housing | Existing baseline journey |
+| Cargo | Implemented on 2026-10-19; route-based traveller/sender listings |
+| Jobs | Implemented on 2026-10-19; Canada-only, 18 job categories |
+| Backoffice Broadcasts | Implemented on 2026-10-09 |
+| Gate A | Listing-based metrics are scoped to the selected category |
+
+See [Current Implementation Status](./03-product/current-capabilities.md) for behavior and known gaps, and [CHANGELOG](./CHANGELOG.md) for the two-week change log. Cargo and Jobs were opened by product-owner decision before Gate A; this does not mean Gate A has passed.
+
 
 ---
 
@@ -254,6 +267,8 @@ Listing rules and monetization can differ by category and country.
 
 For a fast introduction to the project:
 
+- [Current Implementation Status](./03-product/current-capabilities.md)
+- [Changelog](./CHANGELOG.md)
 - [Vision](./01-business/vision.md)
 - [Problem](./01-business/problem.md)
 - [Value Proposition](./01-business/value-proposition.md)
