@@ -1,6 +1,6 @@
 # Jobs — Job Taxonomy
 
-> Status: **Proposed canonical Jobs V1 taxonomy**.
+> Status: **Implemented closed taxonomy of 18 job categories in GitLab master as of 2026-10-19.** See [current Jobs behavior](./overview.md).
 
 ## Purpose
 
@@ -13,7 +13,7 @@ It is separate from:
 - Employment Type — Full-time, Part-time, Contract, etc.
 - Work Arrangement — On-site, Remote, Hybrid.
 
-## Proposed canonical values
+## Canonical values
 
 | Key | UI label |
 | --- | --- |
