@@ -25,6 +25,15 @@
 
 Only `housing`, `passenger-cargo` and `jobs` are registered as live Web journeys. Services and Social have backend category definitions, but they are not live journeys in the Web journey registry.
 
+## Detailed capability catalogue
+
+For the complete feature-by-feature inventory—including smaller UI behaviors, field rules, filters, lifecycle, payment/verification paths, bot commands, admin operations, recent changes and explicit gaps—start here:
+
+- **[Detailed Current Capabilities](./current-capabilities.md)** — consolidated capability catalogue across Mini App, Telegram bot and Backoffice.
+- [Repository Changelog](../CHANGELOG.md) — commit-based history of recent implementation changes.
+
+The pages below provide implementation detail for each subsystem. The catalogue and linked subsystem pages describe code-level status, not guaranteed Production availability.
+
 ## Mini App
 
 - [Overview and navigation](./mini-app/overview.md)
