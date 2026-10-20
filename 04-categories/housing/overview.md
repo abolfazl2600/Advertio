@@ -50,6 +50,8 @@ The **More filters** sheet includes roommate, property and amenity criteria.
 
 See [filters.md](./filters.md).
 
+For the end-to-end process from Mini App creation to database, admin approval and Telegram distribution, see [Housing listing creation workflow](./creation-workflow.md).
+
 ## Current listing detail
 
 The reviewed Housing detail UI includes:
