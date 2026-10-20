@@ -1,6 +1,6 @@
 # Backoffice — Channels
 
-> Current-state documentation based on the reviewed Backoffice UI and completed channel-delivery behavior as of 3 Oct 2026.
+> The detailed UI observations below are from 3 Oct 2026; the current documentation set and implementation boundary were reviewed on 20 Oct 2026.
 
 ## Purpose
 
@@ -333,3 +333,14 @@ The reviewed UI does not establish the detailed behavior for:
 - Exact confirmation UX when intentionally re-sending already-sent historical matches
 
 Do not infer these behaviors from this document.
+
+
+## Current implementation boundary — 2026-10-20
+
+Channels remains the **automatic listing-publication** feature: an Active listing is published to a configured Telegram channel/group when it matches every configured filter. It is distinct from [Broadcasts](./broadcasts.md), which sends a direct message to users.
+
+Current filter dimensions include category, country, province, city, outgoing language and schema-backed attribute equality filters. Filters combine with AND semantics; blank location/category/language fields are wildcards. A channel cannot repeat the same attribute key in multiple filter rows.
+
+Channel operations include create/edit/deactivate, match preview/history, historical-match delivery queue, publication history and manual retry for failed publication records. Total Sent is a cumulative successful-delivery count, not a unique-listing count.
+
+Cargo and Jobs are now live Web journeys and appear in the backend category data, but a channel filter only matches listings that actually exist and satisfy its configured filters. Channel publication does not imply Cargo/Jobs crawler ingestion is supported.
