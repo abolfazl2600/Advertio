@@ -1,86 +1,114 @@
-# Advertio Mini App — Current State
+# Mini App — current implementation
 
-> Last documented from the current Telegram Mini App/Web App UI review on 3 Oct 2026.
+> **Reviewed:** 2026-10-20. Describes the code merged to GitLab `master`; Production deployment was not independently checked.
 
-This documentation records **what is currently visible/implemented in the Advertio Mini App/Web App**. It is intended to be a development reference alongside the codebase.
+## 1. Live journeys and URL structure
 
-## Documentation rules
+The Web app uses a journey registry. The only journeys registered as live are:
 
-- **Current Implementation** describes behavior observed in the current Mini App/Web App.
-- GitHub Issues remain the source for work to be implemented.
-- Planned or future behavior must not be described here as already implemented.
-- Update these documents when the corresponding product behavior changes.
+| Display label | Backend slug | Scope |
+|---|---|---|
+| Housing | `housing` | Canadian rental and roommate listings |
+| Cargo | `passenger-cargo` | Traveller/sender route listings |
+| Jobs | `jobs` | Canadian hiring and job-seeker listings |
 
-## Current navigation observed
+Public journey URLs use the slug at the root (for example, `/housing`, `/passenger-cargo`, `/jobs`). Create forms are reached at the journey's `/new` route and listing details use the listing ID under that journey. Do not rename `passenger-cargo` to `cargo` in backend routes: Cargo is the display label, while `passenger-cargo` is the canonical slug.
 
-The bottom navigation currently contains:
+Services and Social have backend category definitions, but are deliberately absent from the live Web journey registry. Their presence in the category schema must not be described as a live Web journey.
 
-- Home
-- Search
-- Post
-- Wallet
-- Profile
+## 2. Top-level navigation
 
-The central **Post** action is visually emphasized.
+The shell provides these top-level destinations:
 
-### Current Global Search
+- **Home / Hub:** category cards for the live journeys.
+- **Search:** global keyword search across listings from every live journey.
+- **Post:** because three journeys are live, opens a chooser for Housing, Cargo or Jobs.
+- **Saved:** saved listings across journeys; requires sign-in.
+- **My listings:** the signed-in user's listings across journeys.
+- **Wallet:** coin balance, top-up entry points and payment history; phone verification is required.
+- **Profile:** display name, avatar, phone verification, identity verification, links to Saved/My listings and sign-out.
 
-The **Search** tab is implemented as a functional Global Search experience.
+Category journey pages have their own header/back navigation. The shell's tab bar is not guaranteed to remain visible inside every journey route.
 
-The current Search screen includes:
+## 3. Browse and search
 
-- free-text keyword input;
-- clear-input control;
-- result count;
-- listing result cards;
-- persistent bottom navigation.
+Each journey has its own feed and category-specific filters:
 
-A reviewed current-state example showed the query `toro` returning **7 results**.
+- Housing: listing type, location and schema-driven housing attributes.
+- Cargo: traveller/sender role, origin city and destination city. Past-date trips are excluded from the feed.
+- Jobs: hiring/job-seeker role, job category and Canadian city.
 
-Global Search remains separate from the structured Housing feed filters.
+Global Search is separate from those feed filters. It matches keywords in listing titles and descriptions across Housing, Cargo and Jobs. Search requirements:
 
-See [Global Search](./search.md) for the detailed current-state documentation.
+- Minimum query length: 2 characters.
+- Maximum query length: 100 characters.
+- The client commits the query after a 350 ms settle/debounce period.
+- Results are paged in batches of 20.
+- The committed query is stored in the URL as `?q=`; Back from a listing returns to the search.
+- Loaded results are cached and the previous scroll position is restored when returning from a detail page.
+- All words in the query must appear in the title or description. Search is not a semantic/AI search.
 
-## Current Home implementation
+## 4. Posting and validation
 
-The Home screen currently includes:
+- Each live journey owns its own create form. The Post chooser only routes the user to the correct form; it does not implement a shared category form.
+- Housing has a structured listing wizard with schema-defined attributes and optional photos.
+- Cargo and Jobs are deliberately short, single-screen forms with four required choices; optional detail fields are behind an expandable section.
+- Category attribute definitions are loaded from the backend schema. Required fields, select options, conditional visibility and numeric validation are not intended to be duplicated as a second hardcoded source in the UI.
+- The backend validates the category schema, location catalog, media ownership, active-listing limit, duplicate detection and configured action price.
+- Current server rule: one active user-created listing per user per category. A user must close/finish the existing active listing before creating another in that category.
 
-- Advertio header/branding
-- Notification entry point
-- Category selection cards
-- Housing as the currently available category
-- Transport marked as **Coming Soon**
-- Jobs marked as **Coming Soon**
-- Bottom navigation
+## 5. Shared listing detail and interactions
 
-The current Home experience routes users into the Housing marketplace while preserving entry points for future categories.
+All three journeys reuse the shared listing layer for:
 
-## Current documented Mini App areas
+- detail loading and category-specific card rendering;
+- save/unsave;
+- reporting a listing;
+- contact confirmation and contact unlock;
+- conversation panel and message relay;
+- owner actions (renew and boost where eligible);
+- publisher trust display and source-aware contact behavior.
 
-The following current-state areas have been reviewed and documented:
+For user-created listings, the contact path may require coins according to the category policy. For crawled listings, the app never charges coins to reach the original contact; it opens the Telegram source/contact route instead. See [Shared listing interactions](./listing-interactions.md).
 
-- Home and bottom navigation
-- Global Search
-- Housing listing feed
-- Housing feed filters
-- Wallet and Telegram Stars coin purchase flow
-- Profile, My Listings, and Saved Listings
+## 6. Authentication and trust gates
 
-## Detailed documentation
+- Inside Telegram, the Mini App obtains a Telegram credential and initializes the Telegram Mini App SDK before React mounts.
+- In a browser, the app can offer Telegram-based sign-in, Google sign-in when configured, or a phone-code flow delivered through the Advertio bot to an already linked Telegram identity.
+- Google sign-in alone does not prove a phone number. A signed-in session without a verified phone can browse, but phone-gated actions remain blocked.
+- Phone verification is the account/transacting gate for posting and other paid/owner operations.
+- Identity verification is a separate paid, manually reviewed process: a verified phone and linked Telegram are prerequisites; the user sends a document and challenge video through the bot.
 
-- [Global Search](./search.md)
-- [Housing](./housing.md)
-- [Wallet](./wallet.md)
-- [Profile](./profile.md)
+See [Authentication](./authentication.md) and [Profile](./profile.md).
 
-## Source issues used during the UI review
+## 7. Wallet and payments
 
-These issues were created during the review process to capture already-observed implementation, but this documentation is now the canonical current-state reference for those features:
+Wallet data and payment packages are loaded from the server. Payment rails depend on context:
 
-- #20 — Mini App Home category selection and bottom navigation
-- #21 — Housing listing feed
-- #22 — Housing feed filters
-- #23 — Global Search
-- #24 — Wallet and Telegram Stars coin purchase flow
+- Telegram Stars inside the Telegram Mini App.
+- Stripe Checkout on the ordinary browser web app.
+- Other/manual payment options only when configured by the server; evidence and review are handled through Telegram and the Backoffice.
 
-The issues themselves should not be treated as the current-state specification.
+The UI reads prices and packages from the server rather than calculating its own authoritative charge. Refund availability is returned per payment by the server.
+
+## 8. Images
+
+- Housing supports up to 10 listing photos.
+- Accepted client-side file types are JPEG, PNG and WebP.
+- Each file is capped at 8 MiB before upload.
+- Upload happens as soon as the user selects a file, one at a time; the form publishes opaque media keys, not arbitrary image URLs.
+- The backend validates and processes uploaded images and produces the public media variants.
+- Avatar upload has its own 8 MiB client-side cap.
+
+## 9. Error and empty states
+
+The app has explicit loading, empty, retry and server-error states for listing feeds, global search, profile, wallet and detail pages. Business-rule refusals (insufficient coins, active listing already exists, a listing state that cannot be renewed/boosted) should be shown as actionable errors rather than generic retry prompts.
+
+## 10. Not implemented / not verified
+
+- Services and Social are not live Web journeys despite backend category seeds.
+- There is no AI/semantic search.
+- No multiple-active-listings-per-user support within one category.
+- No dedicated Jobs `Filled` state or external apply-by-email/link flow.
+- No Cargo lifecycle expiration based on the travel date; feed hiding is separate from the 30-day listing TTL.
+- No claim is made here that the current GitLab revision is deployed to Production.
