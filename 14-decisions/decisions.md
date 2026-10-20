@@ -145,6 +145,8 @@ Category policy should define the allowed active count.
 
 Eligibility checks query the Category Policy and current native Active Listings.
 
+> **Implementation gap (2026-10-20):** The accepted target policy above is not fully shipped. CARGO-01 and JOBS-01 still enforce the existing one-active-listing limit (FR-007). Multiple active Cargo trips per traveller and multiple active Jobs listings per employer remain open implementation work.
+
 ---
 
 ## DEC-003 — Early Access uses paid-first → free-later
@@ -364,7 +366,7 @@ Saved Filter notifications use the same deterministic category filter semantics.
 
 ## DEC-007 — Cargo is one category with no Product role
 
-**Status:** Accepted
+**Status:** Superseded by DEC-013 on 2026-10-19; retained for historical context.
 
 ### Decision
 
@@ -518,6 +520,46 @@ Example:
 Do not edit Current State documentation to pretend the runtime already changed.
 
 Implementation work should eventually align UI/runtime labels with accepted target decisions.
+
+---
+
+## DEC-013 — Cargo and Jobs shipped journey scope (2026-10-19)
+
+**Status:** Accepted implementation scope
+
+### Context
+
+The product owner chose to open the Cargo and Jobs journeys before Gate A. This is a product decision to ship the journeys, not evidence that Gate A has passed or that production deployment has been verified.
+
+### Decision
+
+**Cargo**
+- The backend slug is passenger-cargo and the user-facing label is Cargo.
+- Cargo uses one listing model with a role attribute: traveller or sender. This supersedes DEC-007's no-role target for the shipped journey.
+- Origin and destination are catalog-backed cities. The current route catalog covers Iran, Canada, the United States, Germany, Italy, the United Kingdom and France.
+- Currency is derived from the route. Traveller price is per kilogram; sender price is a total amount.
+- Feed filtering is server-side by role, origin and destination. Trips with a past travel date are hidden from the feed.
+
+**Jobs**
+- Jobs is enabled for Canada only.
+- The role is Hiring / Looking for work, and job category uses a closed taxonomy of 18 values.
+- Salary is in CAD with an explicit hour/month/year period when provided. Work arrangement is separate from employment type.
+- Feed filtering is server-side by role, job category and city.
+
+**Shared architecture**
+- Cargo and Jobs remain independent journeys and reuse the shared listing interaction layer for contact/unlock, conversation, save and report.
+- Gate A listing-based metrics are scoped to the selected category, with Housing as the default.
+
+### Known implementation gaps
+
+- Cargo crawler ingestion, multiple active Cargo listings per user, travel-date lifecycle expiration and the Telegram bot search redesign are not included in CARGO-01.
+- Jobs crawler ingestion, multiple active Jobs listings per employer, a Filled status, external application links/email and Jobs-specific backoffice scam signals are not included in JOBS-01.
+- The one-active-listing rule remains in place for Cargo and Jobs until FR-007 is implemented.
+- No production deployment claim is made by this decision.
+
+### Documentation consequence
+
+The current behavior is described in [Current Implementation Status](../03-product/current-capabilities.md), [Cargo overview](../04-categories/cargo/overview.md), [Jobs overview](../04-categories/jobs/overview.md) and [CHANGELOG](../CHANGELOG.md). Pre-shipment specifications remain available as historical references and must not override the shipped scope above.
 
 ---
 
