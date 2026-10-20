@@ -1,96 +1,84 @@
-# Mini App — Wallet Current State
+# Wallet and payments — current implementation
 
-> Current implementation documented from the Mini App/Web App UI review on 24 Sep 2026.
+> The Wallet page and top-up sheet are implemented. Prices, packs, payment state and refund eligibility come from the server; this document does not claim a specific live package price or provider configuration.
 
-This document describes the Wallet and coin-purchase experience currently visible in Advertio.
+## 1. Access and balance
 
-## Wallet entry point
+- Wallet is a top-level Mini App destination.
+- A phone-verified account is required to load the wallet.
+- The page shows the coin balance and purchase/payment history.
+- If the balance/history request fails, the UI provides a retry state.
+- Coin packages and manual-payment options are fetched from the server; the client does not hardcode the authoritative package catalogue.
 
-Wallet is available from the persistent bottom navigation.
+## 2. Payment rails
 
-The current Wallet screen contains:
+The available rail depends on platform context and server configuration.
 
-- Wallet title
-- Current wallet balance
-- **Add coins** primary action
-- Purchases section
-- Wallet/payment information notice
+| Context | Available online rail |
+|---|---|
+| Inside Telegram Mini App | Telegram Stars only; this is the Telegram digital-goods requirement |
+| Ordinary browser | Stripe Checkout and Telegram Stars are offered by the current UI when configured |
+| Other/manual methods | Shown only if the server has at least one configured manual method and an active admin with a linked Telegram account to review it |
 
-## Wallet balance
+The default selected rail is Stars inside Telegram and Stripe in an ordinary browser. The UI can display the other eligible rail outside Telegram.
 
-The current screen displays the user's available coin balance prominently.
+### Online top-up flow
 
-An observed example balance was:
+1. Load coin packs from the wallet API.
+2. Choose a pack.
+3. Start checkout using the selected provider.
+4. The client opens the returned checkout URL.
+5. The app waits for the server-confirmed wallet balance/payment outcome. A return to the app is not itself proof of successful payment.
+6. The UI shows credited, pending or failed state. Pending is neither success nor failure; the app may need another moment for the provider webhook to confirm.
 
-- **50 Coins**
+Payment statuses used in purchase history are `Pending`, `Succeeded`, `Failed` and `Refunded`.
 
-## Add Coins
+## 3. Manual payment
 
-Selecting **Add coins** opens a bottom sheet.
+Manual payment is a separate path from online checkout and does not credit coins immediately:
 
-The sheet currently explains that payment is made with **Telegram Stars** and that coins are used when unlocking a listing's contact details.
+1. The app checks whether manual methods are configured and available.
+2. The user starts a manual-payment request.
+3. The app opens the Advertio bot in Telegram.
+4. The user sends payment details and/or a photo of the receipt.
+5. The request is sent to active admins with linked Telegram chats for human review.
+6. The bot informs the user of the decision. Coins are credited only after approval.
 
-## Current Telegram Stars packages
+The Backoffice Payments page lists manual requests, their status, whether text/proof was received, the decision and delivery attempts to admins. Admins can resend a request that failed to reach its reviewers.
 
-The following packages were observed:
+## 4. Refunds
 
-| Coins | Telegram Stars |
-|---:|---:|
-| 20 | 100 |
-| 60 | 280 |
-| 150 | 650 |
+- Purchase history exposes **Refund** only when the server says that payment is eligible.
+- The user self-service path is limited to payments whose coins remain unspent.
+- The refund is sent through the rail that accepted the original payment; the associated coins are removed from the Advertio wallet.
+- The server is authoritative for refund eligibility and outcome. The UI asks for confirmation and reports failures rather than assuming the refund succeeded.
+- Admin refunds are available in Backoffice and intentionally bypass the user-facing “coins not spent” eligibility rule. They are still audited and remove the refunded coins.
 
-A **Not now** action is available to dismiss the purchase sheet.
+## 5. What coins can pay for
 
-## Purchases section
+The category policy system supports configurable coin prices for:
 
-The current Wallet screen includes a purchase-history area.
+- Listing creation.
+- Contact unlock.
+- Listing renewal.
+- Listing boost.
 
-Observed purchase rows display:
+A separate service price exists for identity verification. A zero action price means the action is free. The seeded defaults have contact unlock priced at 20 coins and create/renew/boost at zero; these are initial defaults, not a guarantee of the live configured values. Cargo and Jobs inherit the then-current Housing policy values when their category rows are first seeded, then can be tuned independently.
 
-- Coin amount
-- Telegram Stars amount
-- Status
-- Date
+The seeded default for identity verification is 80 coins. Backoffice **Policy & pricing → Services** is the source for the current service price.
 
-Observed example states included:
+The current top-up sheet copy says coins are spent only on contact unlock; the server's configurable action-price model also permits the actions above. Use the Backoffice policy and actual server response as the source of truth for charges.
 
-- 60 Coins / 280 Stars — **Not completed** — Aug 23
-- 20 Coins / 100 Stars — **Not completed** — Aug 23
+## 6. Coin expiry and ledger
 
-## Current product messaging visible in the UI
+The UI states that purchased coins do not expire. Each wallet change is recorded as a coin transaction with a type, amount, reason, reference and timestamp. A payment record tracks movement of money; a coin transaction tracks movement of Advertio Coins. They are related but are not the same record.
 
-The Wallet currently tells the user that:
+## Related pages
 
-- Coins are spent when unlocking a listing's contact details.
-- Telegram Stars keeps payment inside Telegram.
-- No card details or separate payment account are required in this flow.
-- Coins do not expire.
-- Unspent coins can be refunded back to the user's Stars balance at any time.
-
-This section documents the message currently displayed in the Mini App. It should not be interpreted as a separate legal/payment-policy specification.
-
-## Current interaction model
-
-Observed flow:
-
-1. User opens **Wallet**.
-2. User sees the current coin balance.
-3. User selects **Add coins**.
-4. The Telegram Stars package sheet opens.
-5. User chooses one of the available coin packages.
-6. Purchase activity can appear in the Purchases section with status, date, coin amount, and Stars amount.
-
-## Documentation boundary
-
-This current-state document does not add or assume:
-
-- bonus coin logic;
-- package labels such as Best Value;
-- detailed transaction drill-down;
-- low-balance purchase prompts;
-- alternate payment methods;
-- revised purchase-status terminology;
-- refund UI beyond the informational text currently shown.
-
-Those should be documented only after implementation or tracked separately as future work.
+- [Authentication and phone verification](./authentication.md)
+- [Shared listing interactions](./listing-interactions.md)
+- [Backoffice Payments](../backoffice/payments.md)
+- [Backoffice Coin flow](../backoffice/coin-flow.md)
+- [Backoffice Wallet actions](../backoffice/wallet-actions.md)
+- [Backoffice Policy & pricing](../backoffice/policy-pricing.md)
+- [Telegram bot payment/verification flow](../telegram-bot/payments-and-verification.md)
