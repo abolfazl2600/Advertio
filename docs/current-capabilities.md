@@ -1,6 +1,6 @@
 # Advertio — detailed capability catalogue
 
-> **Reviewed:** 2026-10-20. This catalogue consolidates the small and large capabilities documented in this `docs/` directory and verified against implementation notes/code in GitLab `master`. It describes repository implementation, not verified Production deployment. Configuration-dependent features are marked as such; planned work and known gaps are not described as shipped.
+> **Reviewed:** 2026-10-20. This catalogue was re-audited against the GitLab `master` code and commit history from the initial repository scaffold on 2026-07-05 through the October 2026 journey launches—not only the last two weeks. It consolidates the current `docs/` implementation notes and cross-checks the older product, monetization, category and growth specifications. It describes repository implementation, not verified Production deployment. Configuration-dependent features are marked as such; planned work and known gaps are not described as shipped.
 
 ## 1. Product scope and architecture
 
@@ -280,7 +280,76 @@ Detailed sources: [Backoffice overview](./backoffice/overview.md), [Gate A](./ba
 
 Commit-level details: [Repository CHANGELOG](../CHANGELOG.md).
 
-## 12. Known gaps — do not describe as shipped
+## 12. Additional capabilities confirmed by earlier implementation history (July–September 2026)
+
+The older implementation history contains several capabilities that were not called out explicitly enough in the previous summary catalogue.
+
+### Conversations and Telegram relay
+
+- User-created listings have a shared conversation panel for sending and replying to messages across Housing, Cargo and Jobs.
+- The Telegram bot relays a new buyer message to the advertiser's linked Telegram chat and routes the advertiser's reply back to the buyer; messages can include a deep link back to the listing in its own journey.
+- Conversation state is persisted so an incoming reply is routed to the active conversation before the bot treats text as an answer to a Search or saved-search wizard.
+- Delivery depends on the recipient having a usable linked Telegram chat. Crawled listings follow the source redirect flow instead of this native Advertio conversation path.
+- Contact funnel instrumentation includes abandoned contact sheets, insufficient-balance attribution and message-button-click events. These support Gate A analysis; they are not evidence of a public advertiser analytics dashboard.
+
+### Crawled-listing ownership claim and ingestion contract
+
+- A crawled listing can be claimed by a matching publisher when the Advertio account has a verified phone and a linked Telegram identity whose handle matches the recorded source contact handle.
+- The claim transfers the publisher/owner relationship but preserves the listing's Crawled supply-source classification. The source cohort therefore remains excluded from user-generated Gate A metrics, apart from the explicit supply-substitution comparison.
+- The crawler API is authenticated with a configured ingest key and supports media upload, idempotent create/update keyed by source name plus external ID, individual deactivation and source-wide deactivation.
+- The current documented ingestion contract supports Housing only. Cargo and Jobs being live Web journeys does not imply that crawler ingestion is supported for them.
+- Backoffice Crawled sources is an operational monitor and bulk-deactivation surface, not a crawler scheduler or editor. A Stale marker means the last ingest was more than 48 hours ago; deactivation in Advertio does not delete an external Telegram post or stop an upstream crawler.
+
+### Server-side media processing and cleanup
+
+- Listing uploads accept JPEG, PNG and WebP, with an 8 MiB upload limit and a 50-million-source-pixel ceiling before full decoding.
+- The server identifies the format from file bytes, applies orientation, removes EXIF/IPTC/XMP metadata, generates WebP variants and calculates an image perceptual hash as a duplicate/similarity signal.
+- The full image is resized to a maximum 1600-pixel edge and the thumbnail to 480 pixels. Crawled listings use the thumbnail-only path; user-created listings keep both variants.
+- Uploads are rate-limited per authenticated user. The backend stores opaque media keys and checks media ownership at listing submission; preview URLs are not the canonical keys to persist.
+- A background worker reaps unreferenced uploads older than a 24-hour grace period, runs every 12 hours and caps deletions per run. This is a storage-cleanup safeguard, not a user-facing feature.
+
+### Account and administrative controls
+
+- The verified phone number remains the account identity key; Telegram and Google are identity providers/linked identities, not independent Advertio account keys. Google sign-in is configuration-dependent and does not verify a phone number.
+- Backoffice admins can update their own username/password. The account flow also supports one-time password-setup links and account lockout after repeated failed password attempts; default lockout settings are configurable.
+- Admin accounts can link a Telegram chat through a one-time deep link for scheduled report delivery. Linking a chat does not grant admin privileges.
+- Direct one-to-one Telegram messages from the Users page are separate from Broadcasts. Selected users can also be handed off to the Broadcast composer for a separate audience preview and explicit send confirmation.
+- The bot persists a user's selected locale and marketing opt-in. Promotion broadcasts exclude users who have not opted in and provide a one-tap Stop promotions action.
+
+### Reports, inspections and moderation safety
+
+- Signed-in users can report another user's listing, with a reason and optional note. Repeat pending reports from the same user/listing do not create duplicate pending records.
+- Backoffice review includes listing reports, possible duplicates, moderation decisions and source/provenance details. A possible duplicate is a review queue; similarity is not automatically equivalent to an exact duplicate.
+- Independent Listing Inspection is a separate Backoffice-only operational workflow: request intake, scope/quote, payment tracking, inspector/visit scheduling, evidence, structured report, publication readiness, notes and history. It is not the standard listing-approval queue and is not a complete public self-service ordering flow.
+- Identity verification is a separate paid service. Its configured/seeded reference price is 80 Coins in the reviewed docs, but the live service price is authoritative; payment alone never grants the Identity Verified badge.
+
+### Background processing and operational reporting
+
+- Saved-search Instant alerts are queued on matching listing activation and delivered by a background worker; Digest alerts are grouped at a configured global UTC hour (documented default 09:00 UTC).
+- The bot has a user-facing /search command and /paysupport; /adminreport is restricted to active admins in their private chat with the bot.
+- Two separate scheduled admin reports exist: a daily management report (default 06:00 UTC, with display timestamps defaulting to Asia/Tehran) and an operational lead digest four times daily at 00:00, 06:00, 12:00 and 18:00 Tehran time for configured admin IDs with linked chats.
+- The codebase includes health endpoints/checks, database migrations, object storage, local Docker Compose services and deployment/CI workflows. These are operational implementation capabilities; they do not prove that a particular GitLab revision or provider configuration is active in Production.
+
+### Older product specifications: current interpretation
+
+| Older source-defined idea | Current interpretation |
+|---|---|
+| Saved Filters built in the Web app | The verified user-facing saved-search feature is the Telegram bot wizard with Instant/Digest delivery. Do not claim that the old Web Saved Filter workflow is fully implemented. |
+| Early Access durations and timing | Backoffice policy supports Early/Late paid-contact phase configuration, but older source documents disagree on 30 hours, one day, free-first days and paid-later timing. Do not treat any old timeline as a universal current rule; the listing snapshot and live category policy are authoritative. |
+| Basic ranking formula (boosted, newest, verified, others) | Boost and renew actions are implemented. The older document's complete ranking order, response-metric weighting and advanced ranking formula are not established as the current canonical algorithm. |
+| Urgent badge and category-specific fee | Present in older monetization specifications, but not confirmed as a complete current user-facing action in the reviewed implementation. |
+| Daily/weekly performance reports to each advertiser | Older product specs describe them. Current code confirms Backoffice/Gate A metrics and listing-performance inspection, not a complete advertiser-facing daily/weekly report delivery feature. |
+| Reviews, ratings, deals count and reputation badges | Not implemented as profile/review screens. Current phone/identity trust indicators are separate and do not imply a ratings/reviews system. |
+| National ID, GPS, social, financial or cargo-ticket verification | Not confirmed as current verification flows. The implemented trust levels documented here are phone verification and paid document-plus-challenge-video Identity Verification. |
+| Referral rewards, promo/gift codes, social-proof coin rewards | Historical monetization/growth proposals; not confirmed as implemented reward programs in the reviewed current code. |
+| Premium accounts, escrow, business landing pages, partner APIs and enterprise dashboards | Future/business-platform concepts, not current shipped Advertio features. |
+| AI search, AI price suggestions, listing-quality assistant and AI translation | Proposed roadmap capabilities; no current AI/semantic search implementation is confirmed. |
+| Email and WhatsApp notifications | Not confirmed as active delivery channels. The documented current alert, messaging and broadcast paths use Telegram. |
+| Services, Social, Human Connections and Peer Exchange | Category design/reference data must not be mistaken for a live Web journey. The only registered live Web journeys are Housing, Cargo and Jobs. |
+
+See [Implementation history and legacy-spec reconciliation](./implementation-history.md) for the older commit timeline and source links.
+
+## 13. Known gaps — do not describe as shipped
 
 - Cargo/Jobs crawler ingestion.
 - Multiple active listings per user within the same category; one-active-listing server rule remains.
@@ -289,5 +358,10 @@ Commit-level details: [Repository CHANGELOG](../CHANGELOG.md).
 - Telegram bot search redesign specific to Cargo; bot wizard skips Date/Range/Number/MultiSelect attribute types.
 - Broadcast scheduling, rich media/templates/variables, language variants, recall/edit after send, click/open attribution, frequency capping and A/B testing.
 - Ratings, reviews and deal-history profile screens.
-- AI/semantic search.
+- AI/semantic search, AI price suggestion, AI listing-quality assistance, AI translation and AI question generation.
+- Reviews, ratings, deal-history screens and reputation badges beyond the current phone/identity trust indicators.
+- Full Web Saved Filters; the current saved-search workflow is the Telegram bot wizard.
+- A canonical source-defined Early Access timeline, the full legacy ranking formula, Urgent action, advertiser-facing daily/weekly performance reports, referral rewards and promo/gift-code programs are not confirmed as shipped.
+- Premium accounts, escrow, business landing pages, partner APIs, enterprise dashboards, automated paid-acquisition integrations, email notifications and WhatsApp notifications.
+- National ID, GPS, social-media, financial and cargo-ticket verification flows.
 - Production deployment of latest GitLab `master` is not verified by this catalogue.
