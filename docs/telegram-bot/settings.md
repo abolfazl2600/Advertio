@@ -1,105 +1,40 @@
-# Advertio Telegram Bot — Settings Current State
+# Telegram bot — Settings and notification preferences
 
-> Current-state documentation as of **25 Sep 2026**.
->
-> This document records only behavior currently confirmed in the reviewed Telegram Bot UI.
+> Current implementation as of 2026-10-20.
 
-## Entry point
+## Settings screen
 
-Settings is available from the Main Menu:
+Settings exposes:
 
-```text
-Main Menu
-   ↓
-Settings
-```
+- **Language** — opens the language picker.
+- **Marketing messages** — toggles the persisted marketing opt-in preference.
+- **Back** — returns to Main Menu.
 
-## Current Settings screen
+The displayed marketing state is derived from the user's stored notification preference; it is not a decorative status label. The toggle writes the new preference and re-renders the screen.
 
-The Settings screen currently exposes:
+## Supported languages
 
-- 🌐 **Language**
-- 📣 **Marketing messages: 🔔 On**
-- ↩️ **Back**
-
-### Current UI
-
-```text
-Settings
-
-🌐 Language
-📣 Marketing messages: 🔔 On
-↩️ Back
-```
-
-## Language
-
-Selecting **Language** opens:
-
-> **Choose your language:**
-
-The currently visible options are:
-
-| Option | Language |
+| Code | Language |
 |---|---|
-| 🇮🇷 فارسی | Persian / Farsi |
-| 🇬🇧 English | English |
-| 🇫🇷 Français | French |
-| 🇷🇺 Русский | Russian |
-| 🇮🇳 हिन्दी | Hindi |
+| `fa` | Persian |
+| `en` | English |
+| `fr` | French |
+| `ru` | Russian |
+| `hi` | Hindi |
 
-### Current navigation
+Choosing a language saves it to the Advertio user account and returns a localized confirmation and Main Menu. Persian category/attribute labels are used when the backend supplies them; missing translations fall back to English.
 
-```text
-Settings
-   ↓
-Language
-   ↓
-Choose your language
-   ├── 🇮🇷 فارسی
-   ├── 🇬🇧 English
-   ├── 🇫🇷 Français
-   ├── 🇷🇺 Русский
-   └── 🇮🇳 हिन्दी
-```
+## Marketing opt-in and Broadcasts
 
-## Marketing messages
+- Promotion Broadcasts are delivered only to users who opted in.
+- Disabled accounts and accounts without a linked Telegram chat are excluded from Broadcasts.
+- Every Promotion includes a one-tap **Stop promotions** button.
+- Tapping Stop promotions sets marketing opt-in to false and removes the opt-out button from that message.
+- Announcements are a separate Broadcast kind and do not use the marketing opt-in exclusion.
+- Marketing opt-in does not control saved-search alerts; each saved search has its own enabled/pause state.
 
-The Settings screen currently displays:
+## Related pages
 
-```text
-Marketing messages: 🔔 On
-```
-
-This confirms that the preference is displayed with the current visible state **On**.
-
-## Back navigation
-
-A **Back** control is visible on the Settings screen.
-
-The reviewed UI shows:
-
-```text
-Settings
-   ↓
-Back
-   ↓
-Main Menu
-```
-
-## Not Verified
-
-The screenshots do not establish:
-
-- language persistence;
-- what happens immediately after selecting a language;
-- whether the Settings screen is refreshed;
-- whether the selected language affects `/start`;
-- fallback behavior for untranslated strings;
-- how the marketing-message preference is toggled;
-- whether an **Off** state is available;
-- whether the marketing-message preference is persisted;
-- what messages are classified as marketing;
-- exact state-management or callback behavior for **Back**.
-
-No executable Telegram Bot source files are present in the reviewed branch, so implementation-level handler names and persistence/API behavior are **Not Verified**.
+- [Bot overview](./overview.md)
+- [Saved searches](./saved-searches.md)
+- [Backoffice Broadcasts](../backoffice/broadcasts.md)
