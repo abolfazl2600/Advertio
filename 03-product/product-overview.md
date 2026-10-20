@@ -1,5 +1,7 @@
 # Product Overview
 
+> **Implementation status (2026-10-20):** This document's version roadmap is source-defined product direction, not a reliable indicator of what is currently shipped. Cargo and Jobs were implemented in GitLab master on 2026-10-19, and Backoffice Broadcasts on 2026-10-09. Cargo and Jobs were opened by product-owner decision before Gate A; that does not mean Gate A passed. See [Current Implementation Status](./current-capabilities.md) and [CHANGELOG](../CHANGELOG.md).
+
 Advertio یک Marketplace هوشمند مبتنی بر Trust است که Userها را برای نیازهای واقعی مانند Housing، Jobs، Services، Cargo، Human Connections و Social connections به یکدیگر متصل می‌کند.
 
 ## Core product structure
@@ -50,7 +52,7 @@ Search
 
 Active Filters determine the structured result set. Ranking can order that result set, but it does not replace or bypass active hard filters.
 
-## Product roadmap
+## Product roadmap (source-defined plan, not current release status)
 
 ### Version 1.0 — Minimum Viable Marketplace
 
