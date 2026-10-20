@@ -1,77 +1,43 @@
-# Advertio Telegram Bot — Start & Entry State
+# Telegram bot — start, onboarding and command menu
 
-> Current-state documentation as of **25 Sep 2026**.
->
-> This document records only behavior confirmed in the reviewed Telegram Bot UI.
+> Current implementation as of 2026-10-20. Earlier screenshot-only notes are superseded where they conflict with this code-level description.
 
-## Entry point
+## `/start`
 
-The reviewed bot supports the Telegram `/start` command.
+On a Telegram update, the bot ensures/refreshes the Advertio user record using the Telegram sender ID, username, display name and Telegram language code where available.
 
-### Current response
+- If the account already has a saved locale, the bot opens the localized Main Menu.
+- If the locale has not been selected, the bot displays the language picker first.
+- Selecting a language saves the locale and shows a confirmation followed by Main Menu.
+- A plain `/start`, an unknown callback or ordinary text outside an active wizard returns to Main Menu.
+- A bot command can be addressed as `/search@BotUsername`; command matching ignores case and only handles a command addressed to this bot.
 
-After `/start`, the bot displays:
+## Language picker
 
-> **What would you like to do?**
-
-The Main Menu is then visible.
+The supported options are Persian, English, French, Russian and Hindi. Button labels are always displayed in their own script. Translated prompts and buttons use the saved locale; missing translations fall back to English.
 
 ## Main Menu
 
-The currently visible options are:
+- **Create Listing:** Telegram opens the Mini App link; the bot does not run the listing form in chat.
+- **Search Listings:** starts the Search wizard.
+- **Your saved searches:** opens the saved-search list.
+- **Settings:** language and marketing-message preference.
+- **Help:** localized help content with a return-to-menu button.
 
-1. 🏠 **Create Listing**
-2. 🔍 **Search Listings**
-3. **Your saved searches**
-4. ⚙️ **Settings**
-5. ❓ **Help**
+The Mini App link is environment/configuration dependent. If unavailable, the bot says so instead of pretending that listing creation started.
 
-### Current navigation
+## Command menu
 
-```text
-/start
-  ↓
-Main Menu
-  ├── Create Listing
-  ├── Search Listings
-  ├── Your saved searches
-  ├── Settings
-  └── Help
-```
+The public command menu contains:
 
-## Confirmed UI
+- `/start`
+- `/search`
+- `/paysupport`
 
-The supplied screenshot confirms:
+An active admin's private chat receives `/adminreport` as an additional command. The admin menu is published per chat; actual access is checked on every command and does not rely on the menu being hidden from non-admins.
 
-- `/start` is shown as the user command.
-- **What would you like to do?** is displayed by the bot.
-- The five Main Menu options above are visible.
-- **Create Listing** opens the category-selection screen documented in [create-listing.md](./create-listing.md).
+## Related pages
 
-## Additional visible control
-
-A Telegram **Share my phone number** control is visible at the bottom of one supplied screenshot.
-
-The screenshot does not establish:
-
-- what event caused this control to appear;
-- whether it is part of registration;
-- whether it is required for any Main Menu action;
-- what happens after it is selected.
-
-These points are **Not Verified**.
-
-## Not Verified
-
-The reviewed UI does not establish:
-
-- whether a new user must register before seeing the Main Menu;
-- whether phone verification is required;
-- whether existing and new users receive different `/start` responses;
-- whether `/start` accepts or processes deep-link parameters;
-- whether the selected language changes the `/start` response;
-- what happens when `/start` is invoked repeatedly;
-- error handling around `/start`;
-- persistence or API calls triggered by `/start`.
-
-No executable Telegram Bot source files are present in the reviewed branch, so handler/function names are also **Not Verified**.
+- [Bot overview](./overview.md)
+- [Create Listing hand-off](./create-listing.md)
+- [Admin report](./admin-report.md)
