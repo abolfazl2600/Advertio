@@ -34,7 +34,7 @@
 - Required structured attributes: listing type; property type (Apartment, Condo, Basement, Studio, Room, House); bedrooms (Studio, 1, 2, 3, 4+); monthly CAD price unless negotiable is explicitly set.
 - Optional/conditional schema attributes include furnishing, gender preference and other category-defined fields; the server uses the same schema to validate submissions and render supported filters.
 - Price validation for numeric monthly rent: CAD 100–10,000; a negotiable listing uses `price_negotiable=true` instead of inventing a number.
-- Wizard-style listing creation with optional photo upload.
+- Wizard-style listing creation with optional photo upload (up to 10 Housing photos; client accepts JPEG/PNG/WebP, max 8 MiB per file; the backend processes uploaded images).
 - Category feed supports schema-driven structured filters, listing cards, detail pages and pagination/loading states as implemented by the journey.
 - Uses shared contact/unlock, conversation, save, report and publisher actions.
 - Housing is the default category for Gate A listing-based metrics.
@@ -139,7 +139,7 @@ Detailed source: [Shared listing interactions](./mini-app/listing-interactions.m
 - Phone verification and identity-document verification are separate trust levels.
 - Phone verification is used for listing creation, contact/paid actions and wallet access.
 - Inside Telegram, the Mini App requests the user's own contact through Telegram SDK; in an ordinary browser, the user completes the hand-off in Telegram.
-- Paid identity verification supports a request lifecycle, payment, document and challenge-video submission through Telegram, manual admin review, approval/rejection and an Identity Verified badge after approval.
+- Paid identity verification requires a phone-verified account and linked Telegram identity. The user pays the configured coin fee, then submits a supported identity-document image and randomized challenge video through the bot; an admin reviews the evidence in Telegram or Backoffice. Request states include AwaitingPayment, AwaitingSubmission, Submitted, Approved and Rejected. Only approval grants the Identity Verified badge; payment alone does not.
 
 ### Profile
 - Handles needs-login, loading, failure/retry and authenticated states.
@@ -147,6 +147,7 @@ Detailed source: [Shared listing interactions](./mini-app/listing-interactions.m
 - Supports editing display name and uploading an avatar (client limit 8 MiB; server validates/processes it).
 - Shows phone verification status and identity-verification status/actions.
 - Provides links to Saved/My listings and sign-out.
+- Appearance offers System, Light and Dark; System follows the platform/Telegram theme where supported.
 - Ratings, reviews and deal-history screens are not implemented.
 
 Detailed sources: [Authentication](./mini-app/authentication.md), [Profile](./mini-app/profile.md).
@@ -161,8 +162,8 @@ Detailed sources: [Authentication](./mini-app/authentication.md), [Profile](./mi
 - Online top-up: load packs, choose a pack, start checkout, open returned URL, wait for server/webhook confirmation, then show credited/pending/failed state. Returning from checkout is not proof of payment.
 - Manual top-up: user starts request, sends text and/or receipt photo through the bot, request is routed to linked active admins, admin approves/rejects, user is notified; coins are credited only on approval.
 - Payment records and coin-ledger transactions are separate records.
-- Eligible self-service refunds depend on server policy/payment state; not every payment is refundable.
-- Backoffice can inspect online payments, refund successful payments through the original rail, review manual payments, and inspect whether text/receipt evidence and admin delivery succeeded.
+- User self-service refunds are exposed only when the server marks the payment eligible and the associated coins remain unspent; not every payment is refundable.
+- Backoffice can refund through the original rail, including cases that do not meet the user's unspent-coin restriction. Admin refunds and corresponding coin removal are audited. The Backoffice also reviews manual payments and whether text/receipt evidence and admin delivery succeeded.
 - Coin flow is a ledger of credits/debits. Admin wallet adjustments and refunds are audited actions.
 - Provider credentials, package prices, manual payment methods and refund eligibility are configuration/server dependent.
 
@@ -230,6 +231,7 @@ Detailed sources: [Telegram bot overview](./telegram-bot/overview.md), [Search](
 ### Gate A metrics
 - Tracks user population/activity, paid-contact conversion, failure attribution, real vs crawled supply, photo coverage, contact-demand allocation, crawled-vs-user-generated performance, payment friction, experiment monitoring, duplicate-charge monitoring and instrumentation health.
 - Listing-based metrics can be scoped to Housing, Cargo or Jobs; Housing is default. User counts and instrumentation health remain platform-wide.
+- Available windows are 7, 30 and 90 days. Total users is an all-time count; New and Active users are platform-wide for the selected window. Active includes an account that viewed, contacted, signed in or posted during the window.
 - Includes “Is crawled supply eating demand?” comparison and “Why they did not pay” failure attribution.
 - Includes C1 early-vs-late experiment and duplicate-charge monitoring.
 - Metric definitions and data windows matter; displayed sample values in screenshots are historical snapshots, not current live counts.
@@ -252,7 +254,6 @@ Detailed sources: [Telegram bot overview](./telegram-bot/overview.md), [Search](
 - Inspect historical matches and distinguish not-sent, already-sent and all-matching states; historical-match actions support manual backfill/re-send.
 - View publish history with listing link, source and delivery status; manually retry failed publication records.
 - Total Sent is a cumulative successful-delivery count, not a count of unique listings. Channel publishing is separate from direct-user Broadcasts.
-- Channel publishing is different from Broadcasts: one publishes listings to channels; the other sends direct messages to users.
 
 ### Crawled sources
 - Source table shows stable source name, live/total listing counts and last-ingested timestamp.
@@ -287,6 +288,11 @@ Commit-level details: [Repository CHANGELOG](../CHANGELOG.md).
 
 The older implementation history contains several capabilities that were not called out explicitly enough in the previous summary catalogue.
 
+### Mini App host integration and appearance
+
+- When running inside Telegram, the Mini App SDK is initialized once before React mounts. Supported host-specific behavior includes requesting the user's own phone contact, opening Stars invoice URLs and Telegram links, haptic feedback, and Mini App readiness/mount handling. Browser mode must not call Telegram-only methods as if the Telegram host exists.
+- The Appearance control offers System, Light and Dark; System follows the platform/Telegram theme where supported.
+
 ### Conversations and Telegram relay
 
 - User-created listings have a shared conversation panel for sending and replying to messages across Housing, Cargo and Jobs.
@@ -308,13 +314,13 @@ The older implementation history contains several capabilities that were not cal
 - Listing uploads accept JPEG, PNG and WebP, with an 8 MiB upload limit and a 50-million-source-pixel ceiling before full decoding.
 - The server identifies the format from file bytes, applies orientation, removes EXIF/IPTC/XMP metadata, generates WebP variants and calculates an image perceptual hash as a duplicate/similarity signal.
 - The full image is resized to a maximum 1600-pixel edge and the thumbnail to 480 pixels. Crawled listings use the thumbnail-only path; user-created listings keep both variants.
-- Uploads are rate-limited per authenticated user. The backend stores opaque media keys and checks media ownership at listing submission; preview URLs are not the canonical keys to persist.
+- Uploads are rate-limited to 30 requests per minute per authenticated user. The backend stores opaque media keys and checks media ownership at listing submission; preview URLs are not the canonical keys to persist.
 - A background worker reaps unreferenced uploads older than a 24-hour grace period, runs every 12 hours and caps deletions per run. This is a storage-cleanup safeguard, not a user-facing feature.
 
 ### Account and administrative controls
 
 - The verified phone number remains the account identity key; Telegram and Google are identity providers/linked identities, not independent Advertio account keys. Google sign-in is configuration-dependent and does not verify a phone number.
-- Backoffice admins can update their own username/password. The account flow also supports one-time password-setup links and account lockout after repeated failed password attempts; default lockout settings are configurable.
+- Backoffice admins can update their own username/password (username 3–50 characters; password at least 12 characters). The account flow also supports one-time password-setup links and account lockout after repeated failed password attempts; defaults are five failed attempts and a 15-minute lockout, with server configuration allowed to change them.
 - Admin accounts can link a Telegram chat through a one-time deep link for scheduled report delivery. Linking a chat does not grant admin privileges.
 - Direct one-to-one Telegram messages from the Users page are separate from Broadcasts. Selected users can also be handed off to the Broadcast composer for a separate audience preview and explicit send confirmation.
 - The bot persists a user's selected locale and marketing opt-in. Promotion broadcasts exclude users who have not opted in and provide a one-tap Stop promotions action.
@@ -360,9 +366,8 @@ See [Implementation history and legacy-spec reconciliation](./implementation-his
 - Jobs Filled status, external application links/email and Jobs-specific Backoffice scam signals.
 - Telegram bot search redesign specific to Cargo; bot wizard skips Date/Range/Number/MultiSelect attribute types.
 - Broadcast scheduling, rich media/templates/variables, language variants, recall/edit after send, click/open attribution, frequency capping and A/B testing.
-- Ratings, reviews and deal-history profile screens.
+- Ratings, reviews, deal-history screens and reputation badges beyond the current phone/identity trust indicators.
 - AI/semantic search, AI price suggestion, AI listing-quality assistance, AI translation and AI question generation.
-- Reviews, ratings, deal-history screens and reputation badges beyond the current phone/identity trust indicators.
 - Full Web Saved Filters; the current saved-search workflow is the Telegram bot wizard.
 - A canonical source-defined Early Access timeline, the full legacy ranking formula, Urgent action, advertiser-facing daily/weekly performance reports, referral rewards and promo/gift-code programs are not confirmed as shipped.
 - Premium accounts, escrow, business landing pages, partner APIs, enterprise dashboards, automated paid-acquisition integrations, email notifications and WhatsApp notifications.
