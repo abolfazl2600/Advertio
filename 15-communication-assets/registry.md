@@ -1,6 +1,6 @@
 # فهرست دارایی‌های ارتباطی Advertio
 
-**نسخه 1.3 — ۲۰ اکتبر ۲۰۲۶**  
+**نسخه 1.4 — ۲۰ اکتبر ۲۰۲۶**  
 **وضعیت:** ثبت شواهد اولیه؛ آمار لحظه‌ای از اسکرین‌شات‌های ارائه‌شده، نه داده زنده تلگرام.
 
 ## نمای کلی
@@ -16,12 +16,13 @@
 | AD-TG-CH-002 | Rental house 🇨🇦 | کانال تلگرام | [@canadahouse24](https://t.me/canadahouse24) | **6,780 subscribers**; ID: `3299939644` |
 | AD-TG-GR-002 | Advertio Ontario | گروه تلگرام | [@ontario_advertio](https://t.me/ontario_advertio) | **916 members**; ID: `3982568440` |
 | AD-TG-GR-003 | Germany cargo - Advertio | گروه تلگرام | [@German_Advertio_transfer](https://t.me/German_Advertio_transfer) | **3 members**; ID: `3962084490` |
-| AD-TG-CH-003 | Richmond Hill | Advertio 🇨🇦 | کانال تلگرام | [@Richmondhill_advertio](https://t.me/Richmondhill_advertio) | **3 subscribers**; ID: `4480941282` |
-| AD-TG-GR-004 | Vancouver Homes | Advertio 🇨🇦 | گروه تلگرام | [@Vancouver_house](https://t.me/Vancouver_house) | **6 members**; ID: `3769891592` |
-| AD-TG-CH-004 | Advertio Shop | فروشگاه کالای وارداتی | کانال تلگرام | [@advertio_shop](https://t.me/advertio_shop) | **3 subscribers**; ID: `4374556291` |
-| AD-TG-CH-005 | Ontario Jobs | Advertio 🇨🇦 | کانال تلگرام | [@Ontario_Job](https://t.me/Ontario_Job) | **4 subscribers**; ID: `3985033871` |
+| AD-TG-CH-003 | Richmond Hill — Advertio 🇨🇦 | کانال تلگرام | [@Richmondhill_advertio](https://t.me/Richmondhill_advertio) | **3 subscribers**; ID: `4480941282` |
+| AD-TG-GR-004 | Vancouver Homes — Advertio 🇨🇦 | گروه تلگرام | [@Vancouver_house](https://t.me/Vancouver_house) | **6 members**; ID: `3769891592` |
+| AD-TG-CH-004 | Advertio Shop — فروشگاه کالای وارداتی | کانال تلگرام | [@advertio_shop](https://t.me/advertio_shop) | **3 subscribers**; ID: `4374556291` |
+| AD-TG-CH-005 | Ontario Jobs — Advertio 🇨🇦 | کانال تلگرام | [@Ontario_Job](https://t.me/Ontario_Job) | **4 subscribers**; ID: `3985033871` |
 | AD-TG-GR-005 | Canada house Toronto | گروه تلگرام | [@canada_house_toronto](https://t.me/canada_house_toronto) | **3 members**; ID: `4421494690` |
-| AD-TG-CH-006 | Toronto Jobs | Advertio 🇨🇦 | کانال تلگرام | [@Toronto_Advertio](https://t.me/Toronto_Advertio) | **3 subscribers**; ID: `4472881303` |
+| AD-TG-CH-006 | Toronto Jobs — Advertio 🇨🇦 | کانال تلگرام | [@Toronto_Advertio](https://t.me/Toronto_Advertio) | **3 subscribers**; ID: `4472881303` |
+| AD-TG-CH-007 | Advertio خانه کانادا 🇨🇦 | کانال تلگرام | [@canada_advertio](https://t.me/canada_advertio) | **6 subscribers**; ID: `4311610249` |
 
 ## پروفایل‌های ثبت‌شده
 
@@ -178,6 +179,18 @@
 - **یادداشت:** Advertio_bot mentioned in channel description
 - **منبع:** `Screenshot 2026-10-20 at 4.38.20 PM.png` (تصویر ارسالی کاربر؛ فایل تصویر در گیت عمومی بارگذاری نشده)
 
+### AD-TG-CH-007 — Advertio خانه کانادا 🇨🇦
+- **نوع:** کانال تلگرام (Telegram Channel).
+- **شناسه عمومی و لینک:** [`@canada_advertio`](https://t.me/canada_advertio).
+- **Telegram Numeric ID:** `4311610249`.
+- **مشترکان قابل مشاهده:** `6 subscribers`، طبق تصویر ارائه‌شده در ۲۰ اکتبر ۲۰۲۶.
+- **مخاطب:** فارسی‌زبانان سراسر کانادا، مطابق توضیح کانال.
+- **موضوع:** آگهی‌های خرید و فروش، مسکن، خودرو، کار، خدمات و فرصت‌های مختلف کانادا.
+- **متن معرفی/دعوت به اقدام:** «آگهی پیدا کن | آگهی خودت را منتشر کن»؛ «Advertio — Marketplace for Everyone».
+- **شناسه درج‌شده در بیو:** `@AdvertioBot` (**بدون underscore**). این شناسه با ربات ثبت‌شده `@advertio_bot` متفاوت است؛ تطابق این دو **تأیید نشده**. باید قبل از استفاده در تبلیغات صحت CTA بررسی شود.
+- **Community نمایان:** `Canada Advertio Community` با برچسب `Community with 15 chats`.
+- **منبع:** `Screenshot 2026-10-20 at 4.42.00 PM.png` ارائه‌شده توسط کاربر؛ اطلاعات snapshot است، نه وضعیت زنده.
+
 ## گراف رابطه‌ها (فقط اطلاعات اثبات‌شده)
 
 ```text
@@ -204,7 +217,9 @@ flightiranbot24 code --(cargo menu external link)----> @advertio_cargo
 5. سایر شبکه‌ها، کانال‌ها، وب‌سایت‌ها و آدرس‌های سفارش فعال.
 6. بررسی لینک واقعی Discuss کانال Rental house و صحت زمان‌بندی انتشار از Mini App.
 
-**جمع فعلی:** ۱۵ دارایی شامل ۶ کانال، ۵ گروه، ۲ ربات، ۱ Community و ۱ حساب پشتیبانی. این اعداد «تعداد دارایی‌های شناسایی‌شده» هستند، نه شاخص کاربران یکتا.
+**جمع فعلی:** ۱۶ دارایی شامل ۷ کانال، ۵ گروه، ۲ ربات، ۱ Community و ۱ حساب پشتیبانی. این اعداد «تعداد دارایی‌های شناسایی‌شده» هستند، نه شاخص کاربران یکتا.
+
+**هشدار اولویت بالا:** تفاوت `@AdvertioBot` با `@advertio_bot` در بیو کانال عمومی جدید، باید قبل از ساخت کمپین یا اتوماسیون تأیید و در صورت لزوم اصلاح شود.
 
 ## Change log
 
@@ -214,3 +229,4 @@ flightiranbot24 code --(cargo menu external link)----> @advertio_cargo
 | 2026-10-20 | 1.1 | افزودن FlightIran Bot، منبع کد، آمار monthly users، رابطه Community و سند قابلیت‌ها |
 | 2026-10-20 | 1.2 | تکمیل رجیستری با ۸ دارایی گروه/کانال از اسکرین‌شات‌های ۴:۳۵ تا ۴:۳۷ |
 | 2026-10-20 | 1.3 | افزودن گروه مسکن Toronto و کانال Toronto Jobs؛ ۱۵ دارایی شناسایی‌شده |
+| 2026-10-20 | 1.4 | افزودن کانال عمومی `@canada_advertio`؛ ۱۶ دارایی؛ شناسایی اختلاف آیدی فراخوان ربات |
