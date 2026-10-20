@@ -183,15 +183,16 @@ Detailed source: [Wallet and payments](./mini-app/wallet.md).
 - Asks category, city (typed or Any), price (typed or Any), supported category attributes, then shows result count and compact results.
 - Single numeric price means maximum; hyphenated input means min–max; invalid input clears the constraint.
 - Only hard/soft filterable Select and Boolean attributes are asked. Range, Number, Date and MultiSelect are skipped.
-- Results show title, numeric price (or em dash) and city; buttons open the matching listing in Mini App.
+- Results show title, numeric price (or em dash) and city; buttons open the matching listing in the Mini App.
 
 ### Saved-search alerts
 - Saved-search wizard asks category, city, price, supported Select/Boolean attributes and frequency.
 - Frequency options: Instant or Digest.
 - Instant alerts are queued when matching listings activate; digest groups matches and sends once per day at a configured UTC hour (documented default 09:00 UTC).
 - Matching supports category, city text, price min/max and scalar equality for supported attributes.
+- Saved-search names are generated from category and city; custom names are not requested.
 - List/view/pause/resume/delete are supported.
-- The bot does not ask for custom saved-search names, keywords, country or province in v1.
+- The bot does not ask for keywords, country or province in v1; digest time is a global UTC boundary, not per-user local time.
 - Full range/number/date/multi-select operators are not implemented in the current bot wizard/matcher.
 
 ### Payments, identity and admin reporting
@@ -209,7 +210,7 @@ Detailed sources: [Telegram bot overview](./telegram-bot/overview.md), [Search](
 - Filters: All, Active, Disabled, Verified and Posted. Search works together with the filters and accepts name, username, phone or user ID.
 - The table exposes display name, Telegram-style username, phone, status, role, reputation and join date; missing usernames/phones use a neutral empty-value placeholder.
 - The Posted filter uses the canonical listing creator/owner relationship; crawled/unowned listings do not make an unrelated user count as a publisher.
-- Admins can inspect users, send a direct Telegram message, or pass selected users to a prefilled Broadcast composer. Direct messages and Broadcasts are separate workflows.
+- Admins can inspect users, send a direct Telegram message (plain text, up to 4,096 characters), or pass selected users to a prefilled Broadcast composer. Direct messages and Broadcasts are separate workflows; delivery failures must not be reported as success.
 - Backoffice account supports server-confirmed username/password updates with inline validation, one-time password setup and Telegram linking for reports.
 - The UI includes a row-actions menu, but detailed disable/enable, role-editing and reputation-editing behavior is not fully documented by the reviewed source; do not infer those operations from the visible columns.
 
@@ -239,7 +240,7 @@ Detailed sources: [Telegram bot overview](./telegram-bot/overview.md), [Search](
 ### Broadcasts
 - Send direct Telegram messages to All, Filtered or Selected users.
 - Filters include phone/identity verification, whether a user has posted, join dates, language and saved-search interest.
-- Disabled users and users without Telegram are excluded; Promotions also exclude users without marketing opt-in.
+- Disabled users and users without Telegram are excluded; Promotions also exclude users without marketing opt-in. Announcements are a separate Broadcast kind and do not use the marketing opt-in exclusion.
 - Draft create/edit/delete, recipient preview and exclusion counts, message preview, test send to acting admin and explicit recipient-count confirmation.
 - Server rejects send if audience changed after confirmation.
 - Asynchronous rate-limited delivery, Telegram 429 retry-after handling, per-recipient outcomes, live report, cancel, retry failed and duplicate actions.
@@ -329,8 +330,8 @@ The older implementation history contains several capabilities that were not cal
 
 - Signed-in users can report another user's listing, with one of the current reasons (Scam, Wrong information, Duplicate, Already rented, Offensive or Other) and an optional note up to 500 characters. Repeat pending reports from the same user/listing do not create duplicate pending records.
 - Backoffice review includes listing reports, possible duplicates, moderation decisions and source/provenance details. A possible duplicate is a review queue; similarity is not automatically equivalent to an exact duplicate.
-- Independent Listing Inspection is a separate Backoffice-only operational workflow: request intake, scope/quote, payment tracking, inspector/visit scheduling, evidence, structured report, publication readiness, notes and history. It is not the standard listing-approval queue and is not a complete public self-service ordering flow.
-- Identity verification is a separate paid service. Its configured/seeded reference price is 80 Coins in the reviewed docs, but the live service price is authoritative; payment alone never grants the Identity Verified badge.
+- Independent Listing Inspection is a separate Backoffice-only operational workflow: request intake, scope/quote, payment tracking, inspector/visit scheduling, evidence, structured report, publication readiness, notes and history. Evidence supports photos, common video formats and PDFs within the upload limit; long videos can be supplied as links. It is not the standard listing-approval queue and is not a complete public self-service ordering flow.
+- Identity verification is a separate paid service. Its configured/seeded reference price is 80 Coins in the reviewed docs, but the live service price is authoritative; payment alone never grants the Identity Verified badge. The document image and challenge video are submitted through Telegram; the reviewed flow stores operational references/metadata rather than duplicating raw evidence into the Advertio listing-media bucket.
 
 ### Background processing and operational reporting
 
