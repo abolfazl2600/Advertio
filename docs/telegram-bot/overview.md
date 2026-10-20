@@ -1,277 +1,104 @@
-# Advertio Telegram Bot — Current State
+# Advertio Telegram bot — current implementation
 
-> Current-state documentation as of **3 Oct 2026**.
->
-> This document records behavior confirmed from the reviewed Telegram Bot UI, repository documentation, and completed/published product tasks.
+> **Reviewed:** 2026-10-20 from executable bot/backend code in GitLab `master`. This supersedes earlier screenshot-only notes that marked Search and Saved searches as unverified.
 
-## Evidence reviewed
+## 1. Entry point and main menu
 
-- Telegram Bot screenshots supplied for this review.
-- Existing documentation under `docs/telegram-bot/`.
-- Repository tree for `feature/telegram-bot-flow`.
-- Completed GitHub Issue #31 and its published real-world admin report example.
+The bot ensures a user record from the Telegram sender identity, updates available Telegram profile fields, and uses the saved locale. A new user without a saved locale receives the language picker first. The main menu contains:
 
-The reviewed branch contains documentation files but no executable Telegram Bot source files (`.py`, `.js`, `.ts`, `.tsx`, or equivalent). Therefore, handler/function names and implementation-level callback behavior are **Not Verified** from this branch unless separately confirmed by a completed/published task.
+1. **Create Listing** — opens the configured Mini App entry. Listing creation itself is not a chat wizard.
+2. **Search Listings** — starts the generic category/city/price/attribute search wizard.
+3. **Your saved searches** — list, view, pause/resume and delete saved-search alerts.
+4. **Settings** — language and marketing opt-in.
+5. **Help** — localized help content.
 
-## Current entry point
+If the Mini App is not configured, Create Listing displays an unavailable message. If an old keyboard still has a callback from before the Mini App was configured, the bot resolves it to the current Mini App link when possible.
 
-The reviewed bot supports the Telegram `/start` command.
+## 2. Commands
 
-After `/start`, the bot displays:
-
-> **What would you like to do?**
-
-The reviewed Main Menu contains:
-
-1. 🏠 **Create Listing**
-2. 🔍 **Search Listings**
-3. **Your saved searches**
-4. ⚙️ **Settings**
-5. ❓ **Help**
-
-### Current Main Menu
-
-```text
-What would you like to do?
-
-🏠 Create Listing
-🔍 Search Listings
-Your saved searches
-⚙️ Settings
-❓ Help
-```
-
-## Current navigation
-
-The reviewed UI confirms these Main Menu entry points:
-
-```text
-/start
-  │
-  ▼
-Main Menu
-  │
-  ├── 🏠 Create Listing
-  │      └── Category selection
-  │
-  ├── 🔍 Search Listings
-  │      └── Not Verified
-  │
-  ├── Your saved searches
-  │      └── Not Verified
-  │
-  ├── ⚙️ Settings
-  │      └── Documented in settings.md
-  │
-  └── ❓ Help
-         └── Not Verified
-```
-
-## Create Listing
-
-The reviewed Create Listing flow currently shows:
-
-```text
-Create Listing
-   ↓
-Which category?
-
-├── Housing & Roommate
-├── Passenger Cargo
-├── Jobs
-├── Services
-└── Social & Events
-```
-
-A **Cancel** button is also visible on the category-selection screen.
-
-The reviewed Housing & Roommate path then shows:
-
-```text
-Housing & Roommate
-   ↓
-Listing Type
-
-├── Rent
-├── Roommate
-├── Skip
-└── Cancel
-```
-
-The next reviewed screen shows:
-
-> **Which city? Type a name, or tap Any.**
-
-with:
-
-- **Any**
-- **Cancel**
-
-The screenshots do not show the user action between each captured screen, so the exact callback/state transition is **Not Verified**. The full current-state description is in [create-listing.md](./create-listing.md).
-
-## Current Settings
-
-The reviewed Settings screen exposes:
-
-- 🌐 **Language**
-- 📣 **Marketing messages: 🔔 On**
-- ↩️ **Back**
-
-The current Language screen displays:
-
-> **Choose your language:**
-
-with:
-
-- 🇮🇷 **فارسی**
-- 🇬🇧 **English**
-- 🇫🇷 **Français**
-- 🇷🇺 **Русский**
-- 🇮🇳 **हिन्दी**
-
-The screenshots confirm the visible controls and text. Persistence and post-selection behavior are **Not Verified**.
-
-## Admin Management Report
-
-The Telegram Bot currently includes a completed and published **Admin Management Report** feature.
-
-### Current behavior
-
-- A management report is generated automatically every **24 hours** for authorized admins.
-- Authorized admins can request the same report on demand using `/adminreport`.
-- Administrative report data is restricted to authorized admin users.
-- The report clearly separates **current totals/state** from **last 24 hours** activity.
-- The report includes its generation timestamp and timezone.
-- Metrics that are not reliably tracked are explicitly omitted/noted rather than populated with invented values.
-
-### Current report coverage
-
-The published report currently includes:
-
-- **Users**
-  - Activated users
-  - Phone/identity verification totals
-  - Total accounts
-  - Disabled accounts
-  - New accounts in the last 24 hours
-  - Newly activated users
-  - Newly verified users
-
-- **Listings**
-  - Total active listings
-  - User-posted vs crawled listings
-  - Pending review
-  - Expired, deactivated, and rejected listings
-  - New listings in the last 24 hours
-  - Listings grouped by category
-  - Listings grouped by city
-
-- **Active listings by city**
-
-- **Saved searches**
-  - Enabled saved searches
-  - New saved searches in the last 24 hours
-
-- **Listing reports**
-  - Reports awaiting review
-  - Reports submitted in the last 24 hours
-
-- **Crawler activity**
-  - Completed crawls
-  - New vs already-known listings
-  - Failed/rejected/server-error outcomes
-  - Last successful crawl time
-
-### Published example
-
-A real published example recorded in GitHub Issue #31 included:
-
-```text
-📊 Advertio Admin Report
-🕒 Generated 3 Oct 2026, 13:22 · Asia/Tehran (UTC+03:30)
-
-👥 Users — now
-• Activated users: 53
-• Verified users: 3 phone · 0 identity
-• Total accounts: 53 · disabled: 0
-
-📋 Listings — now
-• Total active listings: 174 (0 user-posted · 174 crawled)
-• Pending review: 24
-• Inactive: 223 expired · 44 deactivated · 11 rejected
-
-🆕 Listings — last 24 h
-• New listings: 13 (0 user-posted · 13 crawled)
-
-🔎 Saved searches
-• Enabled now: 3
-
-🕷 Crawling
-• Crawls completed: 14
-• Crawls failed: 1
-```
-
-The production report contains additional city/category breakdowns and timestamps. The GitHub issue notes that metrics not tracked by the current system, such as number of searches and reported users, are not reported.
-
-## Visible Telegram UI outside the documented bot flow
-
-A **Share my phone number** control is visible in the supplied Telegram screenshot. The screenshot does not establish when or why this control is presented, so its relationship to the bot flow is **Not Verified**.
-
-The Telegram client also shows an **Advertio mini app** button. The mini-app behavior is outside the reviewed bot flow and is **Not Verified** here.
-
-## Current UI copy
-
-| Area | Current text |
+| Command | Scope |
 |---|---|
-| Main Menu | What would you like to do? |
-| Main Menu | Create Listing |
-| Main Menu | Search Listings |
-| Main Menu | Your saved searches |
-| Main Menu | Settings |
-| Main Menu | Help |
-| Create Listing | Which category? |
-| Category | Housing & Roommate |
-| Category | Passenger Cargo |
-| Category | Jobs |
-| Category | Services |
-| Category | Social & Events |
-| Listing Type | Listing Type |
-| Listing Type | Rent |
-| Listing Type | Roommate |
-| Listing Type | Skip |
-| City | Which city? Type a name, or tap Any. |
-| City | Any |
-| Settings | Settings |
-| Settings | Language |
-| Settings | Marketing messages: 🔔 On |
-| Settings | Back |
-| Language | Choose your language: |
-| Language | فارسی |
-| Language | English |
-| Language | Français |
-| Language | Русский |
-| Language | हिन्दी |
-| Admin | /adminreport |
+| `/start` | Everyone; creates/refreshes the Telegram-linked user context and shows language selection or Main Menu |
+| `/search` | Everyone; starts the same Search Listings wizard as the menu |
+| `/paysupport` | Telegram Stars payment-support command, required for a bot that accepts Stars |
+| `/adminreport` | Active admins only, and only in the admin's private chat with the bot |
 
-## Not Verified
+The bot publishes its command menu from code at startup; commands are not maintained manually in BotFather. Admins receive an admin-specific command list, but hiding the command from other users is only a UI convenience. The command itself checks admin authorization on every request.
 
-The following are not established by the reviewed screenshots or by executable code in the reviewed documentation branch:
+## 3. Localization
 
-- Registration and phone-verification flow.
-- Exact handler/callback names.
-- Backend/API calls.
-- Persistence behavior for the reviewed user-facing flows.
-- Search Listings flow.
-- Saved Searches user flow.
-- Help flow.
-- The result of selecting a listing type.
-- The result of entering/selecting a city.
-- Behavior of **Any**.
-- Behavior of **Cancel** in the reviewed Create Listing screens.
-- Validation and error messages.
-- Listing fields after city selection.
-- Listing preview or submission behavior.
-- Behavior of the **Share my phone number** control.
-- Advertio Mini App behavior.
+Supported locales are:
 
-The Admin Management Report is excluded from this Not Verified list because Issue #31 is recorded as completed/published and includes a real output example.
+- Persian (`fa`)
+- English (`en`)
+- French (`fr`)
+- Russian (`ru`)
+- Hindi (`hi`)
+
+The language picker shows each language in its own script. Choosing a language persists the user's locale and returns to the localized Main Menu. Persian category/attribute labels are used when available; missing translations fall back to English.
+
+## 4. Search
+
+The generic Search wizard asks for:
+
+1. Category from the backend category list.
+2. City (typed text) or **Any**.
+3. Price (a numeric maximum or a min-max range) or **Any**.
+4. Filterable category attributes of type **Select** or **Boolean**; unsupported attribute types are skipped.
+
+Results show total count and each result's title, numeric price when present and city. Each result gets a button that opens the corresponding listing in the Mini App. Results are paged with Previous/Next; the user can save the current filters, start a new search or return to Main Menu.
+
+The generic wizard is not a dedicated Cargo route/date search UI. It only asks for scalar Select/Boolean attributes; it does not provide range sliders, multi-select or date controls.
+
+## 5. Saved searches and notifications
+
+A saved search stores category, optional city, price range and equality filters for supported scalar attributes. The bot automatically names it from the category and city (when supplied). Notification frequencies are:
+
+- **Instant:** queued when a matching listing becomes Active.
+- **Digest:** matching results are grouped and sent once per day at a configured UTC hour (default 09:00 UTC).
+
+Users can view each saved search's status/frequency, pause it, resume it or delete it. A paused/disabled search does not receive alerts. See [Saved searches](./saved-searches.md).
+
+## 6. Settings and promotions
+
+Settings exposes:
+
+- Language.
+- Marketing messages opt-in toggle.
+- Back to Main Menu.
+
+Promotion broadcasts honor the user's marketing opt-in. Every Promotion also has a one-tap **Stop promotions** action; using it disables the preference and removes that button from the message. This opt-out is separate from saved-search alerts, which are controlled per saved search.
+
+## 7. Identity verification and payments
+
+The bot is part of these workflows:
+
+- Telegram phone sharing for account sign-in/verification.
+- Manual coin top-up: the user sends payment details and/or a receipt photo; admins review in Telegram, and coins are credited only after approval.
+- Paid identity verification: the user sends an identity document and a challenge video; admins review the evidence and approve/reject.
+- Conversation/message relay for native user-created listings.
+- Telegram Stars payment support.
+
+The Mini App initiates the flow; the bot handles evidence/confirmation where required. See [Payments and verification](./payments-and-verification.md).
+
+## 8. Admin reports
+
+- `/adminreport` generates a current management report for an active admin in their private chat.
+- A daily management report is also scheduled (default 06:00 UTC; displayed timestamps default to Asia/Tehran).
+- A separate operational lead digest is sent four times per day at 00:00, 06:00, 12:00 and 18:00 Tehran time to configured admins with a linked Telegram chat.
+
+See [Admin report](./admin-report.md).
+
+## 9. Conversation state and reliability
+
+Search and saved-search wizards store their step state in the backend. A wizard that has been inactive for more than 30 minutes is treated as stale rather than continuing from an old prompt. Conversation replies are routed before wizard text handling so an ordinary message reply is not mistaken for a city or price answer. Errors are logged and the next worker cycle can retry; a failed scheduled report does not permanently stop the worker.
+
+## Related pages
+
+- [Start and locale selection](./start.md)
+- [Create Listing](./create-listing.md)
+- [Search wizard](./search.md)
+- [Saved searches](./saved-searches.md)
+- [Settings](./settings.md)
+- [Payments and verification](./payments-and-verification.md)
+- [Admin report](./admin-report.md)
