@@ -1,267 +1,100 @@
-# Mini App — Housing Current State
+# Housing — current implementation
 
-> Current implementation documented from the Mini App/Web App UI review on **3 Oct 2026**.
+> **Scope:** the live `housing` journey in the Web app. This page follows the category schema seeded by GitLab `master` and supersedes older screenshot-only descriptions where they conflict.
 
-This document describes the Housing experience currently visible in Advertio. It does not define future Housing behavior.
+## 1. Journey and market
 
-## Current Housing feed
+- Display name: **Housing**.
+- Backend slug: `housing`.
+- Market: Canada. Housing's form/feed use the Canadian country/location catalog; the additional countries in the shared catalog exist for Cargo.
+- Listing types: **Rent** and **Roommate**.
+- Housing is the original baseline journey. It uses the shared listing interaction layer, not a private Housing-only contact/save/report implementation.
 
-Housing opens a dedicated listing feed.
+## 2. Posting flow
 
-### Current feed behavior observed
+The create wizard gathers the listing's core information and schema-defined attributes, lets the user optionally upload photos, and publishes the listing. The backend owns final validation and pricing.
 
-- Housing page header with back navigation
-- Listing result count
-- Listing cards
-- Listing image when available
-- No-photo placeholder when an image is unavailable
-- Property type label
-- Listing title
-- Bedroom information where available
-- Location
-- Price
-- Monthly price suffix where applicable
-- Relative publish time
-- Floating Post action
+### Required core attributes
 
-A reviewed 3 Oct 2026 feed state displayed **171 listings**.
+| Attribute key | User-facing meaning | Validation / behavior |
+|---|---|---|
+| `listing_type` | Rent or Roommate | Required select; hard filter |
+| `property_type` | Apartment, Condo, Basement, Studio, Room, House | Required select; hard filter |
+| `bedrooms` | Studio, 1, 2, 3, 4+ | Required select; hard filter |
+| `price` | Monthly rent in CAD | Number 100–10,000; required unless `price_negotiable=true`; hard filter |
 
-## Current primary filters
+A negotiable price must be expressed with `price_negotiable=true`, rather than inventing a numeric rent. The server validates the same schema used to render the form.
 
-The Housing feed currently exposes horizontally scrollable filter controls.
+### Optional and conditional attributes
 
-Observed primary filters include:
+| Key | Type / options | Filter behavior |
+|---|---|---|
+| `price_negotiable` | Boolean | Not a feed filter; declares that no numeric price was quoted |
+| `furnishing` | Furnished, Unfurnished, Semi Furnished | Hard filter |
+| `gender_preference` | Male, Female, Family, No preference | Hard filter; visible only for Roommate |
+| `age_range` | 18–25, 25–35, 35–50, 50+ | Soft filter; visible only for Roommate; range 18–70 |
+| `lifestyle_tags` | Multi-select grouped by daily rhythm, social life and who fits | Soft filter; visible only for Roommate |
+| `pets_allowed` | Boolean | Soft filter |
+| `available_from` | Date | Soft filter |
+| `rental_duration` | Daily, Short Term, Long Term | Hard filter |
+| `area` | Number, 5–500 m² | Soft filter |
+| `bathrooms_count` | Number, 1–10, step 0.5 | Soft filter; filter buckets 1, 2, 3+ |
+| `floor_number` | Number, 0–100 | Soft filter |
+| `year_built` | 0–5, 5–10, 10–20, 20+ years | Soft filter |
+| `is_owner` | Boolean | Soft filter |
+| `smoking_allowed` | Boolean | Soft filter |
+| `amenities` | Multi-select | Soft filter |
 
-- City
-- Listing Type
-- Property Type
-- Bedrooms
-- Monthly Rent (CAD)
-- Furnishing
-- Gender Preference
-- Rental Duration
-- More Filters
+Roommate-only lifestyle values are: Quiet, Early bird, Night owl, Social, Party friendly, Keeps to themselves, Students only, Working professional, Works from home and Vegetarian household.
 
-## City filter
+The amenities options are: Elevator, Parking, Storage Room, Balcony, Terrace, Garden, Rooftop, Security System, CCTV, Doorman, Renovated, Kitchen Appliances, Washing Machine, Dishwasher, Air Conditioning, Heating, Internet Ready, Swimming Pool, Sauna and Gym.
 
-The City selector is implemented as a bottom sheet.
+**Hard vs soft filters:** hard filters express core constraints; soft filters express preferences. These flags come from the backend schema and are not independently defined by each screen. Conditional fields are driven by schema metadata, so roommate-only fields should not be shown for Rent listings.
 
-Previously reviewed options include:
+## 3. Location
 
-- All cities
-- Toronto
-- North York
-- Richmond Hill
-- Vancouver
-- North Vancouver
-- Coquitlam
+- Location selection is catalog-backed, not arbitrary free text.
+- The shared location API exposes countries, provinces and cities, with optional search query, featured entries and result limits.
+- Housing is pinned to Canada even though the shared location catalog also contains Cargo destinations.
+- The city stored on the listing is canonicalized by the backend against the reference catalog.
 
-## Monthly Rent (CAD)
+## 4. Photos
 
-The reviewed current selector shows:
+- Photos are optional; maximum 10 per listing.
+- Client accepts JPEG, PNG and WebP.
+- Maximum file size is 8 MiB per image.
+- Uploads occur immediately when a file is picked, one at a time. Each successful upload returns an opaque media key and public/thumb URLs for display.
+- Publishing sends the opaque media keys, not user-supplied URLs. The server rejects media keys not owned by the current publisher.
+- An upload error such as an unsupported image, oversized file or rate limit is shown before the user publishes.
 
-- Any
-- Under 2,600
-- 2,600–5,050
-- 5,050–7,550
-- Over 7,550
+## 5. Feed, filters and detail page
 
-These are documented as current UI buckets.
+- The feed is paginated and uses server-side category filters.
+- The standard filter panel includes the primary listing attributes; **More filters** exposes the optional/soft filters supported by the current schema.
+- Cards and details render attribute labels from the schema, so labels/options can be renamed without hardcoding every option into the UI.
+- Detail pages show photos/gallery when present, location, price/negotiable state, key attributes, description, publisher and trust indicators.
+- The same shared save, report, contact and conversation interactions used by Cargo and Jobs are available on Housing.
 
-## Gender Preference
+## 6. Moderation, pricing and lifecycle
 
-Current selector:
+- A newly created user listing enters `PendingReview`; it becomes `Active` only after moderation approves it.
+- At approval, the server snapshots the configured contact-unlock cost and listing TTL onto the listing. Later policy edits apply to new approvals; they do not silently rewrite an existing listing's stored contact cost or expiry.
+- The seeded default listing TTL is 30 days. Backoffice policy can change it.
+- Current limit: one active user-created listing per user in the Housing category.
+- Duplicate detection runs before any coin charge or listing write. An exact duplicate is rejected without charging; a similarity finding can be recorded for moderator review without treating every similar listing as an exact duplicate.
+- Renew is offered for expired listings and active listings within 7 days of expiry. Boost is available for active listings. Duration and price are server-configured; seeded boost duration is 72 hours.
+- Moderator actions include approve, reject with a reason and takedown of an active listing with a reason.
 
-- Any
-- Male
-- Female
-- Family
-- No preference
+## 7. Current boundaries
 
-## Rental Duration
+- The current Housing user flow is the baseline for the shared listing layer; it does not imply that every category is supported by the crawler.
+- The crawler ingestion contract currently supports `housing` only.
+- The code-level default policy values are not a guarantee of the live configured values. Check Backoffice **Policy & pricing** for current settings.
+- Production deployment of the reviewed GitLab revision is not confirmed by this document.
 
-Current selector:
+## Related pages
 
-- Any
-- Daily
-- Short Term
-- Long Term
-
-## More Filters
-
-The **More Filters** experience is implemented as a scrollable bottom sheet containing Housing and roommate criteria.
-
-### Roommate Age Range
-
-- 18–25
-- 25–35
-- 35–50
-- 50+
-
-### Lifestyle
-
-- Quiet
-- Early bird
-- Night owl
-- Social
-- Party friendly
-- Keeps to themselves
-- Students only
-- Working professional
-- Works from home
-- Vegetarian household
-
-### Pets Allowed
-
-- Any
-- Yes
-- No
-
-### Available From
-
-A date input is available.
-
-### Area (m²)
-
-- Under 150
-- 150–250
-- 250–400
-- Over 400
-
-### Bathrooms
-
-- 1
-- 2
-- +3
-
-### Floor
-
-Current UI:
-
-- Under 50
-- 50–50
-- 50–100
-- Over 100
-
-> QA note: `50–50` and the overall Floor buckets appear inconsistent. This document records the UI exactly as observed.
-
-### Year Built
-
-- 0–5 years
-- 5–10 years
-- 10–20 years
-- 20+ years
-
-### Owner
-
-Under **Are you the owner?**:
-
-- Any
-- Yes
-- No
-
-### Smoking Allowed
-
-- Any
-- Yes
-- No
-
-### Amenities
-
-Observed options:
-
-- Elevator
-- Parking
-- Storage Room
-- Balcony
-- Terrace
-- Garden
-- Rooftop
-- Security System
-- CCTV
-- Doorman
-- Renovated
-- Kitchen Appliances
-- Washing Machine
-- Dishwasher
-- Air Conditioning
-- Heating
-- Internet Ready
-- Swimming Pool
-- Sauna
-- Gym
-
-The current More Filters sheet exposes a **Show results** action.
-
-Issue #22 also records Reset behavior as implemented.
-
-## Current listing detail
-
-The reviewed current Housing detail includes:
-
-- About / description
-- Listing Type
-- Property Type
-- Bedrooms
-- Monthly Rent (CAD)
-- Furnishing
-- Rental Duration
-- Contact section
-
-Observed current example:
-
-```text
-Listing Type: Rent
-Property Type: House
-Bedrooms: 1
-Monthly Rent (CAD): 2,000
-Furnishing: Furnished
-Rental Duration: Long Term
-```
-
-The reviewed Contact area shows:
-
-```text
-Contact via Telegram
-No coins charged
-Open in Telegram
-```
-
-This documents the visible UI state only; the screenshot does not expose the listing supply-source badge in the captured area.
-
-## Filter interaction patterns observed
-
-- Bottom-sheet selectors are used.
-- Selected single-choice values use checkmarks.
-- Multi-select chips are used for Lifestyle/Amenities.
-- Segmented controls are used for Any / Yes / No.
-- More Filters groups secondary criteria.
-- Housing feed shows the matching listing count.
-
-## Current Search relationship
-
-Housing filtering is implemented directly in the Housing feed.
-
-Global Search is separate:
-
-- Global Search = free-text discovery.
-- Housing filters = structured category-specific discovery.
-
-See [Global Search](./search.md).
-
-## Category documentation
-
-Detailed category-level documentation now lives under:
-
-- [Housing overview](../../04-categories/housing/overview.md)
-- [Housing attributes](../../04-categories/housing/attributes.md)
-- [Housing filters](../../04-categories/housing/filters.md)
-- [Rental listings](../../04-categories/housing/rental-apartments.md)
-- [Roommate experience](../../04-categories/housing/roommates.md)
-- [Housing monetization](../../04-categories/housing/monetization.md)
-- [Housing rules](../../04-categories/housing/rules.md)
-
-## Related implementation issues
-
-- [#21 — Housing listing feed](https://github.com/abolfazl2600/Advertio/issues/21)
-- [#22 — Housing feed filters](https://github.com/abolfazl2600/Advertio/issues/22)
+- [Shared listing interactions](./listing-interactions.md)
+- [Global Search](./search.md)
+- [Authentication and phone verification](./authentication.md)
+- [Crawler ingestion contract](../integrations/crawler.md)
