@@ -1,6 +1,6 @@
 # Advertio documentation — current implementation
 
-> **Reviewed:** 2026-10-20. This directory documents implementation evidence in the Advertio GitLab monorepo's `master` branch. It is a code-level reference, not a claim that every commit has reached Production.
+> **Reviewed:** 2026-10-20. This directory was re-audited against the Advertio GitLab monorepo's `master` code and commit history from the initial scaffold (2026-07-05) through the October 2026 feature launches. It is a code-level reference, not a claim that every commit has reached Production.
 
 ## How to read this documentation
 
@@ -30,7 +30,8 @@ Only `housing`, `passenger-cargo` and `jobs` are registered as live Web journeys
 For the complete feature-by-feature inventory—including smaller UI behaviors, field rules, filters, lifecycle, payment/verification paths, bot commands, admin operations, recent changes and explicit gaps—start here:
 
 - **[Detailed Current Capabilities](./current-capabilities.md)** — consolidated capability catalogue across Mini App, Telegram bot and Backoffice.
-- [Repository Changelog](../CHANGELOG.md) — commit-based history of recent implementation changes.
+- [Implementation history and legacy-spec reconciliation](./implementation-history.md) — major capability milestones from July through October 2026, with links to GitLab commits and a status matrix for older roadmap/product specifications.
+- [Repository Changelog](../CHANGELOG.md) — commit-based history of recent implementation changes (October 2026).
 
 The pages below provide implementation detail for each subsystem. The catalogue and linked subsystem pages describe code-level status, not guaranteed Production availability.
 
@@ -91,6 +92,7 @@ These are intentionally not presented as shipped capabilities:
 - A dedicated Jobs `Filled` status, external application links/email, and Jobs-specific Backoffice scam signals.
 - Scheduled Broadcast sends, rich-media/HTML/variable templates, recall/edit after sending, click/open attribution, frequency caps and A/B testing.
 - Advanced saved-search operators for range, number, date and multi-select attributes in the Telegram bot.
+- The older product specs also describe features that are not confirmed as shipped: AI/semantic search and translation, reviews/ratings/deal history, referral/gift-code rewards, Urgent listing action, the full legacy ranking formula, advertiser-facing daily/weekly performance reports, Premium/escrow/business platform features, email/WhatsApp delivery and verification layers beyond phone plus paid Identity Verification. See [Implementation history and legacy-spec reconciliation](./implementation-history.md) for the full status matrix.
 - Production deployment of the latest GitLab `master` revision has not been verified by this documentation update.
 
 ## Implementation references
