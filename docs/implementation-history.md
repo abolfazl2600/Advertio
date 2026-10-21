@@ -1,6 +1,6 @@
 # Advertio implementation history and legacy-spec reconciliation
 
-> **Reviewed:** 2026-10-20. This review follows the accessible GitLab `master` history from the repository's initial scaffold on 2026-07-05 through the latest reviewed feature commits on 2026-10-19. It summarizes material product-capability milestones, not every CI, refactor, test-only or deployment-maintenance commit. Merged code is not proof of Production deployment.
+> **Supplemented 2026-10-21:** Source-backed October 21 commit audit [here](./releases/2026-10-21.md), crawler contract [here](./integrations/crawler.md). Baseline reviewed: 2026-10-20. This review follows the accessible GitLab `master` history from the repository's initial scaffold on 2026-07-05 through the latest reviewed feature commits on 2026-10-19. It summarizes material product-capability milestones, not every CI, refactor, test-only or deployment-maintenance commit. Merged code is not proof of Production deployment.
 
 ## How to interpret the historical record
 
@@ -80,6 +80,10 @@
 - Extracted contact/unlock, conversation, save, report and owner actions into the shared listing layer: [shared listing interactions](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/c8016fd1bff54dd87a5967a5caa986fcd5107c5d).
 - Scoped listing-based Gate A metrics to the selected journey: [category-scoped Gate A](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/99672dd655c3f77de463b97648a00d17f4fa4f24).
 - Corrected duplicate detection for bare generated listings so two publishers' identical titles do not block each other while same-publisher duplicate submissions still collide: [duplicate-detection correction](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/a5db136683570af40e0db905be4acbe5d709ead2).
+
+### 2026-10-21 — Cargo contract, channel delivery, priced extra listings, global bot search
+
+GitLab `master` at `e36ba877` contains the October 21 changes: Cargo optional date/role and MultiSelect item types (with compatibility migration); single-pool route UI/viewport fixes; first-media-key Telegram photo posts and PhotoError recording; channel post preservation plus ended-listing 410 responses; additional concurrent native listing charges and wallet concurrency; and the Quick Search replacement for the bot's multi-step search wizard. The updated crawler receiving contract covers Housing, Cargo and Jobs. See the [per-commit audit](./releases/2026-10-21.md) and [crawler mapping](../09-crawler/advertio-integration-2026-10-21.md). Merged code is not production verification.
 
 ## Legacy specifications: current status matrix
 
