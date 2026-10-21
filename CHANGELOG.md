@@ -2,7 +2,19 @@
 
 Monthly summaries of changes recorded in the [Advertio GitLab monorepo](https://gitlab.com/advertio/platform/advertio-monorepo) on its `master` branch. Entries are grouped by the **calendar month of the source commit** (July–October 2026), newest first. Related commits are consolidated into outcomes; linked commits provide representative implementation evidence rather than an exhaustive commit-by-commit log.
 
-**Scope:** repository implementation and documentation, **not independently verified production deployments**. October 2026 is reported through October 19.
+**Scope:** repository implementation and documentation, **not independently verified production deployments**. October 2026 now includes an audited **October 21** delta ([full change inventory](./docs/releases/2026-10-21.md)); the older monthly summaries below preserve the earlier October 19 state.
+
+---
+
+## 2026-10-21 — GitLab master source synchronization
+
+- **Crawler/API:** synchronized the complete ingest receiver contract; Cargo `role`/`travel_date` now optional; omitted role defaults to traveler; **`cargo_type` is MultiSelect** with legacy scalar compatibility; retained stable source ID, dedup and moderation rules. See [crawler guide](./docs/integrations/crawler.md) and [engineering reconciliation](./09-crawler/advertio-integration-2026-10-21.md). [Commits: [b2ade268](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/b2ade2686d62a629f2fa2b32a31eb925f788d556), [448a94f5](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/448a94f55c945efc99840a4b39453f9fab7f0ef6), [334a35f2](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/334a35f22f2db737cdd341cbfd3be34b3f2ce521)].
+- **Channel distribution and listing lifecycle:** cover photo / thumbnail behavior, safe HTTP-400-only text fallback, Backoffice PhotoError status, immutable expired listing channel messages and public 410 terminal state. [Commits: [8b807d50](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/8b807d5029dbfc6f43ae623fbe99da12e05aeb5c), [f8cb1f38](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/f8cb1f389cdfbc704ae7ded1a5bdfbf9e93dcf59)].
+- **Product UI:** Cargo picker/scroll/labels/date countdown; consistent back navigation for Housing, Jobs and Cargo; removal of visible Cargo role split. [Details](./docs/releases/2026-10-21.md).
+- **Pricing:** native extra concurrent listings now have configurable per-category charges, quotes, idempotent payment, charge recovery and wallet concurrency protection. [Commit [54b42f0f](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/54b42f0fd5a4a2992893973eec58732e134364de)].
+- **Bot:** `/search` and Search Listings replaced the step-by-step wizard with global text search and keyword-only Instant saved searches. [Commit [7d0f4b98](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/7d0f4b9881b635c4ddf177fa7b75538a6f48fdc6)].
+
+**Detailed per-commit inventory:** [2026-10-21 implementation audit](./docs/releases/2026-10-21.md). These claims concern inspected code, not verified live deployments.
 
 ---
 
