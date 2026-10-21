@@ -1,5 +1,7 @@
 # Cargo — Unified Attributes & Data Contract
 
+> **IMPORTANT (2026-10-21): Historical development specification, NOT the live Advertio ingest schema.** The implemented GitLab `passenger-cargo` endpoint uses `origin_country`, `origin`, `destination_country`, `destination`; optional `travel_date` and `role` (default `traveler`, not shown in the UI); `cargo_type` **MultiSelect**; optional `weight_kg`, `price`, `currency`, `price_negotiable`. Do not submit historical keys such as `origin_city`, `item_types`, `flight_number` or `volume_value` in `attributesJson` unless they appear in live `GET /api/categories/passenger-cargo/attributes`. Full current [crawler contract](../../docs/integrations/crawler.md) and [mapping](../../10-integrations/crawler-to-advertio/data-mapping.md). Older sections below describe a proposed richer data model, not deployed fields.
+
 > Status: **Development specification**
 >
 > Advertio Cargo uses one schema for every Cargo listing.
