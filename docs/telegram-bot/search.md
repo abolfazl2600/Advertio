@@ -1,56 +1,34 @@
-# Telegram bot — Search Listings wizard
+# Telegram bot — Quick global Search (2026-10-21)
 
-> Current implementation in GitLab `master` as of 2026-10-20.
+> **Reviewed:** GitLab `master` at `e36ba877`, source change [`7d0f4b98`](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/7d0f4b9881b635c4ddf177fa7b75538a6f48fdc6). Replaces the previous **category → city → price → attributes chat wizard**. No claim of independently verified Production rollout.
 
-## Flow
+## Entry and interaction
 
-The wizard is started from **Search Listings** or `/search` and asks for:
+- **Search Listings** menu and `/search` both open one localized free-text prompt (city, category, title word or anything relevant).
+- `/search some words` submits a query immediately, without waiting for another message.
+- Searches all categories at once; no upfront category/city/price questions. The bot uses the feed's canonical keyword search, shared with Mini App and saved-search alerts.
+- Blank queries and text beyond the backend's max keyword length are re-prompted; file/photo/sticker/voice replies are rejected as non-text.
+- The bot interprets subsequent text as a query only within the 30-minute active search conversation TTL. Other commands/screens exit the search, but active result buttons can still operate. Old wizard buttons/state lead to a fresh Quick Search prompt, not restoration of the removed wizard.
 
-1. **Category:** options are loaded from the backend category endpoint. This list can include category records that are not live Web journeys.
-2. **City:** user can type a city string or tap **Any**.
-3. **Price:** user can type a value or tap **Any**.
-4. **Attributes:** filterable attributes from the chosen category are asked in schema order when their type is supported.
-5. **Results:** the bot displays a result count and compact listing details.
+## Search semantics
 
-## Price parsing
+**Every search term must match**, but each term may match a different supported field: title, description, city, province, neighborhood, category name (English/Persian), or catalog city name/code (English/Persian). A query can mix transliterations/categories without explicitly selecting a field.
 
-- A single numeric value is treated as the **maximum** price (for example, `2500` means up to 2500).
-- A hyphenated value is parsed as minimum-maximum (for example, `1500-2500`).
-- A non-numeric value clears the price constraint instead of inventing a range.
-- An explicit **Any** button clears the price constraint.
+The backend applies resolved keyword terms in SQL to active feed entries, and the saved-search matcher uses the same term model in memory. Ordering is the shared feed ranking: **boosted, urgent, newest**; visibility is Active only. Literal text is parameterized/escaped so wildcard characters do not widen lookups.
 
-## Attribute filters
+## Results and actions
 
-Only attributes marked hard or soft filterable and typed **Select** or **Boolean** are presented.
+- Message shows the query, total count and **five listings per page**, plus Page X of Y and Previous/Next when applicable.
+- Each row shows the **category's icon**, title and **only available** price/city/weight details; missing fields do not produce placeholder values.
+- Every result gets a Mini App button for that listing.
+- **Save this search** creates a keyword-only **Instant saved search** named after the typed query, at most once from that result state; its alerts use the same keyword matching semantics.
+- **New Search** resets the prompt; **Advanced Search** opens the Mini App hub for category-specific filtering; **Main Menu** exits.
+- Zero results still show the searched query and useful next actions.
 
-- Select: one option button per schema option.
-- Boolean: Yes / No.
-- Skip: leave that attribute unconstrained.
-- Back and Cancel are available during the wizard.
+## Removed behavior and scope
 
-Range, Number, Date and MultiSelect attributes are automatically skipped. This means the bot does not expose a dedicated date filter for Cargo travel date, a numeric weight range or a multi-select amenities filter.
+There is **no** bot category/city/price/attribute wizard in `/search`. Previous controls such as “Any city”, numeric price range parsing, or stepwise Select/Boolean filters **do not describe current Quick Search**. They belong to historical implementations, not current instructions. For detailed category filters (route, date, wage, rent, etc.) use the Mini App journey feeds. Other saved-search management flows remain separate.
 
-## Results
+Implementation pointers: `backend/src/Advertio.Api/Modules/Identity/Bot/QuickSearch.cs`, `QuickSearchState.cs`, `LeadKeywordTerm.cs`, `LeadKeywordResolver.cs` and `SavedSearchMatcher.cs`. Commit reports **756/756 unit** and **395/395 integration** tests; those results were not rerun in this documentation update.
 
-- The message includes the total result count and each result's title, numeric price (or an em dash if no numeric price is present) and city.
-- Each result gets a button that opens the matching listing in the Mini App; the bot does not expose a publisher's direct contact in the result text.
-- Results use paged feed queries. Previous/Next buttons appear according to the current page and the server's `hasMore` result.
-- The user can save the current filters as a saved search, start a new search, go back one step or return to Main Menu.
-- The search result query and saved-search alerts share the same price and scalar attribute semantics, so saving the current search does not silently change the filter meaning.
-
-## State and reliability
-
-The wizard state is stored in the backend. An inactive wizard older than 30 minutes is stale and is not resumed as if it were current. Text replies are only interpreted as wizard answers when the bot has an active matching wizard; conversation replies are routed first.
-
-## Known limitations
-
-- No keyword/title/description field is asked in the wizard.
-- City is free text, not a country/province/city catalog picker.
-- No AI/semantic search.
-- No Range/Number/Date/MultiSelect attribute controls.
-- A category being present in the bot's backend list does not mean that a Web journey for that category is live.
-
-## Related pages
-
-- [Saved searches and alerts](./saved-searches.md)
-- [Mini App global Search](../mini-app/search.md)
+Related: [Mini App Search](../mini-app/search.md), [Saved searches and notifications](./saved-searches.md), [today's release inventory](../releases/2026-10-21.md).
