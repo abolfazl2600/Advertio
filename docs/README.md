@@ -1,6 +1,8 @@
 # Advertio documentation — current implementation
 
-> **Reviewed:** 2026-10-20. This directory was re-audited against the Advertio GitLab monorepo's `master` code and commit history from the initial scaffold (2026-07-05) through the October 2026 feature launches. It is a code-level reference, not a claim that every commit has reached Production.
+> **Baseline reviewed:** 2026-10-20. **October 21 implementation delta:** [complete source-backed change log](./releases/2026-10-21.md) and [crawler integration reconciliation](../09-crawler/advertio-integration-2026-10-21.md). Sections carried over from the October 20 baseline are superseded wherever these newer references disagree.
+>
+> **Previously:** 2026-10-20. This directory was re-audited against the Advertio GitLab monorepo's `master` code and commit history from the initial scaffold (2026-07-05) through the October 2026 feature launches. It is a code-level reference, not a claim that every commit has reached Production.
 
 ## How to read this documentation
 
@@ -14,14 +16,14 @@
 | Area | Current implementation |
 |---|---|
 | Housing | Canadian rental and roommate listings, structured category attributes, filters, photos, detail pages and shared listing actions |
-| Cargo | Route-based traveller/sender listings with catalog cities in Iran, Canada, the United States, Germany, Italy, the United Kingdom and France |
+| Cargo | One shared route pool; optional date; multi-select item types with catalog cities in Iran, Canada, the United States, Germany, Italy, the United Kingdom and France |
 | Jobs | Canada-only hiring and job-seeker listings with an 18-value job taxonomy |
 | Global Search | Searches titles and descriptions across all three live Web journeys |
 | Saved listings / My listings | Cross-journey saved listings and owner listing management |
 | Contact / messaging | Shared contact-unlock and conversation path for user-created listings; crawled listings link to their Telegram source/contact without coin deduction |
 | Wallet | Coin balance, configured top-up methods, payment history and eligible self-service refunds |
 | Profile / trust | Display name, avatar, phone verification and paid identity verification |
-| Telegram bot | Mini App entry, search wizard, saved-search alerts, locale/marketing preferences, conversation relay, payment/identity workflows and admin reporting |
+| Telegram bot | Mini App entry, global text Quick Search, saved-search alerts, locale/marketing preferences, conversation relay, payment/identity workflows and admin reporting |
 
 Only `housing`, `passenger-cargo` and `jobs` are registered as live Web journeys. Services and Social have backend category definitions, but they are not live journeys in the Web journey registry.
 

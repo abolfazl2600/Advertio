@@ -1,5 +1,7 @@
 # Wallet and payments — current implementation
 
+> **Updated 2026-10-21:** Native listing publication now supports additional concurrent listings with a server quote, explicit coins confirmation, separate once-only service charges, a saved draft/`submissionKey` across wallet top-up, orphan-charge reconciliation, and wallet PostgreSQL `xmin` concurrency. Wallet activity displays transaction IDs/references. See [GitLab pricing commit](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/54b42f0fd5a4a2992893973eec58732e134364de) and [implementation audit](../releases/2026-10-21.md). This does **not** apply to crawler-ingested supply.
+
 > The Wallet page and top-up sheet are implemented. Prices, packs, payment state and refund eligibility come from the server; this document does not claim a specific live package price or provider configuration.
 
 ## 1. Access and balance

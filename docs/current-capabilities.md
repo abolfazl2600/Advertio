@@ -1,6 +1,6 @@
 # Advertio — detailed capability catalogue
 
-> **Reviewed:** 2026-10-20. This catalogue was re-audited against the GitLab `master` code and commit history from the initial repository scaffold on 2026-07-05 through the October 2026 journey launches—not only the last two weeks. It consolidates the current `docs/` implementation notes and cross-checks the older product, monetization, category and growth specifications. It describes repository implementation, not verified Production deployment. Configuration-dependent features are marked as such; planned work and known gaps are not described as shipped.
+> **Current delta:** 2026-10-21, GitLab `master` at `e36ba877`; updated Cargo, Quick Search and native listing pricing below. [All changes](./releases/2026-10-21.md). **Baseline reviewed:** 2026-10-20. This catalogue was re-audited against the GitLab `master` code and commit history from the initial repository scaffold on 2026-07-05 through the October 2026 journey launches—not only the last two weeks. It consolidates the current `docs/` implementation notes and cross-checks the older product, monetization, category and growth specifications. It describes repository implementation, not verified Production deployment. Configuration-dependent features are marked as such; planned work and known gaps are not described as shipped.
 
 ## 1. Product scope and architecture
 
@@ -24,7 +24,7 @@
 - Journeys are independent features and reuse a shared listing layer rather than importing another journey's UI.
 - Shared listing layer owns API interactions, contact/unlock, conversation, save, report and publisher actions.
 - Server validation and category policy are authoritative. Client-displayed prices or stale UI state do not override the server.
-- Current server rule: at most one active listing per user per category.
+- Current server rule: one free-slot live listing per owner/category; further concurrent native listings require configured per-category `additional_listing` charges (and a quote/confirmation), or fail closed when the extra charge is disabled. Crawled ingest is a separate supply class.
 - Code merged to GitLab `master` does not, by itself, prove Production deployment.
 
 ## 2. Housing
@@ -44,20 +44,14 @@ Detailed source: [Mini App — Housing](./mini-app/housing.md).
 
 ## 3. Cargo
 
-- One category/listing model with `role`: traveller (`traveler`) or sender (`sender`); not two separate categories.
-- Purpose is matching travellers carrying items with people sending items; it is not passenger ride-sharing or commercial freight management.
-- One-screen posting flow with four required choices: role, origin city, destination city and travel date. Title is generated from these answers; no free-text title is required.
-- Origin/destination cities must come from the location catalogue. Supported countries: Iran, Canada, United States, Germany, Italy, United Kingdom and France. The backend rejects cities outside the catalogue.
-- Listing location is resolved from the origin city.
-- Optional fields: cargo type (Documents, Clothes, Electronics, Food, Other), weight (schema range 0.1–30 kg), positive price, negotiable-price flag and description/note.
-- Currency is derived from the route. Traveller price is per kilogram; sender price is a total amount.
-- Feed filters by role, origin and destination on the server.
-- Trips with a past travel date are hidden from the feed; this does not expire the listing lifecycle based on travel date.
-- Detail shows route, date, item/cargo details and price, then uses the shared contact flow.
-- Available from Hub, Post chooser, global Search, Saved and My listings.
-- Category-specific policy is configurable; its initial values were seeded from Housing's then-current policy.
-
-Detailed source: [Mini App — Cargo](./mini-app/cargo.md).
+- One route pool with **no public traveller/sender role**; the optional backend `role` defaults to `traveler` when missing and preserves legacy sender records for price semantics.
+- Required: catalog-validated origin and destination country/city. **Travel date is optional** and can be cleared; title is the route, plus date only when supplied.
+- `cargo_type` is **MultiSelect**, with old scalar item values read as one-item arrays. Multiple items appear on card, detail and channel post. Existing item-type saved/channel filters continue to match list membership.
+- Other optional fields: weight 0.1–30 kg, price, negotiable flag and description. New/no-role Cargo prices mean per kg; existing sender totals remain totals. The native UI derives currency from route, but crawlers must not infer a currency.
+- Seven route countries: IR, CA, US, DE, IT, GB, FR. The listing location is its origin. Local-calendar travel countdown and Telegram viewport-aware city picker improve form usability.
+- Feed uses origin/destination filters, not role tabs. Trips with a known past date are hidden without expiring their stored lifecycle. Undated trips remain eligible.
+- Shared Hub/Post/Search/Saved/My listings integration, terminal `410` unavailable-detail state, and consistent back-to-Hub navigation.
+- **Crawler Cargo ingest is supported** alongside Housing and Jobs, via the same dedicated API. See [Cargo implementation](./mini-app/cargo.md), [full receiver contract](./integrations/crawler.md), and [source-backed reconciliation](../09-crawler/advertio-integration-2026-10-21.md).
 
 ## 4. Jobs
 
@@ -179,11 +173,11 @@ Detailed source: [Wallet and payments](./mini-app/wallet.md).
 - Settings toggles persisted marketing opt-in and returns to menu.
 - Commands include `/start`, `/search`, `/paysupport` and admin-only `/adminreport`.
 
-### Search wizard
-- Asks category, city (typed or Any), price (typed or Any), supported category attributes, then shows result count and compact results.
-- Single numeric price means maximum; hyphenated input means min–max; invalid input clears the constraint.
-- Only hard/soft filterable Select and Boolean attributes are asked. Range, Number, Date and MultiSelect are skipped.
-- Results show title, numeric price (or em dash) and city; buttons open the matching listing in the Mini App.
+### Quick Search (replaced chat wizard 2026-10-21)
+- `/search` and Search Listings accept one text query across all categories. `/search phrase` executes directly, with no category/city/price/attribute wizard.
+- Every keyword must match a title, description, city, province, neighborhood, English/Persian category name or catalog city name/code. The Mini App Search and saved-search keyword matching share the term definition.
+- Five results/page with category icon, title and only fields present, Mini App buttons, Previous/Next, Save Search, New Search, Advanced Search and Main Menu.
+- Save Search creates a keyword-only Instant saved search; specific advanced filters remain in Mini App journey feeds. The old chat wizard state is not resumed.
 
 ### Saved-search alerts
 - Saved-search wizard asks category, city, price, supported Select/Boolean attributes and frequency.
@@ -192,7 +186,7 @@ Detailed source: [Wallet and payments](./mini-app/wallet.md).
 - Matching supports category, city text, price min/max and scalar equality for supported attributes.
 - Saved-search names are generated from category and city; custom names are not requested.
 - List/view/pause/resume/delete are supported.
-- The bot does not ask for keywords, country or province in v1; digest time is a global UTC boundary, not per-user local time.
+- The separate saved-search management wizard remains category/price/attribute based; Quick Search now accepts keywords and can save them as an Instant alert. Digest time is a global UTC boundary, not per-user local time.
 - Full range/number/date/multi-select operators are not implemented in the current bot wizard/matcher.
 
 ### Payments, identity and admin reporting

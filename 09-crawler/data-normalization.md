@@ -1,5 +1,7 @@
 # Crawler Data Normalization
 
+> **2026-10-21 current receiver clarification:** Advertio now accepts crawler Housing, Jobs and `passenger-cargo`. Cargo's **required fields** are origin/destination country+catalog city; `role` and travel date are optional; `cargo_type` is a MultiSelect array with legacy scalar support. Historical Telclaw extraction keys must be mapped, not sent verbatim. Use [current integration mapping](../10-integrations/crawler-to-advertio/data-mapping.md) and [complete API contract](../docs/integrations/crawler.md).
+
 > Derived from Telclaw normalization/storage behavior and the Advertio ingest contract at commit [63fbc01](https://github.com/abolfazl260/Telclaw/commit/63fbc01555f01345bb92124c9112db63f1395e92).
 
 ## Principle

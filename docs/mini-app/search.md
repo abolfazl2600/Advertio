@@ -1,11 +1,13 @@
 # Global Search — current implementation
 
+> **Updated 2026-10-21:** keyword matching was expanded beyond title/description to bilingual category and catalog-city names and city/province/neighborhood. This implementation change supersedes older narrow matching examples. [Source commit](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/7d0f4b9881b635c4ddf177fa7b75538a6f48fdc6).
+>
 > Global Search is implemented in the Web Mini App across every live journey. It is separate from each category's feed filters.
 
 ## Search contract
 
-- Search matches listing titles and descriptions across Housing, Cargo and Jobs.
-- Every word in the query must appear in the title or description; this is ordinary keyword matching, not semantic/AI search.
+- Search matches listing titles, descriptions, city, province, neighborhood, category English/Persian names and catalog city name/code across live journeys.
+- Every word in the query must match somewhere across those fields, possibly different fields for different words. This is term matching, not semantic/AI search.
 - Minimum query length: 2 characters.
 - Maximum query length: 100 characters.
 - The UI waits 350 ms after typing settles before committing the query.
@@ -26,7 +28,7 @@
 Global Search does not inherit or modify the filters in the Housing, Cargo or Jobs feed. Those feeds have their own structured filters:
 
 - Housing: category attributes, city/location and rent/roommate filters.
-- Cargo: traveller/sender, origin and destination.
+- Cargo: origin and destination; no current role tabs or role filter.
 - Jobs: Hiring/Job seekers, field and Canadian city.
 
 A keyword search is not guaranteed to interpret structured values as dedicated filters. For example, a date is not a Cargo travel-date filter in global Search; it is just text if it appears in a title or description.

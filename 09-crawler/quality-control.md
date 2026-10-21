@@ -1,5 +1,7 @@
 # Crawler Quality Control
 
+> **Current receiving contract (2026-10-21):** [detailed mapping, release gates and risk register](./advertio-integration-2026-10-21.md), [full API documentation](../docs/integrations/crawler.md). Keep `autoPublish=false` for new sources; `role` and `travel_date` are **not required** for Cargo; item type is a **multi-select list**. Do not mistake earlier Telclaw collection-specific requirements for current Advertio receiver required attributes.
+
 > This document extracts the quality gates and observability patterns in Telclaw that are important for Advertio.
 
 ## Quality gates before Advertio delivery

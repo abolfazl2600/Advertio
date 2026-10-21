@@ -3,8 +3,22 @@
 **Audience:** whoever is writing the crawler.
 **Server-side status:** ✅ built and tested (ADR-0009). This document is a contract, not a proposal.
 **Journeys that accept listings:** `housing` · `passenger-cargo` · `jobs`
-**Last updated:** 2026-10-20
+**Last updated:** 2026-10-21
 
+> **Synchronization note (GitHub):** Source: [GitLab crawler contract at `e36ba877`](https://gitlab.com/advertio/platform/advertio-monorepo/-/blob/e36ba877d416cc763f2093c6d38eaf940a3a5e11/docs/CRAWLER-INTEGRATION.md). This GitHub copy also incorporates the subsequent-in-code `cargo_type` **MultiSelect** contract from [commit `448a94f5`](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/448a94f55c945efc99840a4b39453f9fab7f0ef6), which the upstream prose still calls `select`. Read [Crawler implementation reconciliation](../../09-crawler/advertio-integration-2026-10-21.md) for the operational implications. Source code/live schema takes precedence over examples here.
+
+> **What changed on 2026-10-21 (cargo only).** Cargo is one pool for now: the app no longer asks
+> whether someone is travelling or sending, and the date is optional.
+>
+> - **`role` and `travel_date` are no longer required** for `passenger-cargo` (§7.2). Leave
+>   `role` out. The server stores every cargo listing that doesn't name a side as `traveler`.
+> - **A post with no specific date is no longer rejected.** Send it without `travel_date`.
+>   Never guess a date.
+> - **`price` is per kg** on every listing you send without a `role`.
+> - The title is `{origin} → {destination} · {d MMM}`, or just `{origin} → {destination}` when
+>   there is no date. It no longer starts with "Travelling" or "Sending".
+> - Nothing you already send breaks. A `role` you still send is validated and kept.
+>
 > **What changed since 2026-08-31.** Two new journeys went live on 2026-10-19, and both take
 > crawled listings through the same endpoints:
 >
@@ -190,8 +204,8 @@ it, it stays in the feed for up to 30 days (TTL). A rented flat, a filled job or
 already left: a dead listing is the worst thing a user can see.
 
 Cargo has one extra wrinkle. The feed hides a trip once its travel date has passed, but the
-listing itself stays live until its 30 days are up. Delete it when the post is removed, the
-same as for housing.
+listing itself stays live until its 30 days are up. A trip with no date is never hidden this
+way. Delete it when the post is removed, the same as for housing.
 
 ```http
 DELETE /api/ingest/leads/telegram-rent/4021      → 204   (or 404 if not found)
@@ -332,7 +346,8 @@ On housing this is rare and almost always right: it's the same flat posted in tw
 cargo and jobs it's the first thing to look at, because those posts are short and look alike:
 
 - **Always send the post text as `description`.** A cargo or jobs title is built from the
-  attributes (§7.2, §7.3), so two travellers on the same route and date get the same title.
+  attributes (§7.2, §7.3), so two posts on the same route and date get the same title (and a
+  cargo post with no date has only the route).
   If they also quote the same price and you send no description, the second post is refused as
   a copy of the first. A different person's trip is dropped without any error.
 - Even with the text included, a channel that posts every trip from one fixed template, where
@@ -499,29 +514,30 @@ dropping the listing. Send `price_negotiable: true` instead and the listing goes
 
 ### 7.2 Passenger cargo — `passenger-cargo`
 
-A trip between two cities. One listing type covers both sides of the trip, and `role` says
-which side the poster is on. The card and the detail page are built entirely from these
-attributes: the side, the route, the date, then any optional details the post gave. The title
-isn't shown anywhere. The description appears on the detail page.
+A trip between two cities. People travelling and people sending share one pool: the app asks
+nobody which side they are on, and the feed shows every listing together. The card and the
+detail page are built entirely from these attributes: the route, the date if there is one,
+then any optional details the post gave. Neither shows a side. The title isn't shown anywhere.
+The description appears on the detail page.
 
 #### Required attributes
 
 | Key | Type | Allowed values |
 |---|---|---|
-| `role` | select | `traveler` — travelling, with space in their luggage · `sender` — has something to send and is looking for a traveller |
 | `origin_country` | select | `IR` · `CA` · `US` · `DE` · `IT` · `GB` · `FR` |
 | `origin` | text | a catalog city of `origin_country` — see *Route cities* below |
 | `destination_country` | select | same list as `origin_country` |
 | `destination` | text | a catalog city of `destination_country` |
-| `travel_date` | date | `YYYY-MM-DD`, Gregorian |
 
 #### Optional attributes
 
 | Key | Type | Allowed values |
 |---|---|---|
-| `cargo_type` | select | `documents` · `clothes` · `electronics` · `food` · `other` |
-| `weight_kg` | number | 0.1–30. For a traveller, the space they have. For a sender, the package's weight |
-| `price` | number | **per kg** on a `traveler` listing, **the total** on a `sender` listing — see *Price and currency* |
+| `travel_date` | date | `YYYY-MM-DD`, Gregorian. Only a specific date the post states — see *Dates* |
+| `role` | select | **Leave it out.** A listing without it is stored as `traveler`, and it is never shown. `traveler` or `sender` is still accepted, so a crawler that already sends it doesn't break |
+| `cargo_type` | multi-select | `documents` · `clothes` · `electronics` · `food` · `other`. **Send an array**, e.g. `["documents","clothes"]`; for backward compatibility the server also accepts one legacy string and normalizes it to a one-item list (commit `448a94f5`) |
+| `weight_kg` | number | 0.1–30. Shown as "up to" that weight |
+| `price` | number | **per kg** — see *Price and currency* |
 | `price_negotiable` | boolean | same rule as housing (§7.1): send it only when the post says the price is negotiable, and never together with `price` |
 | `currency` | select | `CAD` · `USD` · `EUR` · `GBP`. Send it with every `price` |
 
@@ -552,16 +568,19 @@ endpoint as they are rather than building them yourself.
 
 #### Dates
 
-Convert Jalali dates (e.g. «۲۰ آبان») to Gregorian. If a post gives no specific date ("next
-week", «اواخر آبان»), reject it: the date is required, and a guessed one sends people to the
-wrong flight. Skip trips whose date has already passed. The feed hides them, so sending them
+The date is optional. Convert Jalali dates (e.g. «۲۰ آبان») to Gregorian. If a post gives no
+specific date ("next week", «اواخر آبان», or nothing at all), send the listing **without**
+`travel_date`. Don't reject it, and never guess one: a guessed date sends people to the wrong
+flight. A date you do send is still checked, and anything that isn't a real `YYYY-MM-DD`
+returns a `400`. Skip trips whose date has already passed. The feed hides them, so sending them
 only uses up your request budget.
 
 #### Price and currency
 
-- **The unit depends on `role`.** The app never asks for it: a traveller's price is per kg and
-  a sender's is the total. If a post's price doesn't match its side's unit (for example, a
-  traveller quoting a flat fee), leave `price` out. The description still shows it.
+- **`price` is per kg.** A listing you send without `role` is stored as `traveler`, and a
+  traveller's price is read per kg. If a post's price isn't per kg (a flat fee, or a total for
+  one parcel), leave `price` out. The description still shows it. Listings already stored as
+  `sender` keep reading as a total.
 - **Send `currency` with every `price`, and only a currency the post states.** The app picks a
   currency from the route for its own users, but a figure with no currency is a guess on your
   side, so leave `price` out.
@@ -572,9 +591,9 @@ only uses up your request budget.
 #### Title and description
 
 Build the title the same way the app does, so crawled and native trips read the same in search
-and in the admin review queue: `{Travelling|Sending} {origin} → {destination} · {d MMM}`, e.g.
-`Travelling Toronto → Tehran · 20 Nov`. The description is always the post text. §4 explains
-why.
+and in the admin review queue: `{origin} → {destination} · {d MMM}`, e.g.
+`Toronto → Tehran · 20 Nov`, or `Toronto → Tehran` when there is no date. Keep both city names:
+search matches titles. The description is always the post text. §4 explains why.
 
 ### 7.3 Jobs — `jobs`
 
@@ -713,8 +732,10 @@ Cargo:
 - [ ] route cities are mapped to catalog codes by country; Persian names never reach the API
 - [ ] an unlisted city, or a name the post doesn't tie to a country, rejects the listing
 - [ ] the listing's location is the origin city
-- [ ] Jalali dates are converted; a post with no specific date is rejected; past trips are skipped
-- [ ] `price` is in the unit set by `role`, sent only with a `currency` the post states
+- [ ] no `role` is sent
+- [ ] Jalali dates are converted; a post with no specific date is sent without `travel_date`,
+      never with a guessed one; past trips are skipped
+- [ ] `price` is per kg, sent only with a `currency` the post states
 
 Jobs:
 
@@ -767,7 +788,7 @@ curl -sS -X POST "$BASE/api/ingest/leads" \
 curl -sS -X DELETE "$BASE/api/ingest/leads/$SOURCE/4021" -H "X-Ingest-Key: $KEY"
 ```
 
-### Cargo — a traveller, Toronto → Tehran
+### Cargo — Toronto → Tehran
 
 The post says «۲۰ نوامبر از تورنتو به تهران پرواز دارم، ۱۰ کیلو جا دارم، کیلویی ۱۵ دلار
 کانادا». The Persian city names are mapped to catalog codes before sending. There are no photos,
@@ -783,10 +804,10 @@ curl -sS -X POST "$BASE/api/ingest/leads" \
     sourceUrl: "https://t.me/some_cargo_group/8812",
     contactHandle: "@traveller",
     posterTelegramUserId: 123456789,
-    title: "Travelling Toronto → Tehran · 20 Nov",
+    title: "Toronto → Tehran · 20 Nov",
     description: "۲۰ نوامبر از تورنتو به تهران پرواز دارم، ۱۰ کیلو جا دارم، کیلویی ۱۵ دلار کانادا",
     categorySlug: "passenger-cargo",
-    attributesJson: ({role:"traveler", origin_country:"CA", origin:"toronto", destination_country:"IR", destination:"tehran", travel_date:"2026-11-20", weight_kg:10, price:15, currency:"CAD"} | tostring),
+    attributesJson: ({origin_country:"CA", origin:"toronto", destination_country:"IR", destination:"tehran", travel_date:"2026-11-20", weight_kg:10, price:15, currency:"CAD"} | tostring),
     countryCode: "CA", province: "ON", city: "toronto",
     mediaKeys: [],
     autoPublish: false
@@ -818,10 +839,10 @@ curl -sS -X POST "$BASE/api/ingest/leads" \
 
 ## Further reading
 
-- Full API contract: [`specs/001-housing-paid-contact/contracts/api.md`](../specs/001-housing-paid-contact/contracts/api.md) §`/api/ingest`
-- Rationale behind the design decisions: [`docs/adr/ADR-0009`](adr/ADR-0009-external-supply-ingestion.md)
-- Why the API moved to its own domain: [`docs/adr/ADR-0012`](adr/ADR-0012-api-subdomain.md)
-- Which journeys are live, and why each one stands alone: [`docs/adr/ADR-0001`](adr/ADR-0001-hub-and-independent-journeys.md)
+- Full API contract: [`specs/001-housing-paid-contact/contracts/api.md`](https://gitlab.com/advertio/platform/advertio-monorepo/-/blob/e36ba877d416cc763f2093c6d38eaf940a3a5e11/specs/001-housing-paid-contact/contracts/api.md) §`/api/ingest`
+- Rationale behind the design decisions: [`docs/adr/ADR-0009`](https://gitlab.com/advertio/platform/advertio-monorepo/-/blob/e36ba877d416cc763f2093c6d38eaf940a3a5e11/docs/adr/ADR-0009-external-supply-ingestion.md)
+- Why the API moved to its own domain: [`docs/adr/ADR-0012`](https://gitlab.com/advertio/platform/advertio-monorepo/-/blob/e36ba877d416cc763f2093c6d38eaf940a3a5e11/docs/adr/ADR-0012-api-subdomain.md)
+- Which journeys are live, and why each one stands alone: [`docs/adr/ADR-0001`](https://gitlab.com/advertio/platform/advertio-monorepo/-/blob/e36ba877d416cc763f2093c6d38eaf940a3a5e11/docs/adr/ADR-0001-hub-and-independent-journeys.md)
 - Code: `backend/src/Advertio.Api/Modules/Lead/LeadIngestEndpoints.cs`
 - Every journey's attributes: `backend/src/Modules/Category/Advertio.Modules.Category.Infrastructure/Seed/CategorySeeder.cs`
 - The location catalog: `backend/src/Modules/ReferenceData/Advertio.Modules.ReferenceData.Infrastructure/Seed/LocationSeeder.cs`

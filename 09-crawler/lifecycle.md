@@ -1,5 +1,7 @@
 # Crawler Record Lifecycle
 
+> **Advertio receiver update 2026-10-21:** In addition to source deletion through the crawler ingest API, **historical Telegram channel posts are preserved** after a listing becomes expired/deactivated, and previously published public details return `410 Gone` with limited terminal-state metadata (never-public listings remain `404`). This does not remove the obligation to DELETE stale source posts. See [current integration runbook](./advertio-integration-2026-10-21.md) and [source change](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/f8cb1f389cdfbc704ae7ded1a5bdfbf9e93dcf59).
+
 > Based on Telclaw's staged pipeline, repository statuses, scheduler and Advertio ingest contract at commit [63fbc01](https://github.com/abolfazl260/Telclaw/commit/63fbc01555f01345bb92124c9112db63f1395e92).
 
 ## Pipeline lifecycle

@@ -1,6 +1,8 @@
 # Advertio Telegram bot — current implementation
 
-> **Reviewed:** 2026-10-20 from executable bot/backend code in GitLab `master`. This supersedes earlier screenshot-only notes that marked Search and Saved searches as unverified.
+> **Updated 2026-10-21:** Bot Search Listings and `/search` now use [Quick Search](./search.md): one global free-text query, five results/page, Mini App Advanced Search, keyword-only Instant saved searches. The prior category/city/price/attribute Search **wizard no longer exists**; separate Saved Search management remains. [Source commit](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/7d0f4b9881b635c4ddf177fa7b75538a6f48fdc6).
+>
+> **Baseline reviewed:** 2026-10-20 from executable bot/backend code in GitLab `master`. This supersedes earlier screenshot-only notes that marked Search and Saved searches as unverified.
 
 ## 1. Entry point and main menu
 

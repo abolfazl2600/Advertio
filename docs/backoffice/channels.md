@@ -319,7 +319,9 @@ This is the implemented outcome of [Issue #7 — Add manual retry for failed pub
 
 ## Not yet documented
 
-The reviewed UI does not establish the detailed behavior for:
+The October 20 baseline review did not establish all of the following; some delivery cases were clarified by October 21 implementation:
+
+
 
 - Create Channel save-validation beyond the observed destination test behavior
 - Reactivating a deactivated channel
@@ -343,4 +345,15 @@ Current filter dimensions include category, country, province, city, outgoing la
 
 Channel operations include create/edit/deactivate, match preview/history, historical-match delivery queue, publication history and manual retry for failed publication records. Total Sent is a cumulative successful-delivery count, not a unique-listing count.
 
-Cargo and Jobs are now live Web journeys and appear in the backend category data, but a channel filter only matches listings that actually exist and satisfy its configured filters. Channel publication does not imply Cargo/Jobs crawler ingestion is supported.
+Cargo and Jobs are now live Web journeys and appear in the backend category data, but a channel filter only matches listings that actually exist and satisfy its configured filters. The crawler ingestion receiver **does** accept Housing, Cargo and Jobs. Publication is a separate downstream step; it requires an Active listing that matches the channel filters. For the exact crawler contract see [crawler API](../integrations/crawler.md).
+
+
+## Channel photo delivery and ended-listing behavior — 2026-10-21
+
+The channel publisher selects the first **nonempty** media key as the listing cover and sends a single **photo post** with caption and Mini App buttons if a photo exists. Native listings use the full-size variant; crawled listings use the stored **thumbnail** variant, avoiding `full.webp` 404. If there is no media, the post is text-only with the same buttons.
+
+If Telegram **explicitly rejects the photo with HTTP 400** and no photo message is posted, the publisher sends a text fallback and persists `PhotoError` on its publication record. Backoffice Publish History presents **Sent without its photo** with the reason. A timeout, disconnect, 429 or ambiguous response does **not** trigger an extra text send: the failed photo attempt remains retryable, avoiding duplicate channel posts. Live Telegram acceptance of WebP-by-URL remained **unverified** in the source commit.
+
+When a previously Active listing becomes Expired/Deactivated, its existing channel post **is not edited**. Its View Listing button still opens the Mini App, where public detail returns `410 Gone` (previously published only) and shows the terminal expiry/deactivation state. Never-public records remain `404`; owner access is different. Historical channel message retention is independent of crawler DELETE cleanup.
+
+Cargo `role` filters already saved on channels are now **suspended** without deleting configuration; Cargo `cargo_type` matches against **any member** of a new MultiSelect array, as well as legacy scalar values. New Cargo has no visible side or required date; channel caption skips absent date and role line. See [October 21 implementation audit](../releases/2026-10-21.md) and [Crawler operational mapping](../../09-crawler/advertio-integration-2026-10-21.md).
