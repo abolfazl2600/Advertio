@@ -1,5 +1,7 @@
 # Cargo — Telclaw Crawler Mapping
 
+> **IMPORTANT (2026-10-21): This file is a historical Telclaw-to-planned-Cargo design.** The live Advertio API accepts slug `passenger-cargo`, **not** the planned keys used below. Both traveler and sender are combined in current UI, but backend keeps optional `role=traveler|sender` for compatibility and defaults it to `traveler`. Date is optional; `cargo_type` is a **MultiSelect array** (legacy scalar accepted). Unknown historical keys cause `400`, so do **not** emit the mapping below directly into `attributesJson`. Use [current integration data mapping](../../10-integrations/crawler-to-advertio/data-mapping.md) and [full wire contract](../../docs/integrations/crawler.md) for implementation. Historical rows retained for design traceability.
+
 > Upstream: [Telclaw](https://github.com/abolfazl260/Telclaw) commit `63fbc01555f01345bb92124c9112db63f1395e92`
 >
 > Telclaw category: `transferlist`
