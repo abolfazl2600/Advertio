@@ -1,5 +1,7 @@
 # Advertio Crawler — Overview
 
+**Latest Advertio ingest boundary (2026-10-21):** [implementation reconciliation](./advertio-integration-2026-10-21.md) · [full receiver contract](../docs/integrations/crawler.md) · [GitLab daily change audit](../docs/releases/2026-10-21.md). The pinned Telclaw study below is **historical evidence of the separate crawler**, not the current Advertio category schema. Cargo now has optional date/role and multi-select item types; all three journeys accept crawler ingest.
+
 > Source study: [Telclaw](https://github.com/abolfazl260/Telclaw) at commit [63fbc01](https://github.com/abolfazl260/Telclaw/commit/63fbc01555f01345bb92124c9112db63f1395e92).
 >
 > This folder records the crawler behavior and integration requirements that Advertio should preserve/adopt from Telclaw. It is documentation and integration guidance; it does not claim every Telclaw behavior already runs inside Advertio.
@@ -63,6 +65,8 @@ Crawler output is delivered through the dedicated crawler contract:
 The integration uses `X-Ingest-Key` and the key must remain in environment/secret storage, never in source, logs or payloads.
 
 ## Folder map
+
+- [advertio-integration-2026-10-21.md](./advertio-integration-2026-10-21.md) — **current Advertio receiving API, Cargo multi-select/optional date, dedup and publication semantics**.
 
 - [purpose.md](./purpose.md) — why Advertio uses crawler supply and the product boundary.
 - [sources.md](./sources.md) — Telegram source identity, configuration and provenance.
