@@ -1,89 +1,63 @@
-# Cargo — current implementation
+# Cargo — current implementation (2026-10-21)
 
-> **Status:** implemented in GitLab `master` on 2026-10-19. This is implementation status, not a Production deployment audit.
+> **Reviewed against** GitLab `master` at `e36ba877`, including the October 21 Cargo schema, Mini App, matching and billing changes. Describes merged code, **not independently verified Production deployment**. For the receiving crawler contract see [crawler guide](../integrations/crawler.md) and [crawler implementation reconciliation](../../09-crawler/advertio-integration-2026-10-21.md).
 
-## 1. Identity and purpose
+## Identity and purpose
 
-- User-facing label: **Cargo**.
-- Canonical backend category slug: `passenger-cargo`.
-- Purpose: match a traveller who has luggage capacity with someone who wants to send an item. It is not a passenger ride-share product or a commercial freight-management system.
-- One listing model with a `role` attribute; traveller and sender are two sides of the same category, not separate categories.
+- User-facing name: **Cargo**; canonical category/API slug: **`passenger-cargo`**.
+- One shared pool of route-based listings. The user is **not asked** to choose Traveller vs Sender; there is no public role tab, role badge or role line in channel messages.
+- The historical schema attribute `role` remains accepted. Unanswered `role` defaults to `traveler` for storage; older `sender` rows are **not rewritten**, and retain different legacy price semantics.
+- It connects travel and item transport needs, not passenger ride-share or managed commercial freight.
 
-## 2. Create a trip
+## Create and validate a route
 
-The entire form is on one screen. Four choices are required: role, origin city, destination city and travel date. The title is generated from the choices, so a free-text title is not required.
+The current user-facing create form requires **origin and destination**; a trip date is **optional**, including an explicit clear-date action. The user does not type a freeform title: `Origin → Destination · d MMM` when dated, otherwise `Origin → Destination`.
 
-### Required fields
+| Attribute | UI and validation |
+| --- | --- |
+| `origin_country` and `origin` | Required country and city from the catalog |
+| `destination_country` and `destination` | Required country and city from the catalog |
+| `travel_date` | Optional exact Gregorian date; may be cleared |
+| `cargo_type` | **Multi-select** item chips, multiple of Documents, Clothes, Electronics, Food, Other; backend stores an array |
+| `weight_kg` | Optional 0.1–30 kg |
+| `price` | Optional numeric rate. New/unspecified-role trips use **price per kg** |
+| `price_negotiable` | Optional mutually exclusive flag where the schema accepts it |
+| `description` | Optional note shown in detail |
 
-| Field | Values / rule |
-|---|---|
-| `role` | `traveler` (Travelling) or `sender` (Sending) |
-| `origin_country` + `origin` | Pick a country and a city from the location catalog |
-| `destination_country` + `destination` | Pick a country and a city from the location catalog |
-| `travel_date` | Required travel date |
+Supported route countries: **Iran, Canada, United States, Germany, Italy, United Kingdom and France**. Origin and destination city must belong to selected countries; origin determines the listing's location. The city picker uses a visible viewport-aware sheet and a single vertically scrollable results list; Telegram expand and disabled vertical minimization mitigate partially expanded Mini App clipping. Search keyboard does not auto-open.
 
-The supported country list is Iran, Canada, United States, Germany, Italy, United Kingdom and France. City names are validated server-side against the selected country; a city outside the catalog is rejected. The listing's own location is resolved from the origin city.
+Route questions have aligned, readable From/To/Date labels; **Swap** sits on the To line. Selecting a date displays the weekday and a **calendar-day countdown** (Today/Tomorrow/in N days) using local calendar days, including DST-safe transitions. A past/invalid date has no countdown.
 
-### Optional details
+### Currency
 
-| Field | Behavior |
-|---|---|
-| `cargo_type` | Documents, Clothes, Electronics, Food or Other |
-| `weight_kg` | Optional weight; schema range is 0.1–30 kg |
-| `price` | Optional positive amount |
-| `price_negotiable` | Set when the publisher has not supplied a numeric price |
-| `description` | Optional note, shown on the detail page |
+The native form chooses currency from route geography: Canada CAD; US USD; UK GBP; Germany/Italy/France EUR; the non-Iran foreign end for an Iran route; when both are foreign the origin drives choice; code has a CAD fallback when neither end maps. This is **native UI logic**, not permission for crawlers to infer a price's source currency. The external crawler must omit unproven currency and price.
 
-The optional section is collapsed by default. Price input is role-aware: a traveller quotes a **price per kilogram**, while a sender quotes a **total offer**.
+Old `sender` values can still be read as **total** prices, whereas new no-role/`traveler` listings show a **per-kg** price. Do not retroactively recalculate stored amounts.
 
-### Currency rules
+## Feed and listing detail
 
-Currency is derived from the route rather than requested as another required choice:
+- The feed has origin/destination selectors, Swap and paginated/infinite loading; **no role filter or side tabs**. The backend suspends stored cargo-role filters, including old channel and saved-search filters.
+- A trip with a past **specified** `travel_date` is hidden by feed filtering, without changing stored `Active` status. An undated trip is not hidden by this rule. Normal lifecycle expiration remains distinct.
+- Cards/details display route, date only if present, available weight, **all** selected item types, appropriately formatted price, notes and applicable shared actions. Legacy scalar item types remain readable after the migration.
+- Saving, reporting, contact, user conversations and publisher actions use the shared listing layer. **Crawled** listings link back to Telegram rather than charging for contact or claiming a verified publisher badge.
+- A previously published, now expired/deactivated listing responds to public detail with `410` and the UI shows a terminal unavailable state and a link to browse other Cargo listings. Never-public/unavailable ones remain `404`; transient server/network errors can retry.
 
-- Canada → CAD
-- United States → USD
-- United Kingdom → GBP
-- Germany, Italy and France → EUR
-- Iran has no currency mapping in the Cargo price selector. The non-Iran end determines the currency; if both ends are foreign, the origin country is used. If no mapped foreign country is available, the code falls back to CAD.
+## Back navigation
 
-The UI formats amounts with currency symbols and suppresses unnecessary trailing decimals for whole amounts.
+Shared journey navigation (`journeyBack.ts`) takes a Cargo feed back to the Hub; the post form leaves through route replacement and is not re-opened by browser Back; a listing opened directly from a Telegram channel returns to the Cargo feed if there is no in-app history.
 
-## 3. Feed and route filters
+## Publishing, price policy and crawler separation
 
-The Cargo feed exposes:
+- Policies/coin prices are server-controlled per category, including listing creation, renew, boost and the new **additional concurrent listing** price. Payment flows are shared with Housing and Jobs.
+- A publisher can have a first free-slot live listing in a category (subject to ordinary posting policy) and pay a separately configured `passenger-cargo.price.additional_listing` to create more; a missing, off or zero extra price blocks additional posts. Server quote and wallet confirmation drive actual charges. Paying does not bypass review.
+- Native image-enabled listings may produce a channel photo post. The October 21 **crawler ingest** contract still instructs producers to send `mediaKeys: []` for Cargo. Distinguish those two cases.
+- The ingest API supports Cargo through `POST /api/ingest/leads` with category-specific validation. It is **not Housing-only**. External/crawled supply is separate from native paid publishing.
 
-- Role filter: All, Travellers or Senders.
-- Origin filter: any city or a selected catalog city.
-- Destination filter: any city or a selected catalog city.
-- A swap action exchanges the selected origin and destination.
-- Infinite/paged feed loading, loading skeletons and an empty state that offers to clear filters.
+## Known limits and evidence
 
-Trips whose `travel_date` is before the user's current local calendar date are hidden from the feed. **This is feed filtering only:** the underlying listing still follows the normal listing TTL/lifecycle, seeded at 30 days. The system does not automatically expire the listing status just because the trip date has passed.
+- Route dates are not automatic listing-expiration triggers.
+- No role/side distinction is displayed in the current MVP; database compatibility fields remain.
+- The bot's new `/search` is global free-text search, **not** a Cargo-only date/route chat wizard; category-specific filtering remains in the Mini App.
+- Production status, real-Telegram gesture behavior and Telegram's acceptance of WebP by URL were not independently verified here.
 
-## 4. Detail page
-
-The detail view shows the route with country flags, travel date, traveller/sender role, price, cargo type/weight when provided, optional note, publisher, trust badges and the shared contact section. It includes a reminder to consider destination customs rules. The page supports save/unsave, report and contact/conversation interactions through the shared listing layer.
-
-For traveller listings, weight is presented as available capacity (for example, “Up to … kg”); for sender listings it is the package weight.
-
-## 5. Shared behavior
-
-- Cargo uses the same category pricing/policy provider as Housing; the initial Cargo policy rows are copied from Housing's then-current values when missing, then can be tuned independently.
-- Contact, unlock, conversation, save, report, renew and boost use shared listing infrastructure.
-- Cargo participates in Hub, Post chooser, global Search, Saved, My listings and category-scoped Gate A metrics.
-- Listing creation, contact unlock, renew and boost prices are read from server policy/pricing; a zero price means the action is free.
-
-## 6. Explicit gaps
-
-The following are **not** included in CARGO-01:
-
-- Cargo crawler ingestion. The documented crawler ingestion contract is Housing-only.
-- Multiple active Cargo listings per user; the current one-active-listing-per-user-per-category rule remains.
-- Lifecycle expiration based on travel date.
-- A dedicated Cargo-specific route/date search wizard in the Telegram bot. The bot has a generic category search wizard, but its attribute matching is limited to supported scalar attributes.
-- Production deployment confirmation.
-
-## Source commits
-
-- [Cargo backend and route schema](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/585a1fdb98bfc028e7fa9738a6298116e6543e46)
-- [Cargo Web journey](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/09b569dcf117ccfa4bcfde0e5e41ed1b51901845)
+Source commits: [Cargo simplified](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/b2ade2686d62a629f2fa2b32a31eb925f788d556), [MultiSelect](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/448a94f55c945efc99840a4b39453f9fab7f0ef6), [city picker](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/114b86ea319f95daaa508f05b1d5ffe644730fa7), [date countdown](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/40afe7a2c3b508eaa3805fc4be5ccf2dfbd3ef72), [navigation](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/0b90f0a9b0a8d4570fd87eec0aba0e080683cbe6), [ended detail](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/f8cb1f389cdfbc704ae7ded1a5bdfbf9e93dcf59), [additional listing](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/54b42f0fd5a4a2992893973eec58732e134364de).
