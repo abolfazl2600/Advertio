@@ -10,3 +10,5 @@ This repository contains the project's documentation and reference materials.
 
 - [Documentation](./docs/README.md)
 - [Changelog](./CHANGELOG.md)
+- [October 21, 2026 GitLab change audit](./docs/releases/2026-10-21.md)
+- [Crawler contract and migration notes](./09-crawler/advertio-integration-2026-10-21.md)
