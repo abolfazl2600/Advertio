@@ -1,6 +1,6 @@
 # Mini App — current implementation
 
-> **Reviewed:** 2026-10-20. Describes the code merged to GitLab `master`; Production deployment was not independently checked.
+> **Updated for 2026-10-21:** simplified Cargo, unified journey navigation, Quick Search semantics, and paid additional native listings. Full [GitLab change audit](../releases/2026-10-21.md) and [Cargo details](./cargo.md). Baseline reviewed: 2026-10-20. Describes the code merged to GitLab `master`; Production deployment was not independently checked.
 
 ## 1. Live journeys and URL structure
 
@@ -9,7 +9,7 @@ The Web app uses a journey registry. The only journeys registered as live are:
 | Display label | Backend slug | Scope |
 |---|---|---|
 | Housing | `housing` | Canadian rental and roommate listings |
-| Cargo | `passenger-cargo` | Traveller/sender route listings |
+| Cargo | `passenger-cargo` | Unified route listings (optional date) |
 | Jobs | `jobs` | Canadian hiring and job-seeker listings |
 
 Public journey URLs use the slug at the root (for example, `/housing`, `/passenger-cargo`, `/jobs`). Create forms are reached at the journey's `/new` route and listing details use the listing ID under that journey. Do not rename `passenger-cargo` to `cargo` in backend routes: Cargo is the display label, while `passenger-cargo` is the canonical slug.
@@ -34,10 +34,10 @@ Category journey pages have their own header/back navigation. The shell's tab ba
 Each journey has its own feed and category-specific filters:
 
 - Housing: listing type, location and schema-driven housing attributes.
-- Cargo: traveller/sender role, origin city and destination city. Past-date trips are excluded from the feed.
+- Cargo: origin and destination city, **without a side/role selector**; only trips with a specified past travel date are excluded from the feed.
 - Jobs: hiring/job-seeker role, job category and Canadian city.
 
-Global Search is separate from those feed filters. It matches keywords in listing titles and descriptions across Housing, Cargo and Jobs. Search requirements:
+Global Search is separate from those feed filters. Backend keyword resolution now also matches category names and location names/codes (including supported Persian synonyms) in addition to listing title and description; terms are combined with AND. Search requirements:
 
 - Minimum query length: 2 characters.
 - Maximum query length: 100 characters.
@@ -45,16 +45,16 @@ Global Search is separate from those feed filters. It matches keywords in listin
 - Results are paged in batches of 20.
 - The committed query is stored in the URL as `?q=`; Back from a listing returns to the search.
 - Loaded results are cached and the previous scroll position is restored when returning from a detail page.
-- All words in the query must appear in the title or description. Search is not a semantic/AI search.
+- Every query word must match somewhere across title, description, city, province, neighborhood or resolved catalog/category name; search is not semantic/AI ranking.
 
 ## 4. Posting and validation
 
 - Each live journey owns its own create form. The Post chooser only routes the user to the correct form; it does not implement a shared category form.
 - Housing has a structured listing wizard with schema-defined attributes and optional photos.
-- Cargo and Jobs are deliberately short, single-screen forms with four required choices; optional detail fields are behind an expandable section.
+- Cargo and Jobs are short single-screen forms; **Cargo requires only origin and destination** (date optional; side not requested), while Jobs retains its own category-specific required choices. Optional detail fields use expandable sections.
 - Category attribute definitions are loaded from the backend schema. Required fields, select options, conditional visibility and numeric validation are not intended to be duplicated as a second hardcoded source in the UI.
-- The backend validates the category schema, location catalog, media ownership, active-listing limit, duplicate detection and configured action price.
-- Current server rule: one active user-created listing per user per category. A user must close/finish the existing active listing before creating another in that category.
+- The backend validates category schema, location catalog, media ownership, paid additional-listing policy, duplicate detection and configured action price.
+- Current server rule: one **free-slot** live listing per user/category; extra simultaneous native listings require a nonzero, enabled category policy price and an explicit server-issued publish quote/coin confirmation. Payment never bypasses moderation. The crawler ingest supply path is distinct.
 
 ## 5. Shared listing detail and interactions
 
