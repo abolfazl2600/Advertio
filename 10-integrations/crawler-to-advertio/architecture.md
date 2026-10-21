@@ -841,10 +841,10 @@ curl -sS -X POST "$BASE/api/ingest/leads" \
 
 ## Further reading
 
-- Full API contract: [`specs/001-housing-paid-contact/contracts/api.md`](../specs/001-housing-paid-contact/contracts/api.md) §`/api/ingest`
-- Rationale behind the design decisions: [`docs/adr/ADR-0009`](adr/ADR-0009-external-supply-ingestion.md)
-- Why the API moved to its own domain: [`docs/adr/ADR-0012`](adr/ADR-0012-api-subdomain.md)
-- Which journeys are live, and why each one stands alone: [`docs/adr/ADR-0001`](adr/ADR-0001-hub-and-independent-journeys.md)
+- Full API contract: [`specs/001-housing-paid-contact/contracts/api.md`](../../specs/001-housing-paid-contact/contracts/api.md) §`/api/ingest`
+- Rationale behind the design decisions: [`docs/adr/ADR-0009`](../../docs/adr/ADR-0009-external-supply-ingestion.md)
+- Why the API moved to its own domain: [`docs/adr/ADR-0012`](../../docs/adr/ADR-0012-api-subdomain.md)
+- Which journeys are live, and why each one stands alone: [`docs/adr/ADR-0001`](../../docs/adr/ADR-0001-hub-and-independent-journeys.md)
 - Code: `backend/src/Advertio.Api/Modules/Lead/LeadIngestEndpoints.cs`
 - Every journey's attributes: `backend/src/Modules/Category/Advertio.Modules.Category.Infrastructure/Seed/CategorySeeder.cs`
 - The location catalog: `backend/src/Modules/ReferenceData/Advertio.Modules.ReferenceData.Infrastructure/Seed/LocationSeeder.cs`
