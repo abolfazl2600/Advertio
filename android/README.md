@@ -16,7 +16,7 @@
 
 ## ساختار هدف
 ```text
-اندروید/
+android/
 ├── README.md
 ├── .gitignore
 ├── docs/
@@ -47,5 +47,5 @@ Git فایل/پوشه خالی را نگه نمی‌دارد؛ mobile، tests و
 ## توسعه با هوش مصنوعی
 - برای هر عامل توسعه، خواندن [AGENTS.md](AGENTS.md) **الزامی** است.
 - راهنمای گام‌به‌گام اجرای ایشیوها و قالب PR در [docs/AI-EXECUTION.md](docs/AI-EXECUTION.md) آمده است.
-- ایزوله‌بودن تغییرات را با `bash 'اندروید/scripts/guard-scope.sh' origin/main` از ریشه مخزن کنترل کنید.
+- ایزوله‌بودن تغییرات را با `bash 'android/scripts/guard-scope.sh' origin/main` از ریشه مخزن کنترل کنید.
 - Issues فقط برنامه کار هستند: هیچ امضای AAB/APK یا Build واقعی تا زمان انجام و تست آن‌ها موجود نیست.
