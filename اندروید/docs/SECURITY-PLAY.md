@@ -27,3 +27,6 @@
 - https://support.google.com/googleplay/android-developer/answer/18258653
 - https://support.google.com/googleplay/android-developer/answer/10281818
 - https://developers.google.com/identity/siwg/best-practices
+
+## قانون خاص عامل توسعه AI
+سورس GitLab private فقط با دسترسی read-only و pin SHA؛ هیچ نشت سورس/باندل خصوصی در GitHub public مجاز نیست. چک‌لیست‌ها را صرفاً با مشاهده/تست واقعی کامل کنید؛ بدون دسترسی Console/Backend/Keystore، compliance یا release را Pass اعلام نکنید.
