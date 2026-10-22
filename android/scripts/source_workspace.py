@@ -42,11 +42,11 @@ def workspace(parent='/tmp'):
         os.chmod(folder, 0o700)
         yield Path(folder)
 
-def verify_revision(source, expected):
-    actual = run(['git', 'rev-parse', 'HEAD'], source)
+def verify_revision(source, expected, env=None):
+    actual = run(['git', 'rev-parse', 'HEAD'], source, env)
     if actual != expected:
         raise BuildError('Pinned source revision mismatch')
-    if run(['git', 'status', '--porcelain'], source):
+    if run(['git', 'status', '--porcelain'], source, env):
         raise BuildError('Source checkout is not clean')
 
 def fetch_source(lock, root, token_file):
@@ -76,6 +76,6 @@ def fetch_source(lock, root, token_file):
     run(git + ['init', '-q'], source, env)
     run(git + ['fetch', '--quiet', '--no-tags', '--depth=1', lock['repository'], lock['revision']], source, env)
     run(git + ['checkout', '--quiet', '--detach', 'FETCH_HEAD'], source, env)
-    verify_revision(source, lock['revision'])
+    verify_revision(source, lock['revision'], env)
     helper.unlink()
     return source
