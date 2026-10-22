@@ -1,5 +1,7 @@
 # امنیت و Google Play Compliance
 
+> محدوده نسخه فعلی: ورود Google در #46 به نسخه بعد منتقل شده است؛ توسعه و پذیرش فعلی فقط با OTP/PhoneGate انجام می‌شود. الزام‌های Google در این سند برای نسخه‌ای است که آن را فعال می‌کند. [تصمیم مالک و وضعیت اجرا](current-version.md).
+
 ## محافظت از داده‌ها و هویت
 - Google Sign-In باید **Native Credential Manager** باشد؛ WebView OAuth ممنوع.
 - Backend باید issuer/audience/expiration/signature Google ID Token را validate کند، و account linking باید بدون ساخت حساب تکراری باشد.

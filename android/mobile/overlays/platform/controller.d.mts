@@ -1,6 +1,8 @@
 export function detectChannel(native: boolean, telegramProbe?: () => boolean): 'android' | 'telegram' | 'browser'
 export function secureExternalUrl(value: string, telegramOnly?: boolean): string
 export interface Services {
+  keyboardVisible?(): boolean
+  confirmExit?(): Promise<boolean>
   historyIndex(): number | undefined
   historyBack(): void
   minimize(): Promise<void>

@@ -1,0 +1,13 @@
+# Current Android version — Google login deferred
+
+Owner decision, 2026-10-22: ship the current development scope without Google login. GitHub #46 and its native implementation in PR #70 are deferred to a later version. They are not a dependency or acceptance gate for this version. This is a scope decision, not evidence that Google sign-in passed.
+
+Current login uses the existing phone/Telegram bot OTP, PhoneGate and secure session in #45. The Android `useGoogleLogin` overlay preserves the view interface but hides and clears its container before paint, returns `disabled`, and does not load GIS, register a native Google plugin or call the Google authentication API. The replacement is mandatory in the combined overlay manifest; simply omitting the native implementation would leave the existing web Google hook in the staged app.
+
+The current branch excludes the native Google module, Credential Manager/googleid dependencies, token-exchange coordinator, Google Client ID build argument and live sign-in hook from PR #70. No build flag or remote response enables Google login. Restore it only in a reviewed future change with OAuth/signing/server-account/device/Play evidence. Review the disabled hook and its manifest hash when reintroducing #46; do not apply PR #70 blindly over the current replacement.
+
+The current integration includes the public Capacitor foundation, secure OTP/session, payment-free wallet and native UX (#41, #45, #47, #48). Main is the development baseline. Merging source does not close their acceptance criteria or authorize distribution/signing of private source.
+
+Current blockers remain: JDK21/SDK36/device, authorized external private build inputs and distribution decision, API CORS #63, final package identity, real account/PhoneGate, native instrumentation and payment/UI/Play validation. Google Cloud configuration is not required for this version.
+
+Verification: 21 Node and 12 Python tests, public-overlay contract typecheck, 33 combined payload hashes and scope/diff checks; three synthetic browser viewports also assert that the actual disabled hook hides its container, removes the button and loads no Google provider script. These checks do not prove device/private-app acceptance. Reproduce with the commands in [native-ux.md](native-ux.md). To roll back this scope integration, revert its merge and rebuild reviewed inputs; do not distribute a payment-enabled predecessor.

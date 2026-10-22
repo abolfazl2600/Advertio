@@ -23,6 +23,7 @@
 8. تسک بعدی را فقط وقتی شروع کن که پیش‌نیازهای بحرانی حل شده باشند. عامل می‌تواند کار مستقل بدون secret را ادامه دهد، اما *انتشار و امضای واقعی* بدون دسترسی مجاز ممنوع است.
 
 ## قواعد محصول
+- **محدوده نسخه فعلی، تصمیم مالک 2026-10-22:** ورود Google (#46 / PR #70) به نسخه بعد منتقل شده است؛ [current-version.md](docs/current-version.md) ملاک نسخه فعلی است. hook گوگل در Android غیرفعال و پنهان بماند؛ توسعه و پذیرش نسخه فعلی به OAuth گوگل وابسته نیست.
 - Login: **همان کاربران و حساب‌ها**، PhoneGate و OTP مبتنی بر بات Telegram بدون تغییر Backend. Google روی Android با **Native Credential Manager / API پشتیبانی‌شده**، ID token به API موجود، بدون OAuth داخل embedded WebView.
 - Coins: هیچ خرید، شارژ، Stripe Checkout، Telegram Stars Invoice، deeplink و لینک خارج برنامه برای خرید وجود نداشته باشد. متن: **«خرید سکه به‌زودی فعال می‌شود»**. مصرف اعتبار موجود فقط پس از انطباق سیاست Play.
 - امکانات: Housing، Passenger Cargo، Jobs، Profile، Saved و My Listings؛ پشتیبانی از media upload، back/navigation، خطاها.
@@ -33,6 +34,6 @@
 مخزن GitHub **عمومی** است. Never commit access tokens, `.env`, keystore, signing passwords, user PII, GitLab source, compiled private JS, Google credentials or Play service-account JSON. داده تست ساختگی؛ لاگ پاکسازی شده. کلید واقعی Release باید خارج git و با کنترل دسترسی مالک نگه‌داری شود. اگر policy یا entitlement مانع است، issue را BLOCKED با evidence مشخص کن.
 
 ## Gate نهایی
-هیچ «Done» برای Release (#57–#60) بدون artifact signed حقیقی، `apksigner`/`jarsigner` verification، دستگاه واقعی، Play test، Google auth، QA و Privacy/UGC/Account deletion/payment compliance. Play-ready با Approved/Published برابر نیست.
+هیچ «Done» برای Release (#57–#60) بدون artifact signed حقیقی، `apksigner`/`jarsigner` verification، دستگاه واقعی، Play test، ورود OTP/PhoneGate، QA و Privacy/UGC/Account deletion/payment compliance. Google auth تنها در نسخه‌ای که آن را فعال می‌کند gate است. Play-ready با Approved/Published برابر نیست.
 
 **شروع پیاده‌سازی:** [#39](https://github.com/abolfazl2600/Advertio/issues/39).

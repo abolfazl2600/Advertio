@@ -1,3 +1,4 @@
+import { consumeAuthLink } from '../payments/policy.mjs'
 /** Original channel policy and native navigation controller. No SDK/global access at import. */
 export function detectChannel(native, telegramProbe = () => false) {
   if (native) return 'android'
@@ -10,10 +11,7 @@ export function secureExternalUrl(value, telegramOnly = false) {
     throw new Error('External URL requires HTTPS without credentials')
   if (telegramOnly && !['t.me', 'telegram.me'].includes(url.hostname))
     throw new Error('Telegram host required')
-  // Do not provide an external route around the disabled native invoice API.
-  if (['t.me', 'telegram.me'].includes(url.hostname) && (url.pathname.startsWith('/$') || url.pathname.startsWith('/invoice/')))
-    throw new Error('Native invoices are disabled')
-  return url.href
+  return consumeAuthLink(url.href)
 }
 
 export function createController(services) {
@@ -27,11 +25,12 @@ export function createController(services) {
     if (navigating || stopped) return
     navigating = true
     try {
+      if (services.keyboardVisible?.()) { await services.hideKeyboard(); return }
       const custom = handlers.at(-1)
-      if (custom) custom()
+      if (custom) await custom()
       else if (services.historyIndex() > 0) services.historyBack()
       else if (event.canGoBack && services.historyIndex() === undefined) services.historyBack()
-      else await services.minimize()
+      else if (!services.confirmExit || await services.confirmExit()) await services.minimize()
     } finally { navigating = false }
   }
   return {

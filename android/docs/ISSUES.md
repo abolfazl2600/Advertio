@@ -1,5 +1,7 @@
 # GitHub Issues — Android Advertio (AI execution)
 
+> محدوده نسخه فعلی: ورود Google در #46 به نسخه بعد منتقل شده است؛ توسعه و پذیرش فعلی فقط با OTP/PhoneGate انجام می‌شود. الزام‌های Google در این سند برای نسخه‌ای است که آن را فعال می‌کند. [تصمیم مالک و وضعیت اجرا](current-version.md).
+
 ایشیو مادر: [#38 — برنامه اصلی](https://github.com/abolfazl2600/Advertio/issues/38)
 
 **ترتیب اجرا:** ابتدا 01، سپس 02 و الی آخر؛ وابستگی دقیق و Definition of Done در هر Issue نوشته شده است. بستن تسک بدون PR محدود به پوشه Android، تست و evidence مجاز نیست.
