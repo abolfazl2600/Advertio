@@ -39,3 +39,15 @@ Workaround/options | Required decision | Status | Evidence | Resolution
 
 ## AI Test Evidence
 هر PR باید ستون‌های `Criterion | Command/device | PASS/FAIL/NOT RUN | Evidence link | Known limitation` داشته باشد. اجرای نشدن تست به‌دلیل نبود Android SDK، emulator، دستگاه، Google Cloud یا Play Console، با برچسب NOT RUN/BLOCKED ثبت می‌شود و با ساختگی‌کردن لاگ/آرتیفکت قابل جایگزینی نیست.
+
+## Foundation execution status — 2026-10-22 (#39–44)
+
+| Gate / owner | Evidence | Required resolution | Status |
+|---|---|---|---|
+| Audit metadata / project owner | Local read-only review exists; public delivery withheld by approval review | Explicit permission to publish the source revision/internal inventory/derived observations, or approved private destination | BLOCKED #39 |
+| Private source distribution / owner | No owner-signed runner/artifact decision or deploy credential supplied | Private decision record + external pinned source lock and read-only token | BLOCKED #40/#42 |
+| Native toolchain / build operator | Node 24.19.0, npm 11.9.0, JDK 17; SDK/adb/emulator absent; Gradle distribution download failed Network is unreachable | JDK 21, SDK 36, emulator/physical device and reproducible private build logs | BLOCKED #41/#42 |
+| API CORS / deployment owner | Credential-free host probes: categories 200, preflight 204 and unauthenticated profile 401; no CORS allow headers for https://localhost | Explicit CORS origin/method/header config and device retest; no server change performed | BLOCKED #63 / #44 |
+| Package identity / owner | Development-only package; release tasks disabled | Approve final Play package before OAuth/signing | OPEN |
+
+Executed against combined original foundation changes: 6 source/scope Python tests, 4 overlay-pipeline Python tests, 7 Node platform/network policy tests: PASS (17 total). npm ci (104 packages), mobile typecheck and cap sync (five native plugins): PASS. Overlay TypeScript check with real public dependencies and synthetic auth/theme stores: PASS; not a private upstream integration build. Real WebView, physical plugins, authenticated API/media/upload and web/Telegram E2E remain NOT RUN. No signed APK/AAB is claimed.
