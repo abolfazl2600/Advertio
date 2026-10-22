@@ -26,7 +26,7 @@ Private GitLab Monorepo (read-only, pinned commit)
                  |
     production HTTPS API / existing database
 ```
-- کلیه فایل‌های ماندگار اختصاصی Android زیر `اندروید/`؛ staging خارجی فقط موقت است.
+- کلیه فایل‌های ماندگار اختصاصی Android زیر `android/`؛ staging خارجی فقط موقت است.
 - **No git push / no commits to upstream GitLab**. هر patch باید برای revision upstream قفل‌شده قابل اعمال باشد؛ drift باعث fail-closed شدن pipeline می‌شود.
 - آدرس Backend باید HTTPS مطمئن، گواهی معتبر، تنظیم origin/CORS یا adapter native شبکه و media/upload داشته باشد. به (api.advertio.ir) تا تست موفق Production اعتماد قطعی نکنید.
 - ترجیح: bundle assets محلی در APK/AAB، نه نمایش صرف URL وب‌سایت. انتشار Remote WebView shell به جای native bundled app قابل قبول نیست.
