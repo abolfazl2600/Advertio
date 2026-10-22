@@ -1,0 +1,2 @@
+# Preserve the official Windows wrapper's CRLF line endings without whitespace noise.
+mobile/android/gradlew.bat whitespace=cr-at-eol
