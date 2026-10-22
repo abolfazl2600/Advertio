@@ -1,0 +1,12 @@
+// Official Credential Manager stable API; no embedded-WebView OAuth.
+dependencies {
+    implementation 'androidx.credentials:credentials:1.6.0'
+    implementation 'androidx.credentials:credentials-play-services-auth:1.6.0'
+    implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
+}
+def advertioGoogleClient = providers.gradleProperty('advertioGoogleWebClientId')
+    .orElse(providers.environmentVariable('ADVERTIO_GOOGLE_WEB_CLIENT_ID')).getOrElse('')
+if (advertioGoogleClient && !(advertioGoogleClient ==~ /[A-Za-z0-9_-]+\.apps\.googleusercontent\.com/)) {
+    throw new GradleException('Invalid Google Web Client ID format')
+}
+android.defaultConfig.resValue 'string', 'advertio_google_web_client_id', advertioGoogleClient

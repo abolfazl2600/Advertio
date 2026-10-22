@@ -101,6 +101,10 @@ def build(args):
             env['VITE_API_URL'] = args.api_origin
             env['VITE_ANDROID_API_ORIGINS'] = args.api_allowlist
             env['VITE_ANDROID_MEDIA_ORIGINS'] = args.media_origins
+            if args.google_client_id:
+                if not __import__('re').fullmatch(r'[A-Za-z0-9_-]+\.apps\.googleusercontent\.com', args.google_client_id):
+                    raise BuildError('Google Web Client ID format rejected')
+                env['ADVERTIO_GOOGLE_WEB_CLIENT_ID'] = args.google_client_id
             from urllib.parse import urlsplit
             url = urlsplit(args.api_origin)
             if url.scheme != 'https' or url.username or url.password or url.query or url.fragment or url.path not in ('', '/') or args.api_origin.rstrip('/') not in args.api_allowlist.split(','):
@@ -156,6 +160,7 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser()
     for name in ('source-lock', 'approval', 'token-file', 'output', 'api-origin', 'api-allowlist', 'media-origins'):
         p.add_argument('--' + name, required=True)
+    p.add_argument('--google-client-id', default='')
     try:
         build(p.parse_args())
         print('Private build completed; outputs remain in the private destination.')

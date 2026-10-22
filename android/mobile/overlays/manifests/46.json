@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "target": "apps/web/src/shared/auth/google.mjs",
+      "payload": "auth/google.mjs",
+      "sha256": "6b6122d61579e34d1b90fe3ac7e53998f97ccc5e7dffb1bcf1a1dc94ce56f677"
+    },
+    {
+      "target": "apps/web/src/shared/auth/google.d.mts",
+      "payload": "auth/google.d.mts",
+      "sha256": "27e8b78252bc9bbc8ba4ac7b8d57decc7793bab32c65328ae9658c1642e9dd3b"
+    },
+    {
+      "target": "apps/web/src/shared/auth/useGoogleLogin.ts",
+      "payload": "auth/useGoogleLogin.ts",
+      "sha256": "06b4b127871fa035c2b0865a9d255e26808b0befd23e747a909277e596628326"
+    }
+  ]
+}
