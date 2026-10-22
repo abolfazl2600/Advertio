@@ -1,4 +1,4 @@
-# GitHub Issues — Android Advertio
+# GitHub Issues — Android Advertio (AI execution)
 
 ایشیو مادر: [#38 — برنامه اصلی](https://github.com/abolfazl2600/Advertio/issues/38)
 
@@ -33,8 +33,13 @@
 با بسته‌شدن *همه* مسائل بحرانی و Issues 01–22 باید AAB امضاشده و قابل بارگذاری در Play Console و APK release امضاشده قابل نصب به همراه release-manifest، hash، QA report، privacy/UGC/payment compliance، و اسناد recovery نگهداری key تحویل شوند. **آماده بارگذاری بودن با تأیید یا انتشار عمومی توسط Google Play یکسان نیست**.
 
 ## محدودیت‌های ثابت
-- فقط `اندروید اپ/` در GitHub؛ هیچ تغییر در Monorepo خصوصی GitLab.
+- فقط `اندروید/` در GitHub؛ هیچ تغییر در Monorepo خصوصی GitLab.
 - GitHub این پروژه عمومی است؛ secrets/private source/private build artifacts نباید منتشر شوند.
 - Google Native Auth: [Jira AD-49](https://advertio24.atlassian.net/browse/AD-49) و [GitHub #46](https://github.com/abolfazl2600/Advertio/issues/46).
 - پرداخت حذف/«خرید سکه به‌زودی فعال می‌شود»: [#47](https://github.com/abolfazl2600/Advertio/issues/47).
 - امضای Release: [#57](https://github.com/abolfazl2600/Advertio/issues/57) تا [#60](https://github.com/abolfazl2600/Advertio/issues/60).
+
+## دستور اجرای این Backlog توسط AI Agent
+- ابتدا [قوانین AGENTS](../AGENTS.md) و [AI execution playbook](AI-EXECUTION.md) خوانده شوند.
+- هر Issue در شاخه جداگانه با تغییر **فقط در مسیر `اندروید/`**، تست و PR انجام شود؛ در صورت مسدودی **BLOCKED** و پیش‌نیاز مشخص ثبت شود.
+- خروجی نهایی فقط با تایید واقعی امضای AAB/APK و تست روی دستگاه/Play قابل پذیرش است. هیچ تستی را بدون اجرا PASS اعلام نکنید.
