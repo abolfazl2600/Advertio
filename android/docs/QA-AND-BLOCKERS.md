@@ -51,3 +51,12 @@ Workaround/options | Required decision | Status | Evidence | Resolution
 | Package identity / owner | Development-only package; release tasks disabled | Approve final Play package before OAuth/signing | OPEN |
 
 Executed against combined original foundation changes: 6 source/scope Python tests, 4 overlay-pipeline Python tests, 7 Node platform/network policy tests: PASS (17 total). npm ci (104 packages), mobile typecheck and cap sync (five native plugins): PASS. Overlay TypeScript check with real public dependencies and synthetic auth/theme stores: PASS; not a private upstream integration build. Real WebView, physical plugins, authenticated API/media/upload and web/Telegram E2E remain NOT RUN. No signed APK/AAB is claimed.
+
+## Auth / payment / UX execution — 2026-10-22 (#45–48)
+
+- #45: native Keystore/GCM vault, serialized session restore/logout/expiry and original OTP/bot overlays implemented. Unit/installer tests PASS; actual pre-existing account, device vault/revocation and full private UI NOT RUN (#41/#63/private runner gates).
+- #46: native Credential Manager and existing-API exchange implemented; cancellation/late-result/identity tests PASS. Cloud OAuth/signing/audience/account/Play tests NOT RUN. No Jira changes were made; execution reports are on GitHub.
+- #47: read-only wallet, provider/request/route/external-link boundaries and spending-disabled policy implemented. Negative policy tests PASS; physical/manual private-UI traversal NOT RUN. General external links and potentially charging publish operations deliberately remain disabled pending reviewed policy.
+- #48: native insets/system bars/keyboard/root confirmation, accessible original Sheet and three synthetic browser snapshots implemented. Browser fixture checks PASS; Android device/IME/gesture/Play acceptance NOT RUN.
+
+Integrated verification: 25 Node + 12 Python tests PASS, public-overlay typecheck PASS, synthetic fixture build/three-viewports PASS, combined 35-payload hashes PASS. This is not a private production build or signed APK claim. Merge foundation #41 before running native builds; public source-derived audit metadata remains withheld unless separately approved.

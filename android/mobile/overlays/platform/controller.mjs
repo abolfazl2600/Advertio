@@ -25,11 +25,12 @@ export function createController(services) {
     if (navigating || stopped) return
     navigating = true
     try {
+      if (services.keyboardVisible?.()) { await services.hideKeyboard(); return }
       const custom = handlers.at(-1)
-      if (custom) custom()
+      if (custom) await custom()
       else if (services.historyIndex() > 0) services.historyBack()
       else if (event.canGoBack && services.historyIndex() === undefined) services.historyBack()
-      else await services.minimize()
+      else if (!services.confirmExit || await services.confirmExit()) await services.minimize()
     } finally { navigating = false }
   }
   return {
