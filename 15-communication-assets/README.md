@@ -1,10 +1,10 @@
 # Advertio — Communication Assets Registry
 
-**Snapshot date:** 2026-10-20 · **Version:** 1.4 · **Maintainer:** Advertio operations (to be assigned)
+**Registry updated:** 2026-10-22 · **Version:** 1.5 · **Maintainer:** Advertio operations (to be assigned)
 
 این پوشه برای ثبت وضعیت فعلی دارایی‌های ارتباطی Advertio ایجاد شده است؛ این اطلاعات **صورت‌وضعیت مشاهده‌شده** هستند و به‌معنای تأیید اتصال فنی، مالکیت یا فعال بودن هر ویژگی در سرور نیستند.
 
-**Inventory:** 16 assets: 7 channels, 5 groups, 2 bots, 1 Telegram community, 1 support contact. (12 channels/groups identified, not a verified exhaustive list of the Community’s 15 chats.)
+**Inventory:** 17 assets: 7 channels, 6 groups, 2 bots, 1 Telegram community, 1 support contact. (13 channels/groups identified, not a verified exhaustive list of the Community’s 15 chats.)
 
 ## Files
 
@@ -13,6 +13,7 @@
 - [flightiranbot24-capabilities.md](flightiranbot24-capabilities.md): بررسی قابلیت‌های موجود در کد ربات FlightIran و تفکیک قابلیت‌های فعال در کد، مشروط و Coming Soon.
 - [snapshots/2026-10-20.md](snapshots/2026-10-20.md): شواهد سه اسکرین‌شات نخست.
 - [snapshots/2026-10-20-additional-assets.md](snapshots/2026-10-20-additional-assets.md): یازده تصویر جدید و شواهد دارایی‌های مسکن، شغل، کالا و کارگو.
+- [snapshots/2026-10-22-canada-cargo.md](snapshots/2026-10-22-canada-cargo.md): ثبت شواهد گروه ارسال بار مسافری ایران و کانادا `@canada_cargo` (۳ عضو).
 
 **CTA validation required:** `@AdvertioBot` shown in the new `@canada_advertio` bio is not the same username as `@advertio_bot`. Verify ownership and exact destination before directing traffic to it.
 
