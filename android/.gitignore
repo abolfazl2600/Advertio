@@ -34,3 +34,7 @@ credentials*.json
 .DS_Store
 __pycache__/
 *.pyc
+# Capacitor sync outputs are recreated; do not track them without the scaffold ignore file.
+mobile/android/app/src/main/assets/
+mobile/android/app/src/main/res/xml/config.xml
+mobile/android/capacitor-cordova-android-plugins/
