@@ -16,7 +16,7 @@
 
 ## ساختار هدف
 ```text
-اندروید اپ/
+اندروید/
 ├── README.md
 ├── .gitignore
 ├── docs/
@@ -30,7 +30,7 @@
 ├── tests/         # smoke/E2E/device matrix
 └── assets/        # آیکون، splash و دارایی‌های تأییدشده
 ```
-Git فایل/پوشه خالی را نگه نمی‌دارد؛ mobile، scripts، tests و assets هنگام تکمیل ایشیوهای مربوط ساخته می‌شوند. به خاطر نام فارسی پوشه والد، اسکریپت‌ها باید مسیرها را quote کرده و در صورت ناسازگاری Gradle از staging موقت با نام ASCII استفاده کنند.
+Git فایل/پوشه خالی را نگه نمی‌دارد؛ mobile، tests و assets در ایشیوهای اجرایی ساخته می‌شوند؛ scripts از همین حالا شامل کنترل scope است. به خاطر نام فارسی پوشه والد، اسکریپت‌ها باید مسیرها را quote کرده و در صورت ناسازگاری Gradle از staging موقت با نام ASCII استفاده کنند.
 
 ## مراحل و تعریف اتمام
 به [ROADMAP](docs/ROADMAP.md) و GitHub Issues با پیشوند `[Android NN]` مراجعه کنید. هر ایشیو باید Pull Request فقط داخل این پوشه، تست، مستند به شواهد و DoD مشخص داشته باشد. بستن ایشیو بدون شواهد ممنوع است.
@@ -43,3 +43,9 @@ Git فایل/پوشه خالی را نگه نمی‌دارد؛ mobile، scripts�
 - [Android app signing](https://developer.android.com/studio/publish/app-signing)
 - [Google Play target SDK](https://support.google.com/googleplay/android-developer/answer/11926878)
 - Jira Google Sign-In: [AD-49](https://advertio24.atlassian.net/browse/AD-49)
+
+## توسعه با هوش مصنوعی
+- برای هر عامل توسعه، خواندن [AGENTS.md](AGENTS.md) **الزامی** است.
+- راهنمای گام‌به‌گام اجرای ایشیوها و قالب PR در [docs/AI-EXECUTION.md](docs/AI-EXECUTION.md) آمده است.
+- ایزوله‌بودن تغییرات را با `bash 'اندروید/scripts/guard-scope.sh' origin/main` از ریشه مخزن کنترل کنید.
+- Issues فقط برنامه کار هستند: هیچ امضای AAB/APK یا Build واقعی تا زمان انجام و تست آن‌ها موجود نیست.
