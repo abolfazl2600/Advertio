@@ -1,5 +1,7 @@
 # Capacitor Android foundation (#41)
 
+Latest execution, 2026-10-22: a private debug APK with the real application UI and current no-Google overlays was built successfully, including native Java compilation, cap sync and APK signature verification. See [first-debug.md](first-debug.md). Device installation/login remain NOT RUN. The original failed-toolchain evidence below is historical.
+
 Development-only identity: `com.advertio.development`. This is not an approved Play package. All release tasks deliberately fail until identity/signing/distribution gates are implemented. `www/index.html` is original local placeholder HTML, never private UI. No remote server URL, navigation allowlist or cleartext bypass.
 
 Generated with Capacitor CLI/core/android **8.5.3**, not handwritten pseudo-Gradle. Pins: Node **24.19.0** (`.nvmrc`), npm **11.9.0**, TypeScript **6.0.2**, Gradle **8.14.3**, AGP **8.13.0**, JDK **21**, minSdk **24**, target/compileSdk **36**. SDK build-tools 36.0.0; Android Studio is optional, use a version supporting AGP 8.13.0. Native App/Browser/Haptics/Keyboard/StatusBar plugins are pinned at 8.0.0 and cap sync discovers all five. Exact npm dependency graph is in package-lock.json. Template dependency versions are in variables.gradle.

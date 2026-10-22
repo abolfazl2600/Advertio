@@ -2,17 +2,17 @@ import { useCallback, useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '@/shared/api/client'
 import { API } from '@/shared/api/endpoints'
-import { apiUrl } from '@/shared/api/policy.mjs'
+import { capturedTokenRequest } from '@/shared/api/native-adapter'
 import { bindSessionCleanup, session, useAuthStore } from '@/shared/stores/auth.store'
+
+export type Session = ReturnType<typeof useSession>
 
 async function validate(token: string): Promise<string> {
   const origin = apiClient.defaults.baseURL!
-  const response = await fetch(apiUrl(API.auth.me, origin), {
-    headers: { Authorization: `Bearer ${token}` }, redirect: 'error', signal: AbortSignal.timeout(10_000),
-  })
+  const response = await capturedTokenRequest(origin, API.auth.me, token)
   if (response.status === 401) throw Object.assign(new Error('UNAUTHORIZED'), {code: 'UNAUTHORIZED'})
-  if (!response.ok) throw new Error('RESTORE_UNAVAILABLE')
-  const profile = await response.json() as {userId?: string; id?: string}
+  if (response.status < 200 || response.status >= 300) throw new Error('RESTORE_UNAVAILABLE')
+  const profile = response.data as {userId?: string; id?: string}
   const subject = profile.userId ?? profile.id
   if (!subject) throw new Error('RESTORE_IDENTITY_UNAVAILABLE')
   return subject

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { session, useAuthStore } from '@/shared/stores/auth.store'
 import { apiUrl, httpsOrigin, normalizeMedia } from './policy.mjs'
+import { nativeAdapter } from './native-adapter'
 
 const originList = (value: string | undefined) => (value ?? '').split(',').map((x) => x.trim()).filter(Boolean)
 const approvedApis = originList(import.meta.env.VITE_ANDROID_API_ORIGINS)
@@ -8,7 +9,8 @@ const origin = httpsOrigin(import.meta.env.VITE_API_URL ?? '', approvedApis)
 const approvedMedia = [origin, ...originList(import.meta.env.VITE_ANDROID_MEDIA_ORIGINS)]
 // Validate every configured media origin before any request is possible.
 for (const media of approvedMedia) httpsOrigin(media, approvedMedia)
-export const apiClient = axios.create({ baseURL: origin, timeout: 10_000, withCredentials: false })
+const adapter = nativeAdapter(origin)
+export const apiClient = axios.create({ baseURL: origin, timeout: 10_000, withCredentials: false, ...(adapter ? {adapter} : {}) })
 apiClient.interceptors.request.use((config) => {
   config.url = apiUrl(config.url ?? '', origin)
   config.baseURL = origin

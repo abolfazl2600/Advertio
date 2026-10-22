@@ -1,5 +1,11 @@
 # Private debug build runner (#42)
 
+The first real debug APK is recorded in [first-debug.md](first-debug.md). The owner explicitly requested private debug delivery in the current session; this does not authorize public source/bundle publication or production signing. The earlier NOT RUN status below describes the original foundation attempt.
+
+Alternatively to the deploy-token input, use `--source-snapshot /secure/export --snapshot-manifest /secure/snapshot-manifest.json`. Verify a read-only connector export against the immutable Git tree/blob ids first. Its external manifest lists SHA-256 for all imported paths and matches repository/revision; bind its hash as `snapshotManifestSha256` in the reviewed source lock. Only listed files are copied into staging; dependencies and unlisted files are ignored. No connector credential is exported. See the snapshot contract in first-debug.md.
+
+Optional `--private-log /secure/new-build.log` keeps raw command output mode 0600 outside Git; never post it publicly. Managed runners may pass approved proxy/CA settings through NODE_USE_ENV_PROXY, NODE_EXTRA_CA_CERTS, GRADLE_OPTS and external GRADLE_USER_HOME. Never disable certificate verification.
+
 Depends on #40 source workspace and #41 mobile project; merge foundation PRs first. Script: `scripts/build-private.py`. This is a manually invoked external/private runner, never public GitHub Actions. It checks immutable SHA, exact payload/source hashes, owner decision bound to source-lock hash, HTTPS API origin allowlist, upstream frozen pnpm lock and npm mobile lock; then Vite -> local www -> cap sync -> Gradle debug. Finally removes all staging. No GitLab write/push and no public source/bundle upload.
 
 Inputs are outside Git: source lock, mode-0600 deploy token, approval record, new private output path. Source lock extends the example with `files: { "apps/web/target.ts": "<sha256>", "apps/web/new.ts": "ABSENT" }`. These hashes must be reviewed privately, never learned/updated automatically at build time. Approval has `owner`, `approvalReference`, `privateRunner`, `privateArtifactPolicy`, `purpose: "private-debug-build"`, `sourceLockSha256`. The script validates record shape/binding; the operator must verify owner authorization and ACLs. It cannot establish organizational approval from a JSON file alone.

@@ -1,5 +1,7 @@
 # Test Matrix، خروجی قابل قبول و Blocker Register
 
+Latest execution: [first-debug.md](first-debug.md) supersedes the original toolchain/build blockers below. Real private UI TypeScript/Vite, native Java, cap sync, assembleDebug and APK signature verification now PASS. Device/emulator/login acceptance remains NOT RUN. New Android API calls use explicit native HTTPS rather than browser CORS; the server has not changed.
+
 ## ماتریس پایه QA
 | گروه | سناریوها | مدرک مورد انتظار |
 |---|---|---|

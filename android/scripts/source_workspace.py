@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Read-only pinned source acquisition. Never prints git output or credentials."""
 import contextlib
+import hashlib
 import json
 import os
 from pathlib import Path
 import re
 import subprocess
 import tempfile
+import shutil
 
 class BuildError(RuntimeError):
     pass
@@ -78,4 +80,39 @@ def fetch_source(lock, root, token_file):
     run(git + ['checkout', '--quiet', '--detach', 'FETCH_HEAD'], source, env)
     verify_revision(source, lock['revision'], env)
     helper.unlink()
+    return source
+
+def import_snapshot(lock, root, source_dir, manifest_path):
+    """Import an owner-reviewed connector export without exporting connector credentials.
+
+    The external manifest is bound into the approved source lock. The operator
+    must verify it against the tree/blobs read at the pinned repository revision.
+    Dependency folders and unlisted files are never imported.
+    """
+    source_dir, manifest_path = Path(source_dir).resolve(), Path(manifest_path).resolve()
+    if hashlib.sha256(manifest_path.read_bytes()).hexdigest() != lock.get('snapshotManifestSha256'):
+        raise BuildError('Snapshot manifest is not bound to the approved source lock')
+    record = json.loads(manifest_path.read_text())
+    if record.get('schema') != 1 or any(record.get(k) != lock.get(k) for k in ('repository', 'revision')):
+        raise BuildError('Snapshot repository/revision mismatch')
+    files = record.get('files')
+    if not isinstance(files, dict) or not all(p in files for p in ('package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'apps/web/package.json')):
+        raise BuildError('Incomplete source snapshot')
+    plan = []
+    for rel, expected in files.items():
+        path = Path(rel)
+        if path.is_absolute() or '..' in path.parts or any(p in ('node_modules', '.git') for p in path.parts):
+            raise BuildError('Unsafe snapshot path')
+        src = source_dir / path
+        if src.is_symlink() or not src.resolve().is_relative_to(source_dir) or not src.is_file():
+            raise BuildError('Snapshot file missing or unsafe')
+        if not isinstance(expected, str) or hashlib.sha256(src.read_bytes()).hexdigest() != expected:
+            raise BuildError('Snapshot source drift')
+        plan.append((path, src))
+    source = root / 'source'
+    source.mkdir()
+    for rel, src in plan:
+        dst = source / rel
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(src, dst)
     return source
