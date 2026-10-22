@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "target": "apps/web/src/shared/platform/controller.d.mts",
+      "payload": "platform/controller.d.mts",
+      "sha256": "bd1a6947f59bf85597092609717327271325178e9d19369986ea309274da5cdd"
+    },
+    {
+      "target": "apps/web/src/shared/platform/controller.mjs",
+      "payload": "platform/controller.mjs",
+      "sha256": "d6c0242700af9acc8cd60121a981709e7eb013357ed05bca0d5ac3f5123993a2"
+    },
+    {
+      "target": "apps/web/src/shared/platform/haptics.ts",
+      "payload": "platform/haptics.ts",
+      "sha256": "8e7543ac9d1af51823cf1fa20f7d34a3270492cb767f8bd2f379ba6faa527100"
+    },
+    {
+      "target": "apps/web/src/shared/platform/native-runtime.ts",
+      "payload": "platform/native-runtime.ts",
+      "sha256": "563365ebd72a383c7e3731fc86d0eea5eec1ef762864167345f425c9c4ce6a82"
+    },
+    {
+      "target": "apps/web/src/shared/platform/usePlatform.ts",
+      "payload": "platform/usePlatform.ts",
+      "sha256": "d4003102a9ffc138c76e6f2b544d33bdc842d7c315799537746d021d6db31f3e"
+    },
+    {
+      "target": "apps/web/src/shared/platform/usePlatformBack.ts",
+      "payload": "platform/usePlatformBack.ts",
+      "sha256": "6950870158fd348910e3002a4818755deaa6602dceb3f571d06078bfc561eb8d"
+    },
+    {
+      "target": "apps/web/src/shared/platform/useThemeSync.ts",
+      "payload": "platform/useThemeSync.ts",
+      "sha256": "8b0ff00bc93f0dda2a414acb6eaa95261d6bd23c3bd07ac768876c939f2ef16f"
+    },
+    {
+      "target": "apps/web/src/shared/api/client.ts",
+      "payload": "api/client.ts",
+      "sha256": "2b6cf0a7db34f355f56b65bfc6f2bdb99c5240ee9e52fe6c5d9165fdb1be98d1"
+    },
+    {
+      "target": "apps/web/src/shared/api/policy.d.mts",
+      "payload": "api/policy.d.mts",
+      "sha256": "46b42309a8f334dce212e37810961062e2c18684d22b6e7431a4cda1632c2fda"
+    },
+    {
+      "target": "apps/web/src/shared/api/policy.mjs",
+      "payload": "api/policy.mjs",
+      "sha256": "f5ca1d0d40d723a94c0965b4203b02ebdf447011e779658be01af470ca0be00c"
+    },
+    {
+      "target": "apps/web/index.html",
+      "payload": "index.html",
+      "sha256": "624c1b4ffd75c0bb42824be849a57271bde73a9bc36882da7e5365c2d9668c2c"
+    }
+  ]
+}
