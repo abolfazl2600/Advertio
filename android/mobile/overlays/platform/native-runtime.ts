@@ -3,11 +3,12 @@ import { App } from '@capacitor/app'
 import { Browser } from '@capacitor/browser'
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics'
 import { Keyboard } from '@capacitor/keyboard'
-import { StatusBar } from '@capacitor/status-bar'
+import { installNativeUX, keyboardVisible, confirmExit } from './native-ux'
 import { createController } from './controller.mjs'
 
 export const isAndroid = () => Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android'
 export const native = createController({
+  keyboardVisible, confirmExit,
   historyIndex: () => window.history.state?.idx,
   historyBack: () => window.history.back(),
   minimize: () => App.minimizeApp(),
@@ -17,7 +18,7 @@ export const native = createController({
     document.documentElement.dataset.appActive = String(active)
     window.dispatchEvent(new CustomEvent('advertio:app-state', { detail: { active } }))
   },
-  statusBar: () => StatusBar.setOverlaysWebView({ overlay: false }),
+  statusBar: () => installNativeUX(),
   open: (url) => Browser.open({ url }),
   hideKeyboard: () => Keyboard.hide(),
   haptic: (kind) => {

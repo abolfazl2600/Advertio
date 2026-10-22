@@ -1,3 +1,4 @@
+import { authorizeAuthLink } from '../../mobile/overlays/payments/policy.mjs'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { createController, detectChannel, secureExternalUrl } from '../../mobile/overlays/platform/controller.mjs'
@@ -47,9 +48,11 @@ test('invalid links and invoice escape are rejected; haptic failures are harmles
   for (const url of ['javascript:alert(1)', 'http://t.me/bot', 'https://a:b@t.me/bot', 'https://t.me/$invoice', 'intent://anything'])
     assert.throws(() => secureExternalUrl(url, true))
   assert.throws(() => secureExternalUrl('https://example.org', true))
+  authorizeAuthLink('https://t.me/test_bot?start=synthetic')
   assert.equal(secureExternalUrl('https://t.me/test_bot?start=synthetic', true), 'https://t.me/test_bot?start=synthetic')
   const f=fixture()
   await f.controller.haptic('light')
-  await f.controller.openExternal('https://t.me/test_bot', true)
-  assert.equal(f.calls.at(-1), 'https://t.me/test_bot')
+  authorizeAuthLink('https://t.me/test_bot?start=login_synthetic')
+  await f.controller.openExternal('https://t.me/test_bot?start=login_synthetic', true)
+  assert.equal(f.calls.at(-1), 'https://t.me/test_bot?start=login_synthetic')
 })

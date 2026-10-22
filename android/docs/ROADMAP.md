@@ -2,6 +2,8 @@
 
 **هدف نهایی: Signed APK + Play-ready signed AAB.** ترتیب ایشیوها با شماره `[Android NN]` مشخص است؛ لینک همه ایشیوها در [ISSUES.md](ISSUES.md) ثبت شده است.
 
+**تصمیم نسخه فعلی (2026-10-22):** Google login در #46 به نسخه بعد منتقل شده است. توسعه با OTP/PhoneGate ادامه دارد؛ #46 پیش‌نیاز نسخه فعلی نیست. جزئیات: [current-version.md](current-version.md).
+
 | فاز | شناسه / لینک Issue | خروجی |
 |---|---|---|
 | 0: governance | [01 / #39](https://github.com/abolfazl2600/Advertio/issues/39) | تحلیل سورس، ریسک عمومی/خصوصی و محدوده نسخه اول |
@@ -11,7 +13,7 @@
 | 1: foundation | [05 / #43](https://github.com/abolfazl2600/Advertio/issues/43) | platform adapter native/Telegram/browser |
 | 2: backend | [06 / #44](https://github.com/abolfazl2600/Advertio/issues/44) | اتصال API/HTTPS/CORS و رسانه‌ها |
 | 2: auth | [07 / #45](https://github.com/abolfazl2600/Advertio/issues/45) | session، PhoneGate و OTP فعلی |
-| 2: auth | [08 / #46](https://github.com/abolfazl2600/Advertio/issues/46) | Google native sign-in (Jira AD-49) |
+| نسخه بعد: auth | [08 / #46](https://github.com/abolfazl2600/Advertio/issues/46) | Google native sign-in — خارج از محدوده نسخه فعلی |
 | 2: wallet | [09 / #47](https://github.com/abolfazl2600/Advertio/issues/47) | حذف تمامی پرداخت‌ها + UI «بزودی» |
 | 3: UX | [10 / #48](https://github.com/abolfazl2600/Advertio/issues/48) | ناوبری، Back، status bar، RTL و keyboard |
 | 3: UX | [11 / #49](https://github.com/abolfazl2600/Advertio/issues/49) | App Links، deep links و انتقال به Telegram |
@@ -29,7 +31,7 @@
 
 ## Gateهای الزام‌آور
 - **G0:** سیاست محرمانگی، دسترسی upstream و package ID حل شوند (پایان 02).
-- **G1:** نصب یک debug APK واقعی و اتصال API/ورود ممکن باشد (پایان 08).
+- **G1:** نصب یک debug APK واقعی و اتصال API/ورود OTP و PhoneGate ممکن باشد (پایان 07 در نسخه فعلی؛ Google برای نسخه بعد).
 - **G2:** خرید سکه هیچ مسیر UI یا deep-link قابل استفاده‌ای نداشته باشد (پایان 09).
 - **G3:** سه بخش اصلی روی دستگاه تست شده باشند (پایان 17).
 - **G4:** انطباق Google Play و حذف حساب/UGC بدون blocker حل شود (پایان 18).

@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "target": "apps/web/src/shared/platform/controller.d.mts",
+      "payload": "platform/controller.d.mts",
+      "sha256": "0ae388166b303889cbee4820ce13933575b2537e375de9ab5690f8116875d2f2",
+      "supersedesSha256": "bd1a6947f59bf85597092609717327271325178e9d19369986ea309274da5cdd"
+    },
+    {
+      "target": "apps/web/src/shared/platform/controller.mjs",
+      "payload": "platform/controller.mjs",
+      "sha256": "e672c1b769296b08bc72cc9596d8a68053d77a57c303f21360baa7fbabe21eaa",
+      "supersedesSha256": "2ad317a77af8b5b5c42f9419311bf520763ab81e2dcc7954bd2d3d775e12b2dd"
+    },
+    {
+      "target": "apps/web/src/shared/platform/native-runtime.ts",
+      "payload": "platform/native-runtime.ts",
+      "sha256": "7612316561cbb57df211825c7dc612bea53a304fe7129930bf2f3d63253fdd3f",
+      "supersedesSha256": "563365ebd72a383c7e3731fc86d0eea5eec1ef762864167345f425c9c4ce6a82"
+    },
+    {
+      "target": "apps/web/src/shared/platform/native-ux.css",
+      "payload": "platform/native-ux.css",
+      "sha256": "1d461f18e986883872db8662a6ed800d36947fc1f6e107c4d54122817c94e60a"
+    },
+    {
+      "target": "apps/web/src/shared/platform/native-ux.ts",
+      "payload": "platform/native-ux.ts",
+      "sha256": "3450159c98b04f4c7a707662e8e74f0a57878ba803bfc3864f4720cc2449d373"
+    },
+    {
+      "target": "apps/web/src/shared/platform/ux-policy.d.mts",
+      "payload": "platform/ux-policy.d.mts",
+      "sha256": "810d2eb13941b9d82db49b511e92aeabcd7095e71d1067a412b1a13f71bcc834"
+    },
+    {
+      "target": "apps/web/src/shared/platform/ux-policy.mjs",
+      "payload": "platform/ux-policy.mjs",
+      "sha256": "0f116012ee6da07efd5cf9fa49f6c4e6225718234378bf4188daad7f764e8b86"
+    },
+    {
+      "target": "apps/web/src/shared/components/ui/Sheet.tsx",
+      "payload": "components/ui/Sheet.tsx",
+      "sha256": "de721c0b3bd0e67f8990b842b1cfa9c4e799c4a88ac9636d9b7e8420a8ba84a8"
+    },
+    {
+      "target": "apps/web/src/android-entry.ts",
+      "payload": "payments/android-entry.ts",
+      "sha256": "43872c9275ab362b0c8c1b422c89628f64d0a8cc29edbad23bb798286854dc2f",
+      "supersedesSha256": "08f219ad289417decc7ba571652e590101ce3fd5f28a4c340c14b1dfcaceff30"
+    }
+  ]
+}

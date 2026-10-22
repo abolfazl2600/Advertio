@@ -7,7 +7,7 @@ This matrix restates public acceptance scope only. Source-derived observations a
 | Three listing journeys, search and details | Reuse UI in authorized private staging | Real UI/device NOT RUN |
 | Saved/profile/post/my listings | Existing accounts and API | NOT RUN |
 | PhoneGate/OTP and same accounts | Follow-up #45 | NOT RUN |
-| Native Google login | Follow-up #46 | Release gate |
+| Native Google login | Deferred #46 / PR #70; disabled in current version | Gate only when enabled in a later version |
 | No purchase/top-up paths | Follow-up #47 | Release gate |
 | Android back/lifecycle/haptic/links | Original overlay #43 | Synthetic unit tests PASS; device NOT RUN |
 | HTTPS API/media | Original networking #44 | Policy unit tests PASS; deployment CORS BLOCKED #63 |

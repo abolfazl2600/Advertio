@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "target": "apps/web/src/shared/auth/useGoogleLogin.ts",
+      "payload": "auth/useGoogleLogin.ts",
+      "sha256": "0ac563a5f50c95081b26f301e3ea77be524ddf20f3a710c65059d62cd4d465bc"
+    }
+  ]
+}

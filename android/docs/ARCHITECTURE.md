@@ -1,5 +1,7 @@
 # معماری Android و مرزهای تغییر
 
+> محدوده نسخه فعلی: ورود Google در #46 به نسخه بعد منتقل شده است؛ توسعه و پذیرش فعلی فقط با OTP/PhoneGate انجام می‌شود. الزام‌های Google در این سند برای نسخه‌ای است که آن را فعال می‌کند. [تصمیم مالک و وضعیت اجرا](current-version.md).
+
 ## وضعیت موجود (بر پایه بررسی GitLab در ۲۰۲۶-۱۰)
 - GitLab upstream: `advertio/platform/advertio-monorepo`؛ `apps/web`: React 19 + Vite 8 + TypeScript؛ backend: ASP.NET Core/.NET 10؛ JWT و کیف پول مشترک.
 - وب از Telegram Mini App و مرورگر معمولی پشتیبانی می‌کند. `usePlatform` واسط کانال است و `@tma.js/sdk-react` در لایه platform به‌کار می‌رود.
