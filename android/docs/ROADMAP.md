@@ -36,7 +36,7 @@
 - **G5:** signed AAB با upload certificate قابل تایید و signed APK نصب‌پذیر ساخته شده باشد (پایان 22).
 
 ## قاعده تحویل
-هر ایشیو تنها با PR محدود به `اندروید/`، تست‌های پاس‌شده، سند تغییر، ریسک و مدرک بازتولید بسته شود. هر مشکل upstream به Issue/Blocker مستقل و **نه تغییر مستقیم GitLab** منجر می‌شود.
+هر ایشیو تنها با PR محدود به `android/`، تست‌های پاس‌شده، سند تغییر، ریسک و مدرک بازتولید بسته شود. هر مشکل upstream به Issue/Blocker مستقل و **نه تغییر مستقیم GitLab** منجر می‌شود.
 
 ## نحوه اجرا توسط AI
-AI agent باید هر Issue را طبق [AGENTS.md](../AGENTS.md) و [AI Execution](AI-EXECUTION.md) به یک PR با **کد واقعی، تست و Evidence** تبدیل کند. تنها مجاز به تغییر فایل‌های مسیر `اندروید/` است. اگر تغییر سرور/کلید/Play Console لازم است، مسئله را BLOCKED کند و کار انجام‌نشده را Done نشمارد.
+AI agent باید هر Issue را طبق [AGENTS.md](../AGENTS.md) و [AI Execution](AI-EXECUTION.md) به یک PR با **کد واقعی، تست و Evidence** تبدیل کند. تنها مجاز به تغییر فایل‌های مسیر `android/` است. اگر تغییر سرور/کلید/Play Console لازم است، مسئله را BLOCKED کند و کار انجام‌نشده را Done نشمارد.
