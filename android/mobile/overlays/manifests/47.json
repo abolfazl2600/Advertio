@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "target": "apps/web/src/android-entry.ts",
+      "payload": "payments/android-entry.ts",
+      "sha256": "08f219ad289417decc7ba571652e590101ce3fd5f28a4c340c14b1dfcaceff30"
+    },
+    {
+      "target": "apps/web/src/shared/payments/bootstrap.ts",
+      "payload": "payments/bootstrap.ts",
+      "sha256": "45b11c84b98026500be0a15708d8694dce3dd833d78679df48c623e43b5713ff"
+    },
+    {
+      "target": "apps/web/src/shared/payments/policy.d.mts",
+      "payload": "payments/policy.d.mts",
+      "sha256": "8add8383bb3fc679ff12c6cf37c9a5de0d492e09eee753536d55fa5e31113414"
+    },
+    {
+      "target": "apps/web/src/shared/payments/policy.mjs",
+      "payload": "payments/policy.mjs",
+      "sha256": "80cb9966997d09bcb5b7545101eeaa9427601cdde736f27e81ee413039636f1a"
+    },
+    {
+      "target": "apps/web/src/shared/wallet/BuyCoinsSheet.tsx",
+      "payload": "wallet/BuyCoinsSheet.tsx",
+      "sha256": "0fcfb5e6ab2baafb1223e8a05ad84e6a4c03a5ca318efa3061d80641cc28a9bc"
+    },
+    {
+      "target": "apps/web/src/shared/wallet/PurchaseHistory.tsx",
+      "payload": "wallet/PurchaseHistory.tsx",
+      "sha256": "b5bca6aea30a8a992c6b9bb188220cb206ea73adcbb3cb0ef86f7c0c98f77058"
+    },
+    {
+      "target": "apps/web/src/shared/wallet/useTopUp.ts",
+      "payload": "wallet/useTopUp.ts",
+      "sha256": "75545138725acbfa26246606ec0a5b9299e8c5e61a0e292242925c3515779729"
+    },
+    {
+      "target": "apps/web/src/pages/WalletPage.tsx",
+      "payload": "pages/WalletPage.tsx",
+      "sha256": "e034cd5cabbbeab52ec6f19129eeca408c3c7537b97890a4ec7dcda011742b09"
+    },
+    {
+      "target": "apps/web/src/shared/platform/controller.mjs",
+      "payload": "platform/controller.mjs",
+      "sha256": "2ad317a77af8b5b5c42f9419311bf520763ab81e2dcc7954bd2d3d775e12b2dd",
+      "supersedesSha256": "d6c0242700af9acc8cd60121a981709e7eb013357ed05bca0d5ac3f5123993a2"
+    },
+    {
+      "target": "apps/web/src/shared/auth/useTelegramLogin.ts",
+      "payload": "auth/useTelegramLogin.ts",
+      "sha256": "a7bc94b52982c515834152ce5494459e2e945672ce3a82b29c47b195179d9170",
+      "supersedesSha256": "0512f924e7a2fb6b858e84b993fbd13786ceebc1e672d05fd374465ec7b0f4db"
+    },
+    {
+      "target": "apps/web/index.html",
+      "payload": "index.html",
+      "sha256": "6e67e1e054f6b34cbb89c107c7e95eceb2e0804b95f3cbafb3737b98fef9053f",
+      "supersedesSha256": "624c1b4ffd75c0bb42824be849a57271bde73a9bc36882da7e5365c2d9668c2c"
+    }
+  ]
+}

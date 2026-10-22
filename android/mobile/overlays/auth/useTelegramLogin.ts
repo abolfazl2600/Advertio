@@ -1,3 +1,4 @@
+import { authorizeAuthLink } from '@/shared/payments/policy.mjs'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '@/shared/api/client'
@@ -20,7 +21,7 @@ export function useTelegramLogin() {
       if (operation !== generation.current || epoch !== authSession.epoch()) throw new Error('LOGIN_CANCELLED')
       if (!data.ticket || !data.verificationCode || !Number.isFinite(data.expiresInSeconds) || data.expiresInSeconds <= 0) throw new Error('INVALID_CHALLENGE')
       // Native browser handoff carries only the server's bot ticket, never our JWT.
-      await native.openExternal(data.deepLink, true)
+      await native.openExternal(authorizeAuthLink(data.deepLink), true)
       if (operation !== generation.current || epoch !== authSession.epoch()) throw new Error('LOGIN_CANCELLED')
       authEpoch.current = epoch
       return data
