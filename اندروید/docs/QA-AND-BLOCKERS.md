@@ -36,3 +36,6 @@ Workaround/options | Required decision | Status | Evidence | Resolution
 
 ## Definition of Done کل محصول
 `./gradlew test`، Typecheck/Lint، آزمون‌های E2E، smoke واقعی، اسکن secrets و امضا، test Play و چک‌لیست compliance تکمیل؛ سپس امضای artifact، hash و sign-off نهایی ثبت شود.
+
+## AI Test Evidence
+هر PR باید ستون‌های `Criterion | Command/device | PASS/FAIL/NOT RUN | Evidence link | Known limitation` داشته باشد. اجرای نشدن تست به‌دلیل نبود Android SDK، emulator، دستگاه، Google Cloud یا Play Console، با برچسب NOT RUN/BLOCKED ثبت می‌شود و با ساختگی‌کردن لاگ/آرتیفکت قابل جایگزینی نیست.
