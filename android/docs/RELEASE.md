@@ -36,4 +36,4 @@
 - https://support.google.com/googleplay/android-developer/answer/11926878
 
 ## یادداشت برای توسعه‌دهنده AI
-عامل نباید فایل APK/AAB، صحت امضا، اجرای Gradle یا پذیرش Play را بدون artifact واقعی و خروجی قابل بازتولید ادعا کند. موارد وابسته به مالک (keystore/Cloud/Play Console) باید BLOCKED با دستور و سطح دسترسی لازم گزارش شوند. کلید خصوصی را در issue/PR/code paste نکند. همه اسکریپت‌ها زیر `اندروید/scripts/` و تنظیمات Gradle زیر `اندروید/mobile/` نگه‌داری شوند.
+عامل نباید فایل APK/AAB، صحت امضا، اجرای Gradle یا پذیرش Play را بدون artifact واقعی و خروجی قابل بازتولید ادعا کند. موارد وابسته به مالک (keystore/Cloud/Play Console) باید BLOCKED با دستور و سطح دسترسی لازم گزارش شوند. کلید خصوصی را در issue/PR/code paste نکند. همه اسکریپت‌ها زیر `android/scripts/` و تنظیمات Gradle زیر `android/mobile/` نگه‌داری شوند.
