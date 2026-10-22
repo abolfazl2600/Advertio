@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "target": "apps/web/src/shared/api/native-request.mjs",
+      "payload": "api/native-request.mjs",
+      "sha256": "ad059ad2d2512efb9965683250b3ae7690d3f87bcaa35312eca10e7f40902a4e"
+    },
+    {
+      "target": "apps/web/src/shared/api/native-request.d.mts",
+      "payload": "api/native-request.d.mts",
+      "sha256": "bc6fe66e0ce20e8632234f19d26e37411b19147a7f94d6f79b32815688525e03"
+    },
+    {
+      "target": "apps/web/src/shared/api/native-adapter.ts",
+      "payload": "api/native-adapter.ts",
+      "sha256": "7eb5bd1a799d460111534ceda2726bbcabc23ed6d633f673389009688f3df912"
+    },
+    {
+      "target": "apps/web/src/shared/api/client.ts",
+      "payload": "api/client.ts",
+      "sha256": "3da6e0b599d9654bbb5cc63910dc37d9322e759377d2f23d6eeb32ef2c4075a0",
+      "supersedesSha256": "747342129e9e07420eb0e069d55f9adc72c6f621060d813cc810853f07dc0d08"
+    },
+    {
+      "target": "apps/web/src/shared/auth/useSession.ts",
+      "payload": "auth/useSession.ts",
+      "sha256": "ecad703530b0a6f9f17e0f8455b0b76965b178f1a02534b0a108e30b611e6cfc",
+      "supersedesSha256": "e6fb8bb990153bbe8bf18be86b78f11073050c56c4d786f707e0b5e2998e0909"
+    },
+    {
+      "target": "apps/web/src/shared/auth/useLogout.ts",
+      "payload": "auth/useLogout.ts",
+      "sha256": "8a830462f0334c4175a09a23a751e23df4be585f5b0115cf0ac3542736ac9f34",
+      "supersedesSha256": "c68701608dc1a0485c8fc41eac9d46cef0ca1601fc636d17e9e0bc94b2c977b7"
+    }
+  ]
+}

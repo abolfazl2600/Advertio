@@ -8,10 +8,22 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
-from source_workspace import BuildError, fetch_source, load_lock, run, workspace
+from source_workspace import BuildError, fetch_source, import_snapshot, load_lock, run as source_run, workspace
 from overlay_manifest import load_manifest
 
 ANDROID = Path(__file__).resolve().parents[1]
+PRIVATE_LOG = None
+
+def run(argv, cwd, env=None):
+    if PRIVATE_LOG is None:
+        return source_run(argv, cwd, env)
+    result = subprocess.run(argv, cwd=cwd, env=env, capture_output=True, text=True)
+    with PRIVATE_LOG.open('a') as log:
+        log.write('\nCommand: '+Path(argv[0]).name+' | exit: '+str(result.returncode)+'\n')
+        log.write(result.stdout); log.write(result.stderr)
+    if result.returncode:
+        raise BuildError('Private command failed; inspect only the private runner log')
+    return result.stdout.strip()
 
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -77,6 +89,11 @@ def check_approval(path, source_lock):
     return record
 
 def build(args):
+    global PRIVATE_LOG
+    PRIVATE_LOG = external(args.private_log) if getattr(args, 'private_log', None) else None
+    if PRIVATE_LOG:
+        descriptor = os.open(PRIVATE_LOG, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        os.close(descriptor)
     lock_path = external(args.source_lock)
     lock = load_lock(lock_path)
     check_approval(args.approval, lock_path)
@@ -87,13 +104,16 @@ def build(args):
     output.mkdir(mode=0o700)
     try:
         with workspace() as temp:
-            source = fetch_source(lock, temp, external(args.token_file))
+            if args.source_snapshot:
+                source = import_snapshot(lock, temp, external(args.source_snapshot), external(args.snapshot_manifest))
+            else:
+                source = fetch_source(lock, temp, external(args.token_file))
             overlay = ANDROID / 'mobile/overlays'
             manifest_path = overlay / 'manifest.json'
             manifest = load_manifest(overlay)
             apply_overlays(source, overlay, manifest, lock)
             # Inputs are owner-controlled and reviewed; never run inherited npm auth configs.
-            env = {k: v for k, v in os.environ.items() if k in ('PATH', 'JAVA_HOME', 'ANDROID_HOME', 'ANDROID_SDK_ROOT', 'LANG', 'HTTPS_PROXY', 'HTTP_PROXY', 'NO_PROXY')}
+            env = {k: v for k, v in os.environ.items() if k in ('PATH', 'JAVA_HOME', 'ANDROID_HOME', 'ANDROID_SDK_ROOT', 'LANG', 'HTTPS_PROXY', 'HTTP_PROXY', 'NO_PROXY', 'GRADLE_OPTS', 'GRADLE_USER_HOME', 'NODE_USE_ENV_PROXY', 'NODE_EXTRA_CA_CERTS')}
             clean_home = temp / 'home'
             clean_home.mkdir(mode=0o700)
             env['HOME'] = str(clean_home)
@@ -154,11 +174,19 @@ def build(args):
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
-    for name in ('source-lock', 'approval', 'token-file', 'output', 'api-origin', 'api-allowlist', 'media-origins'):
+    for name in ('source-lock', 'approval', 'output', 'api-origin', 'api-allowlist', 'media-origins'):
         p.add_argument('--' + name, required=True)
+    source = p.add_mutually_exclusive_group(required=True)
+    source.add_argument('--token-file')
+    source.add_argument('--source-snapshot', help='External owner-reviewed pinned connector export')
+    p.add_argument('--snapshot-manifest', help='External manifest bound into the approved source lock')
+    p.add_argument('--private-log', help='New owner-only log outside every Git worktree; never upload publicly')
     try:
-        build(p.parse_args())
+        args = p.parse_args()
+        if args.source_snapshot and not args.snapshot_manifest:
+            raise BuildError('Snapshot manifest required with source export')
+        build(args)
         print('Private build completed; outputs remain in the private destination.')
     except (BuildError, OSError, ValueError, KeyError):
-        print('BLOCKED: private build failed validation or a command; no private logs emitted.', file=sys.stderr)
+        print('BLOCKED: private build failed; inspect the optional owner-only log. No private logs printed.', file=sys.stderr)
         sys.exit(1)

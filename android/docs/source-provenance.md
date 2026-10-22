@@ -8,6 +8,8 @@ Build scripts execute private code: run reviewed source on a disposable isolated
 
 ## Owner decision: BLOCKED
 
+Historical foundation status: the current owner request now authorizes a private debug build and private APK delivery, recorded in the external approval record. See [first-debug.md](first-debug.md) for the pinned connector snapshot path. Public source/bundle/audit disclosure and production release remain outside that debug authorization.
+
 Public repo contains original Android glue only. Source/derived-bundle distribution rights, runner operator, artifact ACL and retention need owner sign-off in an access-controlled system. No approval is inferred. #42 requires an external approval record tied to the source lock, plus private output location. Never paste tokens or agreements into public issues.
 
 Verification: `python3 -m unittest discover -s android/tests/source -v`. Synthetic fixtures test clean SHA, invalid locks, staging location and cleanup. Actual deploy-token fetch and owner decision NOT RUN/BLOCKED. This is infrastructure implementation, not completed distribution approval.
