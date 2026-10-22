@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "repository": "https://gitlab.com/OWNER/PROJECT.git",
+  "revision": "REPLACE_WITH_PRIVATE_FULL_40_HEX_SHA",
+  "packageManager": "pnpm@11.9.0",
+  "webPath": "apps/web"
+}
