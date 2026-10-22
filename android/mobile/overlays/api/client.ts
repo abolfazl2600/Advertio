@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useAuthStore } from '@/shared/stores/auth.store'
+import { session, useAuthStore } from '@/shared/stores/auth.store'
 import { apiUrl, httpsOrigin, normalizeMedia } from './policy.mjs'
 
 const originList = (value: string | undefined) => (value ?? '').split(',').map((x) => x.trim()).filter(Boolean)
@@ -13,7 +13,7 @@ apiClient.interceptors.request.use((config) => {
   config.url = apiUrl(config.url ?? '', origin)
   config.baseURL = origin
   config.timeout = Math.min(Math.max(config.timeout ?? 10_000, 1), 60_000)
-  const token = useAuthStore.getState().token
+  const token = session.current()
   config.headers.delete('Authorization')
   if (token) config.headers.set('Authorization', `Bearer ${token}`)
   // FormData keeps the browser-generated multipart boundary. No blanket Content-Type.

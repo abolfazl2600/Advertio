@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 from source_workspace import BuildError, fetch_source, load_lock, run, workspace
+from overlay_manifest import load_manifest
 
 ANDROID = Path(__file__).resolve().parents[1]
 
@@ -89,7 +90,7 @@ def build(args):
             source = fetch_source(lock, temp, external(args.token_file))
             overlay = ANDROID / 'mobile/overlays'
             manifest_path = overlay / 'manifest.json'
-            manifest = json.loads(manifest_path.read_text())
+            manifest = load_manifest(overlay)
             apply_overlays(source, overlay, manifest, lock)
             # Inputs are owner-controlled and reviewed; never run inherited npm auth configs.
             env = {k: v for k, v in os.environ.items() if k in ('PATH', 'JAVA_HOME', 'ANDROID_HOME', 'ANDROID_SDK_ROOT', 'LANG', 'HTTPS_PROXY', 'HTTP_PROXY', 'NO_PROXY')}
@@ -120,6 +121,7 @@ def build(args):
             run(['corepack', 'pnpm@11.9.0', 'install', '--frozen-lockfile'], source, env)
             mobile = temp / 'mobile'
             shutil.copytree(ANDROID / 'mobile', mobile, ignore=shutil.ignore_patterns('node_modules', 'build', '.gradle', 'overlays'))
+            run(['python3', str(mobile / 'native/install.py'), str(mobile)], mobile, env)
             run(['npm', 'ci', '--ignore-scripts', '--no-audit', '--no-fund'], mobile, env)
             web = source / 'apps/web'
             # Resolve Android-only dependencies without editing the upstream lockfile.
@@ -140,7 +142,7 @@ def build(args):
                 raise BuildError('Debug APK missing')
             shutil.copyfile(apk, output / 'app-debug.apk')
             result = dict(schema=1, sourceRevision=lock['revision'], sourceLockSha256=digest(lock_path),
-                          overlayManifestSha256=digest(manifest_path), apkSha256=digest(apk),
+                          overlayManifestSha256=hashlib.sha256(json.dumps(manifest, sort_keys=True).encode()).hexdigest(), apkSha256=digest(apk),
                           webAssets={str(p.relative_to(assets)): digest(p) for p in sorted(assets.rglob('*')) if p.is_file()},
                           toolchain={'node': run(['node', '--version'], mobile), 'npm': run(['npm', '--version'], mobile),
                                      'capacitor': '8.5.3', 'gradle': '8.14.3', 'agp': '8.13.0', 'requiredJdk': '21'},

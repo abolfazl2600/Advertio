@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "target": "apps/web/src/shared/auth/session.d.mts",
+      "payload": "auth/session.d.mts",
+      "sha256": "eb6299883fbdc05126a5b668cc70d4c4801168830f4baf5ea9752ef3d623d97f"
+    },
+    {
+      "target": "apps/web/src/shared/auth/session.mjs",
+      "payload": "auth/session.mjs",
+      "sha256": "0a495e5ab77a6ca3db9971ee5fa33b81a174fec3fb14b743189d22a98315c13e"
+    },
+    {
+      "target": "apps/web/src/shared/auth/useLogout.ts",
+      "payload": "auth/useLogout.ts",
+      "sha256": "c68701608dc1a0485c8fc41eac9d46cef0ca1601fc636d17e9e0bc94b2c977b7"
+    },
+    {
+      "target": "apps/web/src/shared/auth/usePhoneLogin.ts",
+      "payload": "auth/usePhoneLogin.ts",
+      "sha256": "862bb880d84dcb8d74120231e9a317687c69fa95a8a7f32f6cf7c20d768ca782"
+    },
+    {
+      "target": "apps/web/src/shared/auth/useSession.ts",
+      "payload": "auth/useSession.ts",
+      "sha256": "e6fb8bb990153bbe8bf18be86b78f11073050c56c4d786f707e0b5e2998e0909"
+    },
+    {
+      "target": "apps/web/src/shared/auth/useTelegramLogin.ts",
+      "payload": "auth/useTelegramLogin.ts",
+      "sha256": "0512f924e7a2fb6b858e84b993fbd13786ceebc1e672d05fd374465ec7b0f4db"
+    },
+    {
+      "target": "apps/web/src/shared/auth/vault.ts",
+      "payload": "auth/vault.ts",
+      "sha256": "7782eaec1595a1b08c8b4e321f2fe9e0e33ce1e78084311309da037459fd1d21"
+    },
+    {
+      "target": "apps/web/src/shared/stores/auth.store.ts",
+      "payload": "stores/auth.store.ts",
+      "sha256": "59c6a2d0209f98886672fe3ac71f2103088dee3c5a53e5ac5ec27427eead86f2"
+    },
+    {
+      "target": "apps/web/src/shared/api/client.ts",
+      "payload": "api/client.ts",
+      "sha256": "747342129e9e07420eb0e069d55f9adc72c6f621060d813cc810853f07dc0d08",
+      "supersedesSha256": "2b6cf0a7db34f355f56b65bfc6f2bdb99c5240ee9e52fe6c5d9165fdb1be98d1"
+    }
+  ]
+}
