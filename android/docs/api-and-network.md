@@ -1,0 +1,15 @@
+# Android API/media policy (#44)
+
+Native assets use https://localhost as their LOCAL WebView origin (not a backend server). VITE_API_URL must be an external verified HTTPS origin with no /api suffix. VITE_ANDROID_API_ORIGINS is the comma-separated explicit API allowlist; VITE_ANDROID_MEDIA_ORIGINS contains separately approved HTTPS media origins. Empty/unapproved/HTTP/loopback/API-path origins fail closed. Configure these via the private runner; never tokens in VITE variables (Vite embeds them in JS).
+
+The Android API overlay retains Bearer authentication and 401 logout. There is no invented refresh endpoint. Absolute/relative requests resolve only to the configured origin and /api/ paths before attaching a token. Timeout is bounded at 60s; upload FormData keeps its boundary. There is no automatic mutation retry. Existing callers control paging/retry; device contract tests remain required. Explicit avatar/image/thumbnail/preview fields are resolved against HTTPS media allowlists; signed absolute URLs remain byte-for-byte unchanged. Unknown media field shapes still require private UI audit/runtime QA; the normalizer is not proof every rendered image has been exercised.
+
+CapacitorHttp remains disabled. No native fallback, TLS bypass, mixed content, cleartext or wildcard navigation. Browser TLS/CORS still apply. API operator must allow https://localhost origin, required methods and Authorization/Content-Type headers. Images loaded as img may not need CORS, but API/avatar fetch/upload do. Backend auth still authorizes every request.
+
+Diagnostics never print response bodies, request URLs, JWTs or Axios config. Script `scripts/network-smoke.py --origin <verified HTTPS origin>` probes DNS, certificate chain, health, public categories and preflight without a credential. The worker's curl health check returned HTTP 200 / TLS verify 0; this is a host probe, not physical-device evidence. Run the script on the deployment/device network; a failing preflight needs server-owner investigation, never a client TLS/CORS bypass.
+
+Tests: `node --test android/tests/api/*.test.mjs`. Verified: allowlist/base validation, token destination confinement, relative avatar, signed URL preservation, unsafe media schemes and host rejection. NOT RUN: production JWT/401, paging/upload, authenticated profile, physical Android, timeout/invalid TLS against controlled endpoints. Observed 2026-10-22: credential-free GET /api/categories returned 200; OPTIONS returned 204; GET /api/users/me without credentials returned 401. None exposed Access-Control-Allow-Origin for Origin: https://localhost; preflight also lacked allowed methods/headers. This is a confirmed CORS deployment blocker, reported separately; no server change made.
+
+Overlay manifest and runner wiring are finalized after #42/#43. Do not release before real-device criteria pass. Rollback: revert overlay/manifest commit and rebuild privately from the previous reviewed pins.
+
+Operational blocker: [#63](https://github.com/abolfazl2600/Advertio/issues/63), with sanitized reproducible preflight evidence. In this state native API requests must remain blocked by normal CORS enforcement.
