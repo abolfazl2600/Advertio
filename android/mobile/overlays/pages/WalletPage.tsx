@@ -1,18 +1,17 @@
-import { useWallet } from '@/shared/api/useWallet'
-import { PhoneGate } from '@/shared/auth/PhoneGate'
-import { AppHeader } from '@/shared/components/layout/AppHeader'
-import { Screen, ScrollArea } from '@/shared/components/layout/Screen'
-import { PurchaseHistory } from '@/shared/wallet/PurchaseHistory'
-import { WalletActivity } from '@/shared/wallet/WalletActivity'
-import { PAYMENT_NOTICE } from '@/shared/payments/policy.mjs'
-function ReadOnlyWallet() {
-  const query=useWallet()
-  return <>
-    {query.isLoading ? <p role="status">Loading balance…</p> : query.isError ? <button type="button" onClick={()=>{void query.refetch()}}>Retry balance</button> : <p>Balance: {query.data?.balance??'—'}</p>}
-    <p role="status" lang="fa" dir="rtl">{PAYMENT_NOTICE}</p>
-    <h2>History</h2><PurchaseHistory/><h2>Activity</h2><WalletActivity/>
-  </>
-}
+import { useNavigate } from 'react-router-dom'
+import { Screen } from '@/shared/components/layout/Screen'
+import { Icon } from '@/shared/components/ui/Icon'
+import { entryCopy } from '@/shared/onboarding/copy'
+import '@/shared/onboarding/entry.css'
+
+// A static future feature: no wallet, balance, payment or transaction requests.
 export function WalletPage() {
-  return <Screen><AppHeader title="Wallet"/><ScrollArea><PhoneGate reason="Verify your phone to view your balance and history."><ReadOnlyWallet/></PhoneGate></ScrollArea></Screen>
+  const navigate = useNavigate()
+  const copy = entryCopy()
+  return <Screen><main className="android-wallet-future" lang={copy.lang} dir={copy.dir} aria-labelledby="wallet-future-title">
+    <div className="android-wallet-card"><div className="android-wallet-icon" aria-hidden="true"><Icon name="wallet" size={32}/></div>
+      <p className="android-wallet-badge">{copy.future}</p><h1 id="wallet-future-title">{copy.walletTitle}</h1>
+      <p>{copy.walletDetail}</p><button type="button" className="android-entry-primary" onClick={() => navigate('/')}>{copy.explore}</button>
+    </div>
+  </main></Screen>
 }

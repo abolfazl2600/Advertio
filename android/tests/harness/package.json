@@ -1,7 +1,17 @@
 {
-  "name":"advertio-android-overlay-tests", "private":true, "type":"module",
-  "dependencies":{
-    "react":"19.2.7","react-dom":"19.2.7","@types/react":"19.2.17","@types/react-dom":"19.2.3",
-    "zustand":"5.0.14","@tanstack/react-query":"5.101.2","axios":"1.18.1","typescript":"6.0.2","esbuild":"0.25.0"
+  "name": "advertio-android-overlay-tests",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@tanstack/react-query": "5.101.2",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "axios": "1.18.1",
+    "esbuild": "0.25.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "react-router-dom": "7.18.2",
+    "typescript": "6.0.2",
+    "zustand": "5.0.14"
   }
 }

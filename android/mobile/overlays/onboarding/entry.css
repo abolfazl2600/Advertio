@@ -1,0 +1,32 @@
+/* Android-only entry screens; inherit the existing app theme and safe area shell. */
+.android-welcome,.android-entry-login,.android-wallet-future{flex:1;min-height:0;overflow:auto;color:var(--text,#18243b);background:var(--bg,#f6f8fc)}
+.android-welcome{display:flex;align-items:center;justify-content:center;padding:28px 24px;background:radial-gradient(ellipse at 50% 22%,#2876ed12,transparent 65%),var(--bg,#f6f8fc)}
+.android-welcome-content{width:100%;max-width:480px;text-align:center;margin:auto}
+.android-entry-brand{display:flex;align-items:center;justify-content:center;gap:9px;font-size:25px;letter-spacing:-.7px;direction:ltr}
+.android-entry-brand img{object-fit:contain}
+.android-entry-art{height:128px;display:flex;align-items:center;justify-content:center;gap:12px;margin:30px 0 24px;direction:ltr}
+.android-entry-art span{display:grid;place-items:center;width:74px;height:88px;border-radius:20px;background:var(--surface,#fff);border:1px solid var(--border,#dfe5ef);color:#2876ed;font-size:38px;box-shadow:0 12px 24px #162d4d0a;transform:rotate(-12deg)}
+.android-entry-art span:nth-child(2){height:106px;background:#2876ed;color:white;transform:translateY(-7px)}
+.android-entry-art span:nth-child(3){transform:rotate(12deg)}
+.android-entry-eyebrow{font-size:13px;color:var(--text-2,#536780);margin:0 0 10px}
+.android-welcome h1{font-size:clamp(26px,6vw,34px);line-height:1.2;letter-spacing:-.8px;margin:0 0 16px}
+.android-entry-description{font-size:15px;line-height:1.7;max-width:360px;margin:0 auto;color:var(--text-2,#536780)}
+.android-entry-categories{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:22px 0 30px}
+.android-entry-categories span{padding:7px 11px;border:1px solid var(--border,#dfe5ef);border-radius:100px;background:var(--surface,#fff);font-size:12px}
+.android-entry-actions{display:grid;gap:10px}
+.android-entry-primary,.android-entry-secondary{display:block;width:100%;min-height:52px;border-radius:14px;padding:12px 16px;font:inherit;font-weight:600;cursor:pointer;line-height:1.5}
+.android-entry-primary{border:1px solid #2876ed;background:#2876ed;color:#fff}
+.android-entry-secondary{border:1px solid var(--border,#dfe5ef);background:var(--surface,#fff);color:var(--text,#18243b)}
+.android-entry-primary:focus-visible,.android-entry-secondary:focus-visible,.android-entry-login-header button:focus-visible{outline:3px solid #6fa8ff;outline-offset:3px}
+.android-entry-hint{font-size:12px;line-height:1.7;color:var(--text-2,#536780);margin:16px 0 0}
+.android-entry-login-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border,#dfe5ef)}
+.android-entry-login-header button{font:inherit;padding:10px 14px;border:0;border-radius:10px;background:var(--surface,#fff);color:inherit;min-height:44px}
+.android-entry-login-body{max-width:480px;padding:20px;margin:auto}
+.android-entry-login-body .error-state{min-height:0;padding:18px 0 30px}
+.android-wallet-future{display:flex;align-items:center;justify-content:center;padding:28px 20px}
+.android-wallet-card{max-width:380px;width:100%;text-align:center;padding:32px 24px;background:var(--surface,#fff);border:1px solid var(--border,#dfe5ef);border-radius:24px}
+.android-wallet-icon{display:grid;place-items:center;width:72px;height:72px;border-radius:22px;background:#2876ed12;color:#2876ed;margin:0 auto 22px}
+.android-wallet-badge{display:inline-block;color:#2876ed;background:#2876ed12;border-radius:100px;padding:6px 12px;font-size:12px!important;margin:0 0 14px!important}
+.android-wallet-card h1{font-size:24px;line-height:1.35;margin:0 0 12px}
+.android-wallet-card p{font-size:14px;line-height:1.8;color:var(--text-2,#536780);margin:0 0 26px}
+@media(max-height:620px){.android-welcome{padding:20px 24px}.android-entry-art{height:88px;margin:16px 0}.android-entry-art span{height:64px;width:60px;font-size:30px}.android-entry-art span:nth-child(2){height:80px}.android-entry-categories{margin:14px 0 18px}.android-entry-hint{margin-top:10px}.android-wallet-future{align-items:flex-start;padding:20px}.android-wallet-card{padding:22px}.android-wallet-icon{margin-bottom:14px}}
