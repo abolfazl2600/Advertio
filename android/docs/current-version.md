@@ -1,5 +1,7 @@
 # Current Android version — Google login deferred
 
+Owner UI update, 2026-10-23: first-launch Welcome offers optional login or public guest browsing; login later from Profile. Wallet/coins are hidden from the footer and direct Wallet routes show a static future-version card. [Implementation and current verification](welcome-guest.md). New APK build is pending explicit approval for the blocked private dependency install; the APK described below is the earlier PR #74 build.
+
 Owner decision, 2026-10-22: ship the current development scope without Google login. GitHub #46 and its native implementation in PR #70 are deferred to a later version. They are not a dependency or acceptance gate for this version. This is a scope decision, not evidence that Google sign-in passed.
 
 Current login uses the existing phone/Telegram bot OTP, PhoneGate and secure session in #45. The Android `useGoogleLogin` overlay preserves the view interface but hides and clears its container before paint, returns `disabled`, and does not load GIS, register a native Google plugin or call the Google authentication API. The replacement is mandatory in the combined overlay manifest; simply omitting the native implementation would leave the existing web Google hook in the staged app.

@@ -10,6 +10,15 @@ try{
  await mkdir(path.join(temp,'stubs'))
  await writeFile(path.join(temp,'stubs/contracts.ts'),`
 import type {ReactNode,CSSProperties} from 'react'
+export const Providers=(props:{children:ReactNode})=>props.children
+export const AppRoutes=()=>null
+export const TabBar=()=>null
+export const LoginScreen=(_props:{reason?:string})=>null
+export const isJourneyPath=(_path:string)=>false
+export const postEntryPath=():string|null=>'/post'
+export const ROUTES={HOME:'/',SEARCH:'/search',MY_PROFILE:'/profile'}
+export type IconName=string
+export const Icon=(_props:{name:IconName;size?:number})=>null
 export type ThemeName='light'|'dark'
 export function useTheme():ThemeName{return 'light'}
 export function useThemeStore<T>(selector:(state:{setPlatform:(value:ThemeName)=>void})=>T):T{return selector({setPlatform:()=>{}})}
@@ -27,6 +36,9 @@ export const WalletActivity=()=>null
  await symlink(path.join(android,'tests/harness/node_modules'),path.join(temp,'node_modules'),'dir')
  const capacitor=path.join(android,'mobile/node_modules/@capacitor')
  const paths={
+  '@/app/providers':['./stubs/contracts.ts'],'@/app/router':['./stubs/contracts.ts'],
+  '@/shared/auth/LoginScreen':['./stubs/contracts.ts'],'@/shared/config/journeys.config':['./stubs/contracts.ts'],
+  '@/shared/constants/routes':['./stubs/contracts.ts'],'@/shared/components/ui/Icon':['./stubs/contracts.ts'],
   '@/shared/api/endpoints':['./stubs/contracts.ts'],'@/shared/api/useWallet':['./stubs/contracts.ts'],
   '@/shared/stores/theme.store':['./stubs/contracts.ts'],'@/shared/auth/PhoneGate':['./stubs/contracts.ts'],
   '@/shared/components/layout/*':['./stubs/contracts.ts'],'@/shared/wallet/WalletActivity':['./stubs/contracts.ts'],

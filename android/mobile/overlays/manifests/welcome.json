@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "target": "apps/web/src/app/App.tsx",
+      "payload": "app/App.tsx",
+      "sha256": "a1ac69267308d1ea3c172b183e83b283330945e2b59810fb715c69b920a9b6f8"
+    },
+    {
+      "target": "apps/web/src/shared/onboarding/entry.mjs",
+      "payload": "onboarding/entry.mjs",
+      "sha256": "468ca78ce9b35386bfd149769f3df2ec6f9bafd819c9e7750cd745670a952a51"
+    },
+    {
+      "target": "apps/web/src/shared/onboarding/entry.d.mts",
+      "payload": "onboarding/entry.d.mts",
+      "sha256": "70bb1efafbc69bced5803fe15ce7bb25933d0c5898d925b7a3693f6fd976c0bc"
+    },
+    {
+      "target": "apps/web/src/shared/onboarding/copy.ts",
+      "payload": "onboarding/copy.ts",
+      "sha256": "0bf96da29558fdd9722cd69e663a48a91c83baf5e7bb0ca1cada39ccd9ceae73"
+    },
+    {
+      "target": "apps/web/src/shared/onboarding/WelcomePage.tsx",
+      "payload": "onboarding/WelcomePage.tsx",
+      "sha256": "c3c85719b3b4af182d56db634c8a3bb760a1ff22e0f31c53c47e9d865d9b09bf"
+    },
+    {
+      "target": "apps/web/src/pages/WalletPage.tsx",
+      "payload": "pages/WalletPage.tsx",
+      "sha256": "e15a97c2412a36097b663ec0144fbc7267f0950fb0ea6ee45d4209a1c23a39e2",
+      "supersedesSha256": "e034cd5cabbbeab52ec6f19129eeca408c3c7537b97890a4ec7dcda011742b09"
+    },
+    {
+      "target": "apps/web/src/shared/components/layout/TabBar.tsx",
+      "payload": "components/layout/TabBar.tsx",
+      "sha256": "85c18587699cead9a0716fe48c9bb17e9ee7b5aa8a6214ce567c6770eff0a3e4"
+    },
+    {
+      "target": "apps/web/src/shared/onboarding/entry.css",
+      "payload": "onboarding/entry.css",
+      "sha256": "f2ff44ff8d2dcd338efe0e9f7807a15fe854fb8ec4e0059aaf335650e9a283c5"
+    }
+  ]
+}

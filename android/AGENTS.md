@@ -25,6 +25,7 @@
 ## قواعد محصول
 - **محدوده نسخه فعلی، تصمیم مالک 2026-10-22:** ورود Google (#46 / PR #70) به نسخه بعد منتقل شده است؛ [current-version.md](docs/current-version.md) ملاک نسخه فعلی است. hook گوگل در Android غیرفعال و پنهان بماند؛ توسعه و پذیرش نسخه فعلی به OAuth گوگل وابسته نیست.
 - Login: **همان کاربران و حساب‌ها**، PhoneGate و OTP مبتنی بر بات Telegram بدون تغییر Backend. Google روی Android با **Native Credential Manager / API پشتیبانی‌شده**، ID token به API موجود، بدون OAuth داخل embedded WebView.
+- Coins UI، تصمیم جدید مالک: کیف پول/سکه در فوتر نباشد و صفحه مستقیم آن فقط پیام قابلیت نسخه‌های بعدی باشد؛ [welcome-guest.md](docs/welcome-guest.md).
 - Coins: هیچ خرید، شارژ، Stripe Checkout، Telegram Stars Invoice، deeplink و لینک خارج برنامه برای خرید وجود نداشته باشد. متن: **«خرید سکه به‌زودی فعال می‌شود»**. مصرف اعتبار موجود فقط پس از انطباق سیاست Play.
 - امکانات: Housing، Passenger Cargo، Jobs، Profile، Saved و My Listings؛ پشتیبانی از media upload، back/navigation، خطاها.
 - endpointها صرفاً HTTPS واقعی. `VITE_API_URL` هرگز localhost در Release نباشد. مجوزها و token storage از اصل least privilege و Android Keystore تبعیت کنند.
