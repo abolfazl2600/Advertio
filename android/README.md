@@ -1,5 +1,7 @@
 # Advertio Android — برنامه ساخت نسخه قابل انتشار
 
+> Current build: Android owns a fixed encrypted source snapshot in this repository. GitHub Actions no longer fetches GitLab and does not need a GitLab token or SOURCE_LOCK_JSON. Use [Actions setup](docs/actions-release.md) and [source editing guide](source/README.md). Older external-fetch instructions below are historical/optional.
+
 > وضعیت: **برنامه‌ریزی و تعریف Backlog**؛ این پوشه هنوز APK/AAB نهایی تولید نمی‌کند.
 
 ## هدف

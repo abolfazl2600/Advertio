@@ -14,13 +14,14 @@ import urllib.parse
 
 ANDROID = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ANDROID/'scripts'))
-from source_workspace import BuildError, fetch_source, load_lock
+from source_workspace import BuildError
+from android_source import unpack, key_bytes
 from overlay_manifest import load_manifest
 spec = importlib.util.spec_from_file_location('builder', ANDROID/'scripts/build-private.py')
 builder = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(builder)
 
-CONFIG_NAMES = ('SOURCE_LOCK_JSON','GITLAB_USER','GITLAB_TOKEN','KEYSTORE_BASE64',
+CONFIG_NAMES = ('ANDROID_SOURCE_KEY','KEYSTORE_BASE64',
                 'RELEASE_STORE_PASSWORD','RELEASE_KEY_ALIAS','RELEASE_KEY_PASSWORD',
                 'API_ORIGIN','MEDIA_ORIGINS')
 
@@ -73,16 +74,16 @@ def build():
            ('PATH','JAVA_HOME','ANDROID_HOME','ANDROID_SDK_ROOT','LANG','HOME')}
     with tempfile.TemporaryDirectory(prefix='advertio-release-', dir=os.environ['RUNNER_TEMP']) as tmp:
         root = Path(tmp); root.chmod(0o700)
-        lockpath = root/'source-lock.json'; lockpath.write_text(values['SOURCE_LOCK_JSON']); lockpath.chmod(0o600)
-        lock = load_lock(lockpath)
-        token = root/'token'; token.write_text(values['GITLAB_TOKEN']); token.chmod(0o600)
-        source = fetch_source(lock, root, token); token.unlink()
-        builder.apply_overlays(source, ANDROID/'mobile/overlays', load_manifest(ANDROID/'mobile/overlays'), lock)
+        source = root/'source'
+        hashes = unpack(ANDROID/'source/android-source.enc', source, key_bytes(values['ANDROID_SOURCE_KEY']))
+        manifest = load_manifest(ANDROID/'mobile/overlays')
+        pins = {item['target']:hashes.get(item['target'],'ABSENT') for item in manifest['files']}
+        builder.apply_overlays(source, ANDROID/'mobile/overlays', manifest, {'files':pins})
         # Private home/config; no inherited npm authentication or global git hooks.
         (root/'home').mkdir(); env.update(HOME=str(root/'home'),npm_config_userconfig='/dev/null',
             VITE_API_URL=values['API_ORIGIN'],VITE_ANDROID_API_ORIGINS=values['API_ORIGIN'],
             VITE_ANDROID_MEDIA_ORIGINS=values['MEDIA_ORIGINS'])
-        run(['corepack','pnpm@11.9.0','install','--frozen-lockfile'],source,env)
+        run(['corepack','pnpm@11.9.0','install','--frozen-lockfile','--filter','web...'],source,env)
         mobile = root/'mobile'
         shutil.copytree(ANDROID/'mobile',mobile,ignore=shutil.ignore_patterns('node_modules','build','.gradle','overlays'))
         run(['python3',str(mobile/'native/install.py'),str(mobile)],mobile,env)

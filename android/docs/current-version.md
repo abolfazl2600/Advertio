@@ -1,5 +1,7 @@
 # Current Android version — Google login deferred
 
+> Android source independence: the Actions build now uses the Android-owned encrypted source in this repository, with no GitLab fetch or token. See [source](../source/README.md) and [current Actions setup](actions-release.md). Runtime API sharing remains unchanged.
+
 > Private signed release APK implementation: [private-release.md](private-release.md). Dedicated external signing is now supported for owner-authorized private sideload builds; Google Play/release acceptance is still open.
 
 > **2026-10-25 update:** Owner approved npm downloads and the new private APK **1.0.1-debug** was built, signature-verified and delivered. This supersedes the pending-install/build status below. Real-device acceptance remains NOT RUN. [Current build evidence](debug-1.0.1.md).
