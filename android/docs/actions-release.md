@@ -1,34 +1,32 @@
-# GitHub Actions: private signed release
+# GitHub Actions: signed APK artifact
 
-Owner explicitly authorized the root `.github/workflows/android-private-release.yml` exception on 2026-10-25. Other Android work remains under `android/`. Refs #58. The workflow is manual (`workflow_dispatch`), main-only, with read-only GitHub permissions, SHA-pinned actions, no persisted checkout credential, no dependency cache, and no GitHub artifact/Release upload. Raw private tool output and exceptions are suppressed; temporary source/keys are cleaned. GitLab source is read-only and must be pinned/reviewed through the existing external source lock.
+Owner explicitly authorized the root workflow exception and then requested that the APK be delivered in GitHub Actions itself, after being informed this repository is public. This supersedes the earlier external/private object-storage delivery design. Only the verified signed APK may be uploaded; source checkouts, private source locks, signing keys/passwords, recovery files and raw build logs remain prohibited in GitHub artifacts/commits. Refs #58.
 
-## One-time owner setup
+## One-time setup
 
-1. In repository Settings → Environments create `android-release`. Restrict deployments to `main`, add required reviewers, and disable self approval where available. Review every main change before permitting secret-backed runs. Workflow checks do not replace these account-side controls.
-2. Add the environment secrets below. Do not paste values into issues, workflow inputs or repository files.
-3. Supply a short-lived HTTPS presigned PUT URL for a **private** object in owner-controlled storage. Do not use a public bucket/container, GitHub artifact or public Release. The workflow cannot establish bucket ACLs; the owner must verify private download access and retention. This upload URL is a capability secret and may need replacing before each run. It must accept Content-Type `application/vnd.android.package-archive`, return 200/201/204, and not redirect. The object host must match the separate host secret exactly.
-4. Open Actions → Android private release → Run workflow → main; approve its protected environment deployment. Download the APK from your private storage. The job prints only a completion message and APK SHA256. Reuse the same release keystore and increment versionCode for subsequent app updates.
-
-Required environment Secrets (exact names):
+1. Settings → Environments → `android-release`: restrict deployment to main and configure required reviewers. Review secret-backed changes before approval.
+2. Add the nine environment Secrets below. Do not put values in workflow inputs, files, issues or Variables.
+3. Actions → Android signed release APK → Run workflow → main; approve the environment deployment if required.
+4. After all steps succeed, open the run Summary, scroll to Artifacts and download `Advertio-release-<run number>`. Extract its ZIP to obtain `Advertio-release.apk`. Artifacts are retained for three days; download before expiration. Repository readers with the necessary GitHub sign-in/access can retrieve the artifact; this is not private delivery. Platform storage quotas/retention policies still apply.
 
 | Secret | Value |
 | --- | --- |
-| `ADVERTIO_SOURCE_LOCK_JSON` | Reviewed private lock: schema 1, GitLab HTTPS repository, immutable full SHA, `webPath=apps/web`, `packageManager=pnpm@11.9.0`, original source SHA256/ABSENT for every overlay target. See private-build.md. |
+| `ADVERTIO_SOURCE_LOCK_JSON` | Reviewed private source lock with schema, repository, immutable full SHA, packageManager pnpm@11.9.0, webPath apps/web and original SHA256/ABSENT pins for every overlay target |
 | `ADVERTIO_GITLAB_USER` | Read-only deploy-token username |
-| `ADVERTIO_GITLAB_TOKEN` | Token with read_repository for the private source; no GitLab write scope |
-| `ADVERTIO_KEYSTORE_BASE64` | Base64 of the existing encrypted release PKCS12; use the delivered release-key backup, not the debug key |
-| `ADVERTIO_RELEASE_STORE_PASSWORD` | Existing private release store password |
-| `ADVERTIO_RELEASE_KEY_ALIAS` | Existing release alias |
-| `ADVERTIO_RELEASE_KEY_PASSWORD` | Existing private key password |
-| `ADVERTIO_API_ORIGIN` | Reviewed exact HTTPS API origin, no path/query |
+| `ADVERTIO_GITLAB_TOKEN` | Token with read_repository for private source |
+| `ADVERTIO_KEYSTORE_BASE64` | Base64 of the owner's retained encrypted release PKCS12, not a debug key |
+| `ADVERTIO_RELEASE_STORE_PASSWORD` | Release store password |
+| `ADVERTIO_RELEASE_KEY_ALIAS` | Release alias |
+| `ADVERTIO_RELEASE_KEY_PASSWORD` | Release key password |
+| `ADVERTIO_API_ORIGIN` | Reviewed exact HTTPS API origin |
 | `ADVERTIO_MEDIA_ORIGINS` | Comma-separated reviewed HTTPS media origins |
-| `ADVERTIO_APK_UPLOAD_URL` | Short-lived presigned PUT URL to a private APK object |
-| `ADVERTIO_APK_UPLOAD_HOST` | Exact hostname of the private upload service, no scheme/path |
 
-The job uses Node24.19.0/npm11.9.0/pnpm11.9.0, runner JDK21 and SDK/build-tools36, the checksum-pinned Gradle wrapper, existing overlay/hash enforcement, actual TypeScript/Vite build, cap sync, signed release build and apksigner/debuggable validation. Public toolchain downloads happen before any private secrets are injected. Source fetch credentials are removed from disk after fetch; signing secrets are not passed to dependency installation. No Play publishing or AAB upload is performed. Package remains the provisional private sideload identity; Play release gates are unchanged.
+`ADVERTIO_APK_UPLOAD_URL` and `ADVERTIO_APK_UPLOAD_HOST` are no longer used or required; remove obsolete values if previously configured. No external storage account is required. Existing users who configured seven entries need only the two GitLab read credentials to complete the configuration. Keep the same signing key and increase versionCode for later installed-app updates.
 
-## Verification and limits
+## Implementation and verification
 
-PASS: Python compile, destination URL/redirect rejection tests, existing pipeline tests, YAML parsing and diff checks. NOT RUN: hosted end-to-end Actions build/delivery; required environment protections, private GitLab deploy token and private object-upload URL are not configured by this code change. Existing manual release build evidence is in private-release.md and does not prove the hosted workflow ran. Keep #58 open until a successful protected run, delivery ACL checks and failure-path acceptance are recorded.
+Manual main-only job, protected environment, read-only GitHub permissions, SHA-pinned actions, no persisted checkout credentials, checksum-pinned SDK CLI22, Node24.19.0/npm11.9.0/pnpm11.9.0/JDK21/SDK36, reviewed immutable GitLab source, source/payload hash verification, frozen dependencies, TypeScript/Vite/native/sync/release build, apksigner and non-debuggable validation. Only after those checks does the builder copy the APK into a dedicated artifact directory. Upload uses an exact single APK path, fails if absent, and runs only after a successful build. Signing inputs are not passed to dependency installation; private tool output stays suppressed. Artifact and private staging directories are cleaned after upload/failure. No public GitHub Release or Play publication is performed.
 
-The user authorized the single workflow path outside Android; the legacy guard-scope.sh still rejects that exception by design. Review changed paths explicitly rather than weakening the general scope guard. Rollback: disable the workflow, revoke the read token and upload capability, remove environment secrets if necessary, and revert this PR. Never revoke/delete the signing key needed for future installed-app updates.
+PASS: eight pipeline tests, including APK-only staging, symlink rejection, secret-value non-disclosure and nine-entry configuration without an external destination; YAML parsing and artifact path/config checks; diff check. Existing source/hash tests remain included. Hosted end-to-end artifact upload NOT RUN for this revision: it requires configured environment Secrets and a new main dispatch. Earlier runs passed public tests/SDK setup but stopped at missing Secrets. Keep #58 open until actual protected build/upload and failure-path acceptance.
+
+Rollback: revert this change, delete any generated artifacts if desired, and restore a reviewed delivery strategy. Never delete/revoke the retained app signing key needed for future upgrades. The legacy Android-only guard is unchanged; explicit owner authorization covers the single root workflow path.

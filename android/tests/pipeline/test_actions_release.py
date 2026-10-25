@@ -1,5 +1,6 @@
 import importlib.util
 import unittest
+import tempfile
 from unittest.mock import patch
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
@@ -8,27 +9,32 @@ m = importlib.util.module_from_spec(s)
 s.loader.exec_module(m)
 
 class ActionsReleaseTests(unittest.TestCase):
-    def test_signed_https_object_destination_only(self):
-        u = 'https://private.example.invalid/build.apk?signature=synthetic'
-        self.assertEqual(m.delivery_url(u,'private.example.invalid'),u)
-        for bad in ['http://private.example.invalid/build.apk','https://other.invalid/build.apk',
-                    'https://name:password@private.example.invalid/build.apk',
-                    'https://private.example.invalid/','https://private.example.invalid/build.apk#x',
-                    'https://private.example.invalid:8443/build.apk']:
-            with self.assertRaises(m.BuildError): m.delivery_url(bad,'private.example.invalid')
-        with self.assertRaises(m.BuildError): m.delivery_url('https://localhost/build.apk','localhost')
-
-    def test_delivery_redirect_rejected(self):
-        with self.assertRaises(m.BuildError): m.NoRedirect().redirect_request(None,None,None,None,None,None)
+    def test_only_apk_is_staged(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            source=root/'private';source.mkdir()
+            (source/'app.apk').write_bytes(b'synthetic-verified-apk')
+            (source/'key.p12').write_bytes(b'private-key-fixture')
+            result=m.stage_apk(source/'app.apk',root)
+            self.assertEqual(result.read_bytes(),b'synthetic-verified-apk')
+            self.assertEqual([p.name for p in result.parent.iterdir()],['Advertio-release.apk'])
+            result.unlink();result.symlink_to(source/'key.p12')
+            with self.assertRaises(m.BuildError):m.stage_apk(source/'app.apk',root)
+            self.assertEqual((source/'key.p12').read_bytes(),b'private-key-fixture')
 
     def test_missing_config_lists_all_names_without_values(self):
         with patch.dict(m.os.environ, {}, clear=True):
             with self.assertRaises(m.MissingConfiguration) as result:
                 m.configuration()
-        self.assertEqual(len(result.exception.names), 11)
+        self.assertEqual(len(result.exception.names), 9)
         with patch.dict(m.os.environ, {'ADVERTIO_GITLAB_TOKEN':'synthetic-secret-value'}, clear=True):
             with self.assertRaises(m.MissingConfiguration) as result:
                 m.configuration()
-        self.assertEqual(len(result.exception.names), 10)
+        self.assertEqual(len(result.exception.names), 8)
         self.assertNotIn('synthetic-secret-value', str(result.exception))
         self.assertNotIn('ADVERTIO_GITLAB_TOKEN', result.exception.names)
+
+    def test_external_upload_configuration_not_required(self):
+        values={'ADVERTIO_'+name:'synthetic' for name in m.CONFIG_NAMES}
+        with patch.dict(m.os.environ,values,clear=True):
+            self.assertEqual(len(m.configuration()),9)
