@@ -20,6 +20,12 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24.19.0'
+      - name: Public regression checks
+        run: |
+          node --test android/tests/*/*.test.mjs
+          python3 -m unittest discover -s android/tests/pipeline -p 'test_*.py'
+          python3 -m unittest discover -s android/tests/source -p 'test_*.py'
+          python3 -m unittest discover -s android/tests/auth -p 'test_*.py'
       - name: Provision public toolchain
         shell: bash
         run: |
