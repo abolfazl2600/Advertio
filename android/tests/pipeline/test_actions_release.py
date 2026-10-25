@@ -1,5 +1,6 @@
 import importlib.util
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 s = importlib.util.spec_from_file_location('actions_release', ROOT/'scripts/ci/release_actions.py')
@@ -19,3 +20,15 @@ class ActionsReleaseTests(unittest.TestCase):
 
     def test_delivery_redirect_rejected(self):
         with self.assertRaises(m.BuildError): m.NoRedirect().redirect_request(None,None,None,None,None,None)
+
+    def test_missing_config_lists_all_names_without_values(self):
+        with patch.dict(m.os.environ, {}, clear=True):
+            with self.assertRaises(m.MissingConfiguration) as result:
+                m.configuration()
+        self.assertEqual(len(result.exception.names), 11)
+        with patch.dict(m.os.environ, {'ADVERTIO_GITLAB_TOKEN':'synthetic-secret-value'}, clear=True):
+            with self.assertRaises(m.MissingConfiguration) as result:
+                m.configuration()
+        self.assertEqual(len(result.exception.names), 10)
+        self.assertNotIn('synthetic-secret-value', str(result.exception))
+        self.assertNotIn('ADVERTIO_GITLAB_TOKEN', result.exception.names)
