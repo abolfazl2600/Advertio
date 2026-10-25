@@ -1,5 +1,7 @@
 # Current Android version — Google login deferred
 
+> Private signed release APK implementation: [private-release.md](private-release.md). Dedicated external signing is now supported for owner-authorized private sideload builds; Google Play/release acceptance is still open.
+
 > **2026-10-25 update:** Owner approved npm downloads and the new private APK **1.0.1-debug** was built, signature-verified and delivered. This supersedes the pending-install/build status below. Real-device acceptance remains NOT RUN. [Current build evidence](debug-1.0.1.md).
 
 Owner UI update, 2026-10-23: first-launch Welcome offers optional login or public guest browsing; login later from Profile. Wallet/coins are hidden from the footer and direct Wallet routes show a static future-version card. [Implementation and current verification](welcome-guest.md). New APK build is pending explicit approval for the blocked private dependency install; the APK described below is the earlier PR #74 build.

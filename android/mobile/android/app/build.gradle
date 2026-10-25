@@ -1,5 +1,15 @@
 apply plugin: 'com.android.application'
 
+// Private sideload release only. Secrets are injected, never committed.
+def releaseInputs = [
+    store: System.getenv('ADVERTIO_RELEASE_KEYSTORE'),
+    storePassword: System.getenv('ADVERTIO_RELEASE_STORE_PASSWORD'),
+    alias: System.getenv('ADVERTIO_RELEASE_KEY_ALIAS'),
+    keyPassword: System.getenv('ADVERTIO_RELEASE_KEY_PASSWORD')
+]
+def hasReleaseSigning = releaseInputs.values().every { it != null && !it.trim().isEmpty() }
+
+
 android {
     namespace = "com.advertio.development"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +17,8 @@ android {
         applicationId "com.advertio.development"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.0.1-debug"
+        versionCode 3
+        versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,8 +26,21 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        privateRelease {
+            if (hasReleaseSigning) {
+                storeFile file(releaseInputs.store)
+                storePassword releaseInputs.storePassword
+                keyAlias releaseInputs.alias
+                keyPassword releaseInputs.keyPassword
+            }
+        }
+    }
     buildTypes {
+        debug { versionNameSuffix '-debug' }
         release {
+            debuggable false
+            signingConfig signingConfigs.privateRelease
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -53,9 +76,25 @@ try {
     logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
 }
 
-// Development identity and placeholder assets are never distributable.
+// Keep release opt-in: this provisional identity is authorized for private sideloading only.
+// Google Play/public distribution still needs the separate identity and policy gates.
 gradle.taskGraph.whenReady { graph ->
-    if (graph.allTasks.any { it.name.toLowerCase().contains('release') }) {
-        throw new GradleException('Release blocked: development identity; complete Android release gates first.')
+    if (graph.allTasks.any { it.project == project && it.name.toLowerCase().contains('release') }) {
+        if (System.getenv('ADVERTIO_PRIVATE_RELEASE') != 'true') {
+            throw new GradleException('Release blocked: explicitly authorize private sideload release.')
+        }
+        if (!hasReleaseSigning) {
+            throw new GradleException('Release blocked: external release signing inputs are required.')
+        }
+        def key = new File(releaseInputs.store)
+        def candidateRoot = rootProject.projectDir.parentFile.parentFile.parentFile.canonicalFile
+        def publicRoot = new File(candidateRoot, '.git').exists() ? candidateRoot : rootProject.projectDir.parentFile.canonicalFile
+        if (!key.isAbsolute() || !key.isFile() || key.canonicalFile.toPath().startsWith(publicRoot.toPath())) {
+            throw new GradleException('Release blocked: signing keystore must be an external absolute file.')
+        }
+        def web = new File(rootProject.projectDir.parentFile, 'www')
+        if (!new File(web, 'index.html').isFile() || !new File(web, 'assets').isDirectory()) {
+            throw new GradleException('Release blocked: build and sync the real private UI first.')
+        }
     }
 }

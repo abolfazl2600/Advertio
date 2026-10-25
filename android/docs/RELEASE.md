@@ -1,5 +1,7 @@
 # Build، امضا و انتشار Android
 
+> Private signed release APK implementation: [private-release.md](private-release.md). Dedicated external signing is now supported for owner-authorized private sideload builds; Google Play/release acceptance is still open.
+
 > محدوده نسخه فعلی: ورود Google در #46 به نسخه بعد منتقل شده است؛ توسعه و پذیرش فعلی فقط با OTP/PhoneGate انجام می‌شود. الزام‌های Google در این سند برای نسخه‌ای است که آن را فعال می‌کند. [تصمیم مالک و وضعیت اجرا](current-version.md).
 
 ## تعاریف
