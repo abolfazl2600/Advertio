@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import tarfile
+import subprocess
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 MAGIC = b'ADVERTIO-ANDROID-SOURCE-1\n'
@@ -67,7 +68,11 @@ def unpack(bundle, destination, key):
         raise ValueError('Source manifest mismatch')
     for name,content in data.items():
         if hashlib.sha256(content).hexdigest()!=manifest['files'][name]:raise ValueError('Source integrity mismatch')
-    dest=Path(destination)
+    dest=Path(destination).resolve()
+    ancestor=dest
+    while not ancestor.is_dir():ancestor=ancestor.parent
+    if subprocess.run(['git','-C',str(ancestor),'rev-parse','--show-toplevel'],capture_output=True).returncode==0:
+        raise ValueError('Decoded private source must stay outside Git worktrees')
     if dest.exists(): raise ValueError('Fresh external destination required')
     dest.mkdir(mode=0o700,parents=True)
     for name,content in data.items():
