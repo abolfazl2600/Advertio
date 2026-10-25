@@ -26,15 +26,15 @@ class ActionsReleaseTests(unittest.TestCase):
         with patch.dict(m.os.environ, {}, clear=True):
             with self.assertRaises(m.MissingConfiguration) as result:
                 m.configuration()
-        self.assertEqual(len(result.exception.names), 9)
-        with patch.dict(m.os.environ, {'ADVERTIO_GITLAB_TOKEN':'synthetic-secret-value'}, clear=True):
+        self.assertEqual(len(result.exception.names), 7)
+        with patch.dict(m.os.environ, {'ADVERTIO_ANDROID_SOURCE_KEY':'synthetic-secret-value'}, clear=True):
             with self.assertRaises(m.MissingConfiguration) as result:
                 m.configuration()
-        self.assertEqual(len(result.exception.names), 8)
+        self.assertEqual(len(result.exception.names), 6)
         self.assertNotIn('synthetic-secret-value', str(result.exception))
-        self.assertNotIn('ADVERTIO_GITLAB_TOKEN', result.exception.names)
+        self.assertNotIn('ADVERTIO_ANDROID_SOURCE_KEY', result.exception.names)
 
     def test_external_upload_configuration_not_required(self):
         values={'ADVERTIO_'+name:'synthetic' for name in m.CONFIG_NAMES}
         with patch.dict(m.os.environ,values,clear=True):
-            self.assertEqual(len(m.configuration()),9)
+            self.assertEqual(len(m.configuration()),7)

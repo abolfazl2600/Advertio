@@ -20,6 +20,11 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24.19.0'
+      - name: Source tooling
+        run: |
+          python3 -m venv "$RUNNER_TEMP/advertio-python"
+          "$RUNNER_TEMP/advertio-python/bin/pip" install --disable-pip-version-check -r android/scripts/ci/source-requirements.txt
+          echo "$RUNNER_TEMP/advertio-python/bin" >> "$GITHUB_PATH"
       - name: Public regression checks
         run: |
           node --test android/tests/*/*.test.mjs
@@ -48,9 +53,7 @@ jobs:
       - name: Build and verify signed APK
         run: python3 android/scripts/ci/release_actions.py
         env:
-          ADVERTIO_SOURCE_LOCK_JSON: ${{ secrets.ADVERTIO_SOURCE_LOCK_JSON }}
-          ADVERTIO_GITLAB_USER: ${{ secrets.ADVERTIO_GITLAB_USER }}
-          ADVERTIO_GITLAB_TOKEN: ${{ secrets.ADVERTIO_GITLAB_TOKEN }}
+          ADVERTIO_ANDROID_SOURCE_KEY: ${{ secrets.ADVERTIO_ANDROID_SOURCE_KEY }}
           ADVERTIO_KEYSTORE_BASE64: ${{ secrets.ADVERTIO_KEYSTORE_BASE64 }}
           ADVERTIO_RELEASE_STORE_PASSWORD: ${{ secrets.ADVERTIO_RELEASE_STORE_PASSWORD }}
           ADVERTIO_RELEASE_KEY_ALIAS: ${{ secrets.ADVERTIO_RELEASE_KEY_ALIAS }}
