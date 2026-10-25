@@ -3,7 +3,7 @@ import type { CapacitorConfig } from '@capacitor/cli'
 // Provisional DEVELOPMENT identity; final Play package requires owner approval.
 const config: CapacitorConfig = {
   appId: 'com.advertio.development',
-  appName: 'Advertio Development',
+  appName: 'Advertio',
   webDir: 'www',
   server: { hostname: 'localhost', androidScheme: 'https', cleartext: false },
   android: { allowMixedContent: false, webContentsDebuggingEnabled: false },
