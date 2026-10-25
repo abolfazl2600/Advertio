@@ -1,5 +1,7 @@
 # AGENTS.md — دستورالعمل الزام‌آور عامل توسعه Android Advertio
 
+> استثنای صریح مالک، 2026-10-25: افزودن و نگهداری فقط `.github/workflows/android-private-release.yml` برای اجرای دستی امن ریلیز مجاز است. سایر مسیرهای خارج Android همچنان ممنوع‌اند. [راهنما و مرز دسترسی](docs/actions-release.md).
+
 **Scope:** `android/` در مخزن عمومی `abolfazl2600/Advertio`. این سند برای GitHub Copilot/Codex و سایر عامل‌های برنامه‌نویس است. تمام وظایف Android Issues #39–#60 تابع این قواعد‌اند.
 
 ## ماموریت

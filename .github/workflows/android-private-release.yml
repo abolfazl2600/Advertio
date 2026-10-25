@@ -1,0 +1,55 @@
+name: Android private release
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: android-private-release
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main' && github.repository == 'abolfazl2600/Advertio'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    environment: android-release
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.19.0'
+      - name: Public regression checks
+        run: |
+          node --test android/tests/*/*.test.mjs
+          python3 -m unittest discover -s android/tests/pipeline -p 'test_*.py'
+          python3 -m unittest discover -s android/tests/source -p 'test_*.py'
+          python3 -m unittest discover -s android/tests/auth -p 'test_*.py'
+      - name: Provision public toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"
+          export JAVA_HOME="$JAVA_HOME_21_X64"
+          export PATH="$JAVA_HOME/bin:$PATH"
+          corepack enable
+          npm install --global npm@11.9.0 --ignore-scripts --no-audit --no-fund
+          sdkmanager 'platforms;android-36' 'build-tools;36.0.0' > /dev/null
+      - name: Build, verify and deliver privately
+        run: python3 android/scripts/ci/release_actions.py
+        env:
+          ADVERTIO_SOURCE_LOCK_JSON: ${{ secrets.ADVERTIO_SOURCE_LOCK_JSON }}
+          ADVERTIO_GITLAB_USER: ${{ secrets.ADVERTIO_GITLAB_USER }}
+          ADVERTIO_GITLAB_TOKEN: ${{ secrets.ADVERTIO_GITLAB_TOKEN }}
+          ADVERTIO_KEYSTORE_BASE64: ${{ secrets.ADVERTIO_KEYSTORE_BASE64 }}
+          ADVERTIO_RELEASE_STORE_PASSWORD: ${{ secrets.ADVERTIO_RELEASE_STORE_PASSWORD }}
+          ADVERTIO_RELEASE_KEY_ALIAS: ${{ secrets.ADVERTIO_RELEASE_KEY_ALIAS }}
+          ADVERTIO_RELEASE_KEY_PASSWORD: ${{ secrets.ADVERTIO_RELEASE_KEY_PASSWORD }}
+          ADVERTIO_API_ORIGIN: ${{ secrets.ADVERTIO_API_ORIGIN }}
+          ADVERTIO_MEDIA_ORIGINS: ${{ secrets.ADVERTIO_MEDIA_ORIGINS }}
+          ADVERTIO_APK_UPLOAD_URL: ${{ secrets.ADVERTIO_APK_UPLOAD_URL }}
+          ADVERTIO_APK_UPLOAD_HOST: ${{ secrets.ADVERTIO_APK_UPLOAD_HOST }}
+      - name: Remove private staging
+        if: always()
+        run: find "$RUNNER_TEMP" -maxdepth 1 -type d -name 'advertio-release-*' -exec rm -rf -- {} +
