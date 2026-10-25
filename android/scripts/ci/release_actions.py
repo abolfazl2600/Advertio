@@ -21,6 +21,22 @@ spec = importlib.util.spec_from_file_location('builder', ANDROID/'scripts/build-
 builder = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(builder)
 
+CONFIG_NAMES = ('SOURCE_LOCK_JSON','GITLAB_USER','GITLAB_TOKEN','KEYSTORE_BASE64',
+                'RELEASE_STORE_PASSWORD','RELEASE_KEY_ALIAS','RELEASE_KEY_PASSWORD',
+                'API_ORIGIN','MEDIA_ORIGINS','APK_UPLOAD_URL','APK_UPLOAD_HOST')
+
+class MissingConfiguration(BuildError):
+    def __init__(self, missing):
+        # Only constant configuration names may appear in public diagnostics.
+        self.names = tuple('ADVERTIO_'+name for name in CONFIG_NAMES if name in missing)
+        super().__init__('Missing GitHub environment secrets: '+', '.join(self.names))
+
+def configuration():
+    missing = [name for name in CONFIG_NAMES if not os.environ.get('ADVERTIO_'+name, '').strip()]
+    if missing:
+        raise MissingConfiguration(missing)
+    return {name: required(name) for name in CONFIG_NAMES}
+
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *args):
         raise BuildError('Delivery redirect rejected')
@@ -47,10 +63,7 @@ def run(args, cwd, env):
     return result.stdout.decode(errors='replace')
 
 def build():
-    names = ['SOURCE_LOCK_JSON','GITLAB_USER','GITLAB_TOKEN','KEYSTORE_BASE64',
-             'RELEASE_STORE_PASSWORD','RELEASE_KEY_ALIAS','RELEASE_KEY_PASSWORD',
-             'API_ORIGIN','MEDIA_ORIGINS','APK_UPLOAD_URL','APK_UPLOAD_HOST']
-    values = {name: required(name) for name in names}
+    values = configuration()
     url = delivery_url(values['APK_UPLOAD_URL'], values['APK_UPLOAD_HOST'])
     # Reuse existing HTTPS origin validation rather than trusting arbitrary URLs.
     from urllib.parse import urlsplit
@@ -102,6 +115,10 @@ def build():
 if __name__ == '__main__':
     try:
         build()
+    except MissingConfiguration as error:
+        print(str(error), file=sys.stderr)
+        print('Configure repository Settings > Environments > android-release > Environment secrets. Never paste secret values into logs or issues.', file=sys.stderr)
+        sys.exit(1)
     except Exception:
         # No exception string/traceback: providers may include credentials or URLs.
         print('Release failed. Verify private configuration, source pins, signing and destination; raw logs are intentionally suppressed.',file=sys.stderr)
