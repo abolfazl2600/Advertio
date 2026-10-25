@@ -11,7 +11,6 @@ import subprocess
 import sys
 import tempfile
 import urllib.parse
-import urllib.request
 
 ANDROID = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ANDROID/'scripts'))
@@ -23,7 +22,7 @@ spec.loader.exec_module(builder)
 
 CONFIG_NAMES = ('SOURCE_LOCK_JSON','GITLAB_USER','GITLAB_TOKEN','KEYSTORE_BASE64',
                 'RELEASE_STORE_PASSWORD','RELEASE_KEY_ALIAS','RELEASE_KEY_PASSWORD',
-                'API_ORIGIN','MEDIA_ORIGINS','APK_UPLOAD_URL','APK_UPLOAD_HOST')
+                'API_ORIGIN','MEDIA_ORIGINS')
 
 class MissingConfiguration(BuildError):
     def __init__(self, missing):
@@ -37,17 +36,17 @@ def configuration():
         raise MissingConfiguration(missing)
     return {name: required(name) for name in CONFIG_NAMES}
 
-class NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *args):
-        raise BuildError('Delivery redirect rejected')
-
-def delivery_url(url, host):
-    u = urllib.parse.urlsplit(url)
-    if (u.scheme != 'https' or not host or u.hostname != host or u.port not in (None, 443)
-            or u.username or u.password or u.fragment or u.path in ('', '/')
-            or host in ('localhost', '127.0.0.1', '::1')):
-        raise BuildError('Approved HTTPS private object destination required')
-    return url
+def stage_apk(apk, runner_temp):
+    # Only the verified APK crosses the private staging boundary.
+    output = Path(runner_temp)/'advertio-apk-artifact'
+    if output.is_symlink():
+        raise BuildError('Artifact directory symlink prohibited')
+    output.mkdir(mode=0o700, exist_ok=True)
+    target = output/'Advertio-release.apk'
+    if target.is_symlink():
+        raise BuildError('Artifact file symlink prohibited')
+    shutil.copyfile(apk, target)
+    return target
 
 def required(name):
     value = os.environ.get('ADVERTIO_'+name, '')
@@ -64,7 +63,6 @@ def run(args, cwd, env):
 
 def build():
     values = configuration()
-    url = delivery_url(values['APK_UPLOAD_URL'], values['APK_UPLOAD_HOST'])
     # Reuse existing HTTPS origin validation rather than trusting arbitrary URLs.
     from urllib.parse import urlsplit
     for origin in [values['API_ORIGIN'], *values['MEDIA_ORIGINS'].split(',')]:
@@ -106,10 +104,8 @@ def build():
         badging = run([str(sdk/'build-tools/36.0.0/aapt'),'dump','badging',str(apk)],mobile,env)
         if 'application-debuggable' in badging:
             raise BuildError('Debug APK delivery prohibited')
-        request = urllib.request.Request(url,data=apk.read_bytes(),method='PUT',headers={'Content-Type':'application/vnd.android.package-archive'})
-        with urllib.request.build_opener(NoRedirect()).open(request,timeout=120) as response:
-            if response.status not in (200,201,204):raise BuildError('Private delivery failed')
-        print('Signed release APK delivered to configured private destination.')
+        stage_apk(apk, os.environ['RUNNER_TEMP'])
+        print('Verified signed release APK staged for GitHub artifact upload.')
         print('APK SHA256: '+hashlib.sha256(apk.read_bytes()).hexdigest())
 
 if __name__ == '__main__':
@@ -121,5 +117,5 @@ if __name__ == '__main__':
         sys.exit(1)
     except Exception:
         # No exception string/traceback: providers may include credentials or URLs.
-        print('Release failed. Verify private configuration, source pins, signing and destination; raw logs are intentionally suppressed.',file=sys.stderr)
+        print('Release failed. Verify private configuration, source pins, signing; raw logs are intentionally suppressed.',file=sys.stderr)
         sys.exit(1)

@@ -1,4 +1,4 @@
-name: Android private release
+name: Android signed release APK
 on:
   workflow_dispatch:
 permissions:
@@ -45,7 +45,7 @@ jobs:
           unzip -q "$cli/tools.zip" -d "$cli"
           "$cli/cmdline-tools/bin/sdkmanager" --sdk_root="$sdk_root" 'platforms;android-36' 'build-tools;36.0.0' > /dev/null
           echo "ANDROID_SDK_ROOT=$sdk_root" >> "$GITHUB_ENV"
-      - name: Build, verify and deliver privately
+      - name: Build and verify signed APK
         run: python3 android/scripts/ci/release_actions.py
         env:
           ADVERTIO_SOURCE_LOCK_JSON: ${{ secrets.ADVERTIO_SOURCE_LOCK_JSON }}
@@ -57,8 +57,16 @@ jobs:
           ADVERTIO_RELEASE_KEY_PASSWORD: ${{ secrets.ADVERTIO_RELEASE_KEY_PASSWORD }}
           ADVERTIO_API_ORIGIN: ${{ secrets.ADVERTIO_API_ORIGIN }}
           ADVERTIO_MEDIA_ORIGINS: ${{ secrets.ADVERTIO_MEDIA_ORIGINS }}
-          ADVERTIO_APK_UPLOAD_URL: ${{ secrets.ADVERTIO_APK_UPLOAD_URL }}
-          ADVERTIO_APK_UPLOAD_HOST: ${{ secrets.ADVERTIO_APK_UPLOAD_HOST }}
+      - name: Upload signed APK
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: Advertio-release-${{ github.run_number }}
+          path: ${{ runner.temp }}/advertio-apk-artifact/Advertio-release.apk
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 0
       - name: Remove private staging
         if: always()
-        run: find "$RUNNER_TEMP" -maxdepth 1 -type d -name 'advertio-release-*' -exec rm -rf -- {} +
+        run: |
+          find "$RUNNER_TEMP" -maxdepth 1 -type d -name 'advertio-release-*' -exec rm -rf -- {} +
+          rm -rf -- "$RUNNER_TEMP/advertio-apk-artifact"
