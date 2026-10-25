@@ -1,5 +1,7 @@
 # Android welcome, guest browsing and future wallet
 
+> **2026-10-25 update:** Owner approved npm downloads and the new private APK **1.0.1-debug** was built, signature-verified and delivered. This supersedes the pending-install/build status below. Real-device acceptance remains NOT RUN. [Current build evidence](debug-1.0.1.md).
+
 Owner request, 2026-10-23. Refs #45, #47, #48 and parent #38.
 
 First launch presents Welcome with Sign in and Browse listings for now. Sign in uses the existing LoginScreen and OTP/Telegram hooks; Google remains disabled. Back returns to Welcome. Browsing continues to the existing public home/listing routes, with login available later from Profile. Completion stores only `advertio.android.welcome.v1=seen`; no token, identity or verified-phone state is created. Missing/blocked localStorage does not prevent browsing. An authenticated restored session dismisses Welcome automatically. Existing PhoneGate and payment restrictions remain authoritative.
