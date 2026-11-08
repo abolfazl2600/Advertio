@@ -17,7 +17,7 @@ sys.path.insert(0, str(ANDROID/'scripts'))
 from source_workspace import BuildError
 from android_source import unpack, key_bytes
 from overlay_manifest import load_manifest
-from versioning import version_for_run, verify_apk_version
+from ci.versioning import version_for_run, verify_apk_version
 spec = importlib.util.spec_from_file_location('builder', ANDROID/'scripts/build-private.py')
 builder = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(builder)
