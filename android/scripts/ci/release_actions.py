@@ -17,6 +17,7 @@ sys.path.insert(0, str(ANDROID/'scripts'))
 from source_workspace import BuildError
 from android_source import unpack, key_bytes
 from overlay_manifest import load_manifest
+from versioning import version_for_run, verify_apk_version
 spec = importlib.util.spec_from_file_location('builder', ANDROID/'scripts/build-private.py')
 builder = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(builder)
@@ -64,6 +65,7 @@ def run(args, cwd, env):
 
 def build():
     values = configuration()
+    version_code, version_name = version_for_run(os.environ)
     # Reuse existing HTTPS origin validation rather than trusting arbitrary URLs.
     from urllib.parse import urlsplit
     for origin in [values['API_ORIGIN'], *values['MEDIA_ORIGINS'].split(',')]:
@@ -96,6 +98,7 @@ def build():
         (mobile/'android/local.properties').write_text('sdk.dir='+str(sdk)+'\n')
         key = root/'release.p12';key.write_bytes(base64.b64decode(values['KEYSTORE_BASE64'],validate=True));key.chmod(0o600)
         signing = dict(env,ADVERTIO_PRIVATE_RELEASE='true',ADVERTIO_RELEASE_KEYSTORE=str(key),
+            ADVERTIO_VERSION_CODE=str(version_code),ADVERTIO_VERSION_NAME=version_name,
             ADVERTIO_RELEASE_STORE_PASSWORD=values['RELEASE_STORE_PASSWORD'],
             ADVERTIO_RELEASE_KEY_ALIAS=values['RELEASE_KEY_ALIAS'],
             ADVERTIO_RELEASE_KEY_PASSWORD=values['RELEASE_KEY_PASSWORD'])
@@ -105,7 +108,9 @@ def build():
         badging = run([str(sdk/'build-tools/36.0.0/aapt'),'dump','badging',str(apk)],mobile,env)
         if 'application-debuggable' in badging:
             raise BuildError('Debug APK delivery prohibited')
+        verify_apk_version(badging, version_code, version_name)
         stage_apk(apk, os.environ['RUNNER_TEMP'])
+        print('Verified Android version: '+version_name+' (code '+str(version_code)+')')
         print('Verified signed release APK staged for GitHub artifact upload.')
         print('APK SHA256: '+hashlib.sha256(apk.read_bytes()).hexdigest())
 

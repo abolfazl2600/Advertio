@@ -9,6 +9,24 @@ def releaseInputs = [
 ]
 def hasReleaseSigning = releaseInputs.values().every { it != null && !it.trim().isEmpty() }
 
+// GitHub Actions injects a unique version for every run *and* rerun.
+// Local debug builds retain the previous version; release never uses that fallback.
+def injectedVersionCode = System.getenv('ADVERTIO_VERSION_CODE')
+def injectedVersionName = System.getenv('ADVERTIO_VERSION_NAME')
+def hasInjectedVersion = injectedVersionCode != null && injectedVersionName != null
+if ((injectedVersionCode != null) != (injectedVersionName != null)) {
+    throw new GradleException('Android versionCode and versionName must be supplied together')
+}
+if (hasInjectedVersion) {
+    if (!(injectedVersionCode ==~ /[1-9][0-9]*/ && injectedVersionName ==~ /1\.0\.[1-9][0-9]*\.[1-9][0-9]*/)) {
+        throw new GradleException('Invalid Android release version metadata')
+    }
+    if (injectedVersionCode.toBigInteger() > 2100000000) {
+        throw new GradleException('Android versionCode exceeds the allowed limit')
+    }
+}
+def configuredVersionCode = hasInjectedVersion ? injectedVersionCode.toInteger() : 3
+def configuredVersionName = hasInjectedVersion ? injectedVersionName : '1.0.1'
 
 android {
     namespace = "com.advertio.development"
@@ -17,8 +35,8 @@ android {
         applicationId "com.advertio.development"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.0.1"
+        versionCode configuredVersionCode
+        versionName configuredVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -82,6 +100,9 @@ gradle.taskGraph.whenReady { graph ->
     if (graph.allTasks.any { it.project == project && it.name.toLowerCase().contains('release') }) {
         if (System.getenv('ADVERTIO_PRIVATE_RELEASE') != 'true') {
             throw new GradleException('Release blocked: explicitly authorize private sideload release.')
+        }
+        if (!hasInjectedVersion) {
+            throw new GradleException('Release requires automatic GitHub Actions version metadata.')
         }
         if (!hasReleaseSigning) {
             throw new GradleException('Release blocked: external release signing inputs are required.')
