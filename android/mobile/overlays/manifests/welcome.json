@@ -4,12 +4,12 @@
     {
       "target": "apps/web/src/app/App.tsx",
       "payload": "app/App.tsx",
-      "sha256": "a1ac69267308d1ea3c172b183e83b283330945e2b59810fb715c69b920a9b6f8"
+      "sha256": "b3e5b60ea138d607239497cbdce372b5bdd91f621f4f8d194c2a47f1c1886a76"
     },
     {
       "target": "apps/web/src/shared/onboarding/entry.mjs",
       "payload": "onboarding/entry.mjs",
-      "sha256": "468ca78ce9b35386bfd149769f3df2ec6f9bafd819c9e7750cd745670a952a51"
+      "sha256": "1ef70f4034c18eaaababe9dd4505bc9c518270a75dffbfc2ca72e7e18f4ffa6a"
     },
     {
       "target": "apps/web/src/shared/onboarding/entry.d.mts",
@@ -19,12 +19,12 @@
     {
       "target": "apps/web/src/shared/onboarding/copy.ts",
       "payload": "onboarding/copy.ts",
-      "sha256": "0bf96da29558fdd9722cd69e663a48a91c83baf5e7bb0ca1cada39ccd9ceae73"
+      "sha256": "c25dd9c6226a32dcfd44e28925ea0b55a048e63e13b34ebc04fd96f57c7bfa04"
     },
     {
       "target": "apps/web/src/shared/onboarding/WelcomePage.tsx",
       "payload": "onboarding/WelcomePage.tsx",
-      "sha256": "c3c85719b3b4af182d56db634c8a3bb760a1ff22e0f31c53c47e9d865d9b09bf"
+      "sha256": "954c6df2a3944619801642ac5e9a7be335bd3f04a5e00f36ecdcc3639f6b6ed8"
     },
     {
       "target": "apps/web/src/pages/WalletPage.tsx",
@@ -40,7 +40,22 @@
     {
       "target": "apps/web/src/shared/onboarding/entry.css",
       "payload": "onboarding/entry.css",
-      "sha256": "f2ff44ff8d2dcd338efe0e9f7807a15fe854fb8ec4e0059aaf335650e9a283c5"
+      "sha256": "c73b36f05c51cc3420dc6381c17d72a69ce097e7893d149b40f9a59b4c3974eb"
+    },
+    {
+      "target": "apps/web/public/onboarding/slide-01.webp",
+      "payload": "onboarding/assets/slide-01.webp",
+      "sha256": "d9fdcaaa067712bc698e4b8efd6a888581a7693e87bf0ad3ef6b5b9700aa588f"
+    },
+    {
+      "target": "apps/web/public/onboarding/slide-02.webp",
+      "payload": "onboarding/assets/slide-02.webp",
+      "sha256": "74f0c1c225e4e5d1a56830d881ab3ab9a3a0669dcfd4eed55fa59780012f6259"
+    },
+    {
+      "target": "apps/web/public/onboarding/slide-03.webp",
+      "payload": "onboarding/assets/slide-03.webp",
+      "sha256": "aaeb6a81ca2586dd8d4a6cd4b49ddc96748330c6ee1fd2d7eab6ff580b548511"
     }
   ]
 }

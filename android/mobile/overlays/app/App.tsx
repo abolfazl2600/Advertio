@@ -19,21 +19,26 @@ function AndroidEntry() {
   const session = useSession()
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  // The illustrations are shown once per installation. A returning guest starts at login.
   const [welcoming, setWelcoming] = useState(() => !hasSeenWelcome(storage()))
-  const [signingIn, setSigningIn] = useState(false)
-  const finish = () => { completeWelcome(storage()); setWelcoming(false) }
-  const browse = () => { finish(); navigate('/', { replace: true }) }
+  const [signingIn, setSigningIn] = useState(() => hasSeenWelcome(storage()))
+  const finishWelcome = () => { completeWelcome(storage()); setWelcoming(false) }
+  const signIn = () => { finishWelcome(); setSigningIn(true) }
+  const browse = () => { finishWelcome(); setSigningIn(false); navigate('/', { replace: true }) }
   useEffect(() => {
-    if (welcoming && session.status === 'authenticated') {
-      completeWelcome(storage()); setWelcoming(false)
+    if (session.status === 'authenticated') {
+      completeWelcome(storage())
+      setWelcoming(false)
+      setSigningIn(false)
     }
-  }, [session.status, welcoming])
-  useEffect(() => signingIn && welcoming ? native.registerBack(() => setSigningIn(false)) : undefined, [signingIn, welcoming])
+  }, [session.status])
+  useEffect(() => signingIn && !welcoming ? native.registerBack(browse) : undefined, [signingIn, welcoming])
   const copy = entryCopy()
   return <div className="app-vh">
-    {welcoming ? signingIn ? <main className="android-entry-login" lang={copy.lang} dir={copy.dir}>
-      <header className="android-entry-login-header"><button type="button" onClick={() => setSigningIn(false)}>{copy.back}</button><strong>advertio</strong></header>
-      <div className="android-entry-login-body"><LoginScreen reason={copy.loginReason}/><button type="button" className="android-entry-secondary" onClick={browse}>{copy.browse}</button></div>
-    </main> : <WelcomePage onSignIn={() => setSigningIn(true)} onBrowse={browse}/> : <><AppRoutes/>{!isJourneyPath(pathname) && <TabBar/>}</>}
+    {welcoming ? <WelcomePage onSignIn={signIn} onBrowse={browse}/> : signingIn && session.status !== 'authenticated' ?
+      <main className="android-entry-login" lang={copy.lang} dir={copy.dir}>
+        <header className="android-entry-login-header"><button type="button" onClick={browse}>{copy.back}</button><strong>advertio</strong></header>
+        <div className="android-entry-login-body"><LoginScreen reason={copy.loginReason}/><button type="button" className="android-entry-secondary" onClick={browse}>{copy.browse}</button></div>
+      </main> : <><AppRoutes/>{!isJourneyPath(pathname) && <TabBar/>}</>}
   </div>
 }
