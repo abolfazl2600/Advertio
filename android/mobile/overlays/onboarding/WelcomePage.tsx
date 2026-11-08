@@ -1,16 +1,40 @@
+import { useEffect, useState } from 'react'
+import { native } from '@/shared/platform/native-runtime'
 import { entryCopy } from './copy'
 import './entry.css'
+
+const slideImages = [
+  '/onboarding/slide-01.webp',
+  '/onboarding/slide-02.webp',
+  '/onboarding/slide-03.webp',
+] as const
+
 export function WelcomePage({ onSignIn, onBrowse }: { onSignIn: () => void; onBrowse: () => void }) {
+  const [index, setIndex] = useState(0)
   const copy = entryCopy()
+  const slide = copy.slides[index]
+  const lastSlide = index === slideImages.length - 1
+
+  useEffect(() => {
+    if (index === 0) return
+    return native.registerBack(() => setIndex(current => Math.max(0, current - 1)))
+  }, [index])
+
+  const advance = () => lastSlide ? onSignIn() : setIndex(current => Math.min(slideImages.length - 1, current + 1))
   return <main className="android-welcome" lang={copy.lang} dir={copy.dir}>
-    <div className="android-welcome-content">
-      <div className="android-entry-brand"><img src="/logo-mark.png" width="36" height="36" alt=""/><strong>advertio</strong></div>
-      <div className="android-entry-art" aria-hidden="true"><span>⌂</span><span>↗</span><span>✦</span></div>
-      <p className="android-entry-eyebrow">{copy.welcome}</p><h1>{copy.intro}</h1>
-      <p className="android-entry-description">{copy.detail}</p>
-      <div className="android-entry-categories"><span>{copy.housing}</span><span>{copy.cargo}</span><span>{copy.jobs}</span></div>
-      <div className="android-entry-actions"><button type="button" className="android-entry-primary" onClick={onSignIn}>{copy.signIn}</button><button type="button" className="android-entry-secondary" onClick={onBrowse}>{copy.browse}</button></div>
-      <p className="android-entry-hint">{copy.later}</p>
+    <div className="android-onboarding-slide" key={index}>
+      <div className="android-onboarding-art"><img src={slideImages[index]} alt="" draggable={false}/></div>
+      <div className="android-onboarding-copy" aria-live="polite" aria-atomic="true">
+        <h1>{slide.title}</h1>
+        <p className="android-entry-description">{slide.detail}</p>
+      </div>
+    </div>
+    <div className="android-onboarding-controls">
+      <div className="android-onboarding-dots" role="group" aria-label={copy.slideProgress}>
+        {slideImages.map((_, i) => <span key={i} className={i === index ? 'active' : ''} aria-label={`${i + 1} / ${slideImages.length}`} aria-current={i === index ? 'step' : undefined}/>)}
+      </div>
+      <button type="button" className="android-entry-primary" onClick={advance}>{lastSlide ? copy.signIn : copy.next}</button>
+      <button type="button" className="android-onboarding-skip" onClick={onBrowse}>{copy.browse}</button>
     </div>
   </main>
 }
