@@ -1,10 +1,10 @@
 # Advertio — Communication Assets Registry
 
-**Registry updated:** 2026-10-22 · **Version:** 1.5 · **Maintainer:** Advertio operations (to be assigned)
+**Registry updated:** 2026-11-13 · **Version:** 1.6 · **Maintainer:** Advertio operations (to be assigned)
 
 این پوشه برای ثبت وضعیت فعلی دارایی‌های ارتباطی Advertio ایجاد شده است؛ این اطلاعات **صورت‌وضعیت مشاهده‌شده** هستند و به‌معنای تأیید اتصال فنی، مالکیت یا فعال بودن هر ویژگی در سرور نیستند.
 
-**Inventory:** 17 assets: 7 channels, 6 groups, 2 bots, 1 Telegram community, 1 support contact. (13 channels/groups identified, not a verified exhaustive list of the Community’s 15 chats.)
+**Inventory:** 18 assets: 7 Telegram channels, 6 Telegram groups, 2 bots, 1 Telegram community, 1 support contact, and 1 Instagram cargo profile. (13 Telegram channels/groups identified, not a verified exhaustive list of the Community’s 15 chats.)
 
 ## Files
 
@@ -14,6 +14,7 @@
 - [snapshots/2026-10-20.md](snapshots/2026-10-20.md): شواهد سه اسکرین‌شات نخست.
 - [snapshots/2026-10-20-additional-assets.md](snapshots/2026-10-20-additional-assets.md): یازده تصویر جدید و شواهد دارایی‌های مسکن، شغل، کالا و کارگو.
 - [snapshots/2026-10-22-canada-cargo.md](snapshots/2026-10-22-canada-cargo.md): ثبت شواهد گروه ارسال بار مسافری ایران و کانادا `@canada_cargo` (۳ عضو).
+- [snapshots/2026-11-13-instagram-cargo.md](snapshots/2026-11-13-instagram-cargo.md): ثبت پیج اختصاصی اینستاگرام حمل بار مسافری [@advertio.cargo](https://www.instagram.com/advertio.cargo/) و آمار مشاهده‌شده (۱٬۷۵۹ دنبال‌کننده و ۱ پست).
 
 **CTA validation required:** `@AdvertioBot` shown in the new `@canada_advertio` bio is not the same username as `@advertio_bot`. Verify ownership and exact destination before directing traffic to it.
 
