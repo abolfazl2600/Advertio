@@ -15,11 +15,12 @@ Cost-per-member numbers در Source ناسازگاری محاسباتی دارن
 
 ## Telegram Ads — campaign-level records
 
-از 2026-11-13 دو تبلیغ در سطح Ad ID و تنظیمات هدف‌گیری ثبت شده‌اند:
+از 2026-11-13 سه تبلیغ در سطح Ad ID و تنظیمات هدف‌گیری ثبت شده‌اند:
 
 - [Telegram Ads Performance Log](./telegram-ads/README.md) — روش ثبت، تعاریف، CSV و معیارهای مقایسه
 - [TG-ADS-001 — Canada House / City Search](./telegram-ads/001-canada-house-city-search.md) — هدف‌گیری بر اساس عبارت‌های کشور و شهر
 - [TG-ADS-002 — Canada House / Channel Targeting](./telegram-ads/002-canada-house-channel-targeting.md) — Ad ID: `1caeba50`، هدف‌گیری 16 کانال
+- [TG-ADS-003 — Advertio Cargo / Traveler Acquisition](./telegram-ads/003-advertio-cargo-traveler-acquisition.md) — Ad ID: `0f1c8f5b`، هدف‌گیری 18 کانال
 
 ### TG-ADS-001 — Snapshot اول
 
@@ -44,7 +45,21 @@ Cost-per-member numbers در Source ناسازگاری محاسباتی دارن
 - Total budget: 10,000 (calculated from spent + remaining)
 - Views / clicks / memberships: not visible in supplied screenshots
 
-در TG-ADS-002، نوع هدف‌گیری با TG-ADS-001 متفاوت است؛ بنابراین مقایسه نتیجه آن‌ها باید با توجه به تفاوت Search targeting و Channel targeting انجام شود. جزئیات در [گزارش TG-ADS-002](./telegram-ads/002-canada-house-channel-targeting.md) ثبت شده است.
+در TG-ADS-002، نوع هدف‌گیری با TG-ADS-001 متفاوت است؛ جزئیات در گزارش مستقل کمپین ثبت شده است.
+
+### TG-ADS-003 — اولین ثبت
+
+- Telegram Ads ID: `0f1c8f5b`
+- Creative: سفرهای رو به درآمد تبدیل کن
+- Destination: Advertio Cargo — https://t.me/advertio_cargo
+- Targeting: 18 Telegram channels
+- Budget spent: 1,168
+- Budget remaining: 8,832
+- Total budget: 10,000 (calculated from spent + remaining)
+- Budget consumption: 11.68%
+- Views / clicks / memberships: not visible in supplied screenshots
+
+این تبلیغ مسافران دارای ظرفیت خالی چمدان را برای حمل مدارک و بسته‌ها هدف می‌گیرد. هدف‌گیری شامل کانال‌های مهاجرت، جامعه ایرانیان، سفر، صرافی و سه کانال حمل بار و مدارک در آلمان، هلند و بلژیک است. جزئیات در [گزارش TG-ADS-003](./telegram-ads/003-advertio-cargo-traveler-acquisition.md) ثبت شده است.
 
 ## Initial MVP campaign context
 

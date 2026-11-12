@@ -80,11 +80,25 @@ CPA داشبورد (100.00) با CPA محاسبه‌شده (147.17) متفاوت
 
 واحد بودجه از تصویر تأیید نشده است. همچنین Views، Clicks، Memberships، CTR، CVR، CPC، CPA و مقدار عددی CPM در تصاویر موجود نیستند؛ بنابراین هیچ‌کدام به‌عنوان صفر یا نتیجه کمپین ثبت نشده‌اند.
 
-این تبلیغ از نظر روش هدف‌گیری با TG-ADS-001 متفاوت است:
-- TG-ADS-001: Search / city and country terms
-- TG-ADS-002: Telegram channel targeting
+### TG-ADS-003 — Traveler acquisition for Advertio Cargo
 
-فهرست 16 کانال، متن خلاقه، ابهام تفاوت 450 خانه در عنوان با 490 آگهی در متن و سایر جزئیات در [گزارش TG-ADS-002](./telegram-ads/002-canada-house-channel-targeting.md) ثبت شده است.
+در 2026-11-13 تبلیغی با Ad ID برابر با `0f1c8f5b` ثبت شد:
+
+- Campaign: TG-ADS-003
+- Creative title: سفرهای رو به درآمد تبدیل کن
+- Destination: Advertio Cargo — https://t.me/advertio_cargo
+- Targeting type: Channels
+- Target channels: 18 کانال در حوزه مهاجرت، جامعه ایرانیان، اطلاعات عمومی، صرافی، سفر و حمل بار
+- Budget spent: 1,168
+- Budget remaining: 8,832
+- Total budget: 10,000 (calculated from spent + remaining)
+- Budget consumption: 11.68%
+
+واحد بودجه از تصویر تأیید نشده است. Views، Clicks، Memberships، CTR، CVR، CPC، CPA و مقدار عددی CPM در تصاویر موجود نیستند؛ هیچ‌کدام به‌عنوان صفر یا نتیجه کمپین ثبت نشده‌اند.
+
+این کمپین برای جذب مسافرانی طراحی شده که ظرفیت خالی چمدان دارند و می‌توانند مدارک یا بسته‌های دیگران را حمل کنند. سه کانال هدف به‌طور مستقیم در حوزه حمل بار و مدارک برای هلند، آلمان و بلژیک هستند؛ کانال‌های سفر و پرواز نیز از نظر موضوعی مرتبط‌اند. کانال‌های مهاجرت و صرافی ارتباط غیرمستقیم‌تری دارند.
+
+جزئیات متن خلاقه، 18 کانال هدف، ابهام واحد بودجه و سایر داده‌ها در [گزارش TG-ADS-003](./telegram-ads/003-advertio-cargo-traveler-acquisition.md) ثبت شده است.
 
 ## CAC interpretation
 
@@ -133,8 +147,8 @@ Initial Burn Rate includes:
 
 - Currency / cost unit
 - Campaign-by-campaign spend برای کمپین‌های تاریخی
-- Views / impressions, clicks and memberships برای TG-ADS-002
-- CTR, CVR, CPC, CPA and numeric CPM for TG-ADS-002
+- Views / impressions, clicks and memberships برای TG-ADS-002 و TG-ADS-003
+- CTR, CVR, CPC, CPA and numeric CPM برای TG-ADS-002 و TG-ADS-003
 - CAC to registered user
 - CAC to active user
 - CAC to paying user
