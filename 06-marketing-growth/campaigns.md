@@ -1,17 +1,36 @@
 # Campaigns
 
-این فایل Campaignها و Campaign-like mechanics موجود در Source Document را ثبت می‌کند. Source Campaign calendar یا Creative plan کامل ارائه نکرده است.
+این فایل Campaignها و Campaign-like mechanics موجود در Source Document و اجرای واقعی Advertio را ثبت می‌کند. برای جزئیات عملکرد تبلیغات پولی، فایل‌های تحلیلی مرتبط نیز نگهداری می‌شوند.
 
-## Actual paid campaigns
+## Actual paid campaigns — historical source data
 
-Status: Validated execution data reported by Source
+Status: Source-reported actual data from 4 campaigns
 
 Source از «4 Campaign» تبلیغاتی یاد می‌کند:
 - Total spend: 426,760,000 تومان
 - Stated equivalent: 3,185 CAD
 - Total acquired channel members: 62
 
-Cost-per-member numbers در Source ناسازگاری محاسباتی دارند؛ جزئیات در [Paid Acquisition](./paid-acquisition.md).
+Cost-per-member numbers در Source ناسازگاری محاسباتی دارند؛ جزئیات در [Paid Acquisition](./paid-acquisition.md). این داده تاریخی از رکوردهای جدید کمپین جدا نگهداری می‌شود و نباید بدون تطبیق، با آن‌ها جمع یا ادغام شود.
+
+## Telegram Ads — campaign-level records
+
+از 2026-11-13 اولین رکورد قابل ردیابی در سطح کمپین به این مجموعه اضافه شده است:
+
+- [Telegram Ads Performance Log](./telegram-ads/README.md) — روش ثبت، تعاریف، CSV و معیارهای مقایسه
+- [TG-ADS-001 — Canada House / City Search](./telegram-ads/001-canada-house-city-search.md) — اولین کمپین ثبت‌شده
+
+خلاصه Snapshot اول:
+- Destination: Canada House — https://t.me/canadahouse24
+- Status at capture: Active
+- Views: 883
+- Clicks: 43
+- Memberships: 6
+- Spend: 883 (currency / unit not confirmed)
+- Reported CTR: 4.87%
+- Reported CVR: 13.95%
+
+این Snapshot نتیجه نهایی کمپین نیست؛ هنگام ثبت، کمپین فعال و فقط 8.83% بودجه مصرف شده بود. برای تحلیل روند، Snapshotهای بعدی باید به همان Campaign ID اضافه شوند.
 
 ## Initial MVP campaign context
 
@@ -20,7 +39,7 @@ MVP:
 - Rental Canada
 - English
 - Website + Telegram Bot + Telegram Channel
-- Telegram Ads استفاده شده است، اما Source تعداد Ads/flightها را مشخص نمی‌کند.
+- Telegram Ads استفاده شده است، اما Source تعداد Ads/flightهای آن دوره را مشخص نمی‌کند.
 
 Source می‌گوید Initial audience احتمالاً Warm Audience بوده چون بخشی از Advertising هدفمند بوده است.
 
@@ -45,7 +64,7 @@ Bonus Coins می‌توانند از:
 دریافت شوند.
 
 Gift/Promo Code example:
-- `PROMO2026`
+- PROMO2026
 
 این صرفاً Example code در Source است.
 
@@ -74,17 +93,9 @@ Source درباره:
 
 ## Campaign measurement
 
-Actual campaign data فقط:
-- total spend
-- acquired members
-- source-stated acquisition cost
+برای کمپین‌های جدید Telegram Ads، داده‌های سطح کمپین در پوشه [telegram-ads](./telegram-ads/README.md) ثبت می‌شوند.
 
-را ارائه می‌کند.
-
-> اطلاعات کافی برای این بخش در Source Document فعلی وجود ندارد.
-
-برای Campaign-level:
-- names
+برای 4 کمپین تاریخی Source، اطلاعات سطح هر کمپین همچنان کامل نیست:
 - dates
 - creative
 - targeting settings
@@ -94,4 +105,4 @@ Actual campaign data فقط:
 - conversions
 - per-campaign spend
 
-داده‌ای در Source وجود ندارد.
+داده‌های جدید نباید به‌عنوان تکمیل‌کننده خودکار داده‌های تاریخی فرض شوند؛ ابتدا باید انتساب و دوره زمانی آن‌ها تطبیق داده شود.
