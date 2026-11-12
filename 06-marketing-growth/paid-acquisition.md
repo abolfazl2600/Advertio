@@ -30,7 +30,9 @@ Status: Source-reported actual data from 4 campaigns
 >
 > Source values بدون اصلاح حفظ شده‌اند و نیازمند بررسی Business/Finance هستند.
 
-## Telegram Ads — first campaign-level observation
+## Telegram Ads — campaign-level observations
+
+### TG-ADS-001 — Search targeting
 
 در 2026-11-13 یک Snapshot از کمپین فعال Telegram Ads ثبت شد:
 
@@ -51,10 +53,7 @@ Status: Source-reported actual data from 4 campaigns
 
 واحد پول / واحد اعتباری در تصویر مشخص نیست؛ بنابراین اعداد هزینه بدون نسبت‌دادن به تومان، دلار، TON یا Stars ثبت شده‌اند.
 
-### Independent calculation
-
 با فرض یکسان بودن واحد هزینه:
-
 - Calculated CTR: 43 / 883 = 4.87%
 - Calculated CVR: 6 / 43 = 13.95%
 - Calculated CPC: 883 / 43 = 20.53
@@ -63,9 +62,29 @@ Status: Source-reported actual data from 4 campaigns
 
 CPA داشبورد (100.00) با CPA محاسبه‌شده (147.17) متفاوت است. تا زمان روشن‌شدن تعریف این فیلد، این دو مقدار جدا نگهداری می‌شوند.
 
-درصد مصرف بودجه هنگام ثبت 8.83% بوده و کمپین فعال بوده است؛ این داده یک Snapshot میانی است، نه نتیجه نهایی.
+درصد مصرف بودجه هنگام ثبت 8.83% بوده و کمپین فعال بوده است؛ این داده یک Snapshot میانی، نه نتیجه نهایی است.
 
-جزئیات، عبارت‌های هدف‌گیری، ابهام‌ها و Snapshotهای بعدی در [Telegram Ads Performance Log](./telegram-ads/README.md) و [گزارش TG-ADS-001](./telegram-ads/001-canada-house-city-search.md) ثبت می‌شوند.
+### TG-ADS-002 — Channel targeting
+
+در 2026-11-13 یک تبلیغ دیگر با Ad ID برابر با `1caeba50` ثبت شد:
+
+- Campaign: TG-ADS-002
+- Creative title: ۴۵۰ خانه در کانادا با ۸ هزار عضو
+- Destination: Canada House — https://t.me/canadahouse24
+- Targeting type: Channels
+- Target channels: 16 کانال مرتبط با جامعه ایرانیان کانادا، مسکن، مهاجرت، زندگی و کاریابی
+- Budget spent: 185
+- Budget remaining: 9,815
+- Total budget: 10,000 (calculated from spent + remaining)
+- Budget consumption: 1.85%
+
+واحد بودجه از تصویر تأیید نشده است. همچنین Views، Clicks، Memberships، CTR، CVR، CPC، CPA و مقدار عددی CPM در تصاویر موجود نیستند؛ بنابراین هیچ‌کدام به‌عنوان صفر یا نتیجه کمپین ثبت نشده‌اند.
+
+این تبلیغ از نظر روش هدف‌گیری با TG-ADS-001 متفاوت است:
+- TG-ADS-001: Search / city and country terms
+- TG-ADS-002: Telegram channel targeting
+
+فهرست 16 کانال، متن خلاقه، ابهام تفاوت 450 خانه در عنوان با 490 آگهی در متن و سایر جزئیات در [گزارش TG-ADS-002](./telegram-ads/002-canada-house-channel-targeting.md) ثبت شده است.
 
 ## CAC interpretation
 
@@ -110,10 +129,12 @@ Initial Burn Rate includes:
 
 ## Paid acquisition metric gaps
 
-برای کمپین TG-ADS-001 بخشی از داده‌های CTR، CPC، CPM و تبدیل اولیه موجود است؛ اما برای ارزیابی کامل Acquisition همچنان داده‌های زیر لازم است:
+برای تحلیل کامل کمپین‌های فعلی همچنان داده‌های زیر لازم است:
 
 - Currency / cost unit
 - Campaign-by-campaign spend برای کمپین‌های تاریخی
+- Views / impressions, clicks and memberships برای TG-ADS-002
+- CTR, CVR, CPC, CPA and numeric CPM for TG-ADS-002
 - CAC to registered user
 - CAC to active user
 - CAC to paying user

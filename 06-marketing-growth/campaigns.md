@@ -15,12 +15,14 @@ Cost-per-member numbers در Source ناسازگاری محاسباتی دارن
 
 ## Telegram Ads — campaign-level records
 
-از 2026-11-13 اولین رکورد قابل ردیابی در سطح کمپین به این مجموعه اضافه شده است:
+از 2026-11-13 دو تبلیغ در سطح Ad ID و تنظیمات هدف‌گیری ثبت شده‌اند:
 
 - [Telegram Ads Performance Log](./telegram-ads/README.md) — روش ثبت، تعاریف، CSV و معیارهای مقایسه
-- [TG-ADS-001 — Canada House / City Search](./telegram-ads/001-canada-house-city-search.md) — اولین کمپین ثبت‌شده
+- [TG-ADS-001 — Canada House / City Search](./telegram-ads/001-canada-house-city-search.md) — هدف‌گیری بر اساس عبارت‌های کشور و شهر
+- [TG-ADS-002 — Canada House / Channel Targeting](./telegram-ads/002-canada-house-channel-targeting.md) — Ad ID: `1caeba50`، هدف‌گیری 16 کانال
 
-خلاصه Snapshot اول:
+### TG-ADS-001 — Snapshot اول
+
 - Destination: Canada House — https://t.me/canadahouse24
 - Status at capture: Active
 - Views: 883
@@ -30,7 +32,19 @@ Cost-per-member numbers در Source ناسازگاری محاسباتی دارن
 - Reported CTR: 4.87%
 - Reported CVR: 13.95%
 
-این Snapshot نتیجه نهایی کمپین نیست؛ هنگام ثبت، کمپین فعال و فقط 8.83% بودجه مصرف شده بود. برای تحلیل روند، Snapshotهای بعدی باید به همان Campaign ID اضافه شوند.
+این Snapshot نتیجه نهایی کمپین نیست؛ هنگام ثبت، کمپین فعال و فقط 8.83% بودجه مصرف شده بود.
+
+### TG-ADS-002 — اولین ثبت
+
+- Telegram Ads ID: `1caeba50`
+- Destination: Canada House — https://t.me/canadahouse24
+- Targeting: 16 Telegram channels
+- Budget spent: 185
+- Budget remaining: 9,815
+- Total budget: 10,000 (calculated from spent + remaining)
+- Views / clicks / memberships: not visible in supplied screenshots
+
+در TG-ADS-002، نوع هدف‌گیری با TG-ADS-001 متفاوت است؛ بنابراین مقایسه نتیجه آن‌ها باید با توجه به تفاوت Search targeting و Channel targeting انجام شود. جزئیات در [گزارش TG-ADS-002](./telegram-ads/002-canada-house-channel-targeting.md) ثبت شده است.
 
 ## Initial MVP campaign context
 
