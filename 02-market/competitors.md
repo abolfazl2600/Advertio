@@ -114,3 +114,13 @@ Source هنوز پرسش‌های رقابتی زیر را باز نگه می‌
 نتایج فعلی MVP فقط نشان داده‌اند که تعداد محدودی از کاربران برای **ثبت و انتشار آگهی** پول پرداخت کرده‌اند؛ پرداخت برای **مشاهده اطلاعات تماس / Early Access** هنوز Validate نشده است.
 
 See [Market Validation](./market-validation.md) and [Research](./research.md).
+
+---
+
+## Passenger Cargo Vertical — Dedicated Research
+
+تحلیل رقابتی حوزه حمل بار با مسافر در سند مستقلی نگهداری می‌شود تا با رقابت عمومی Advertio در Housing، Jobs و سایر دسته‌ها مخلوط نشود.
+
+- [Passenger Cargo Competitor Landscape](./passenger-cargo-competitors.md) — فهرست پلتفرم‌های مستقیم، گروه‌های تلگرامی، جایگزین‌ها، شواهد اولیه و اولویت تحقیق.
+- [Passenger Cargo Benchmark Template](./passenger-cargo-benchmark-template.md) — قالب یکسان برای تحلیل محصول، UX، اعتماد، مسیرها، قیمت‌گذاری، درآمد و نقدینگی بازار.
+
