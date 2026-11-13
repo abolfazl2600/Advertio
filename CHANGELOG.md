@@ -1,8 +1,22 @@
 # Changelog
 
-Monthly summaries of changes recorded in the [Advertio GitLab monorepo](https://gitlab.com/advertio/platform/advertio-monorepo) on its `master` branch. Entries are grouped by the **calendar month of the source commit** (July–October 2026), newest first. Related commits are consolidated into outcomes; linked commits provide representative implementation evidence rather than an exhaustive commit-by-commit log.
+Monthly summaries of changes recorded in the [Advertio GitLab monorepo](https://gitlab.com/advertio/platform/advertio-monorepo) on its `master` branch. Entries are grouped by the **calendar month of the source commit** (July–November 2026), newest first. Related commits are consolidated into outcomes; linked commits provide representative implementation evidence rather than an exhaustive commit-by-commit log.
 
-**Scope:** repository implementation and documentation, **not independently verified production deployments**. October 2026 now includes an audited **October 21** delta ([full change inventory](./docs/releases/2026-10-21.md)); the older monthly summaries below preserve the earlier October 19 state.
+**Scope:** repository implementation and documentation, **not independently verified production deployments**. November 2026 now includes an audited **November 13** delta ([full change inventory](./docs/releases/2026-11-13.md)); October 2026 also retains the [October 21 audit](./docs/releases/2026-10-21.md).
+
+---
+
+## 2026-11-13 — GitLab master source synchronization
+
+- **Owner listing tools:** added owner-only editing for native listings and per-listing performance reports. A changed live listing returns to moderation; impressions remain untracked and are not reported as zero. [MR !47](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/47).
+- **Boost visibility:** active boosts now show a distinct amber **Boosted** badge on Housing, Cargo and Jobs cards, separate from phone/identity trust and Urgent labels. [MR !47](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/47).
+- **Cargo routes:** expanded the route catalog from seven to eleven countries, adding the UAE, China, Turkey and Russia; route-aware currency formatting and richer Cargo channel details were updated. [MR !48](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/48).
+- **Identity-verification payment reliability:** added a second retry at the concurrent payment-state transition so rapid double taps do not surface a transient 500 or charge twice. [MR !49](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/49).
+- **Web localization:** added the five bot languages to the Web app, a pre-render language picker, persistent browser/account locale, Persian RTL, and a Profile language selector. The locale is shared with Telegram. Gate A user acquisition metrics now use first successful phone verification, not account creation or Telegram group joins. [MR !50](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/50).
+- **Public landing and routing:** / is now the public landing page, /apps is the category hub, and journey URLs use /apps/<slug>. [MR !51](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/51).
+- **Instagram automation:** introduced the Meta webhook, rule engine, comment-to-DM and conversation flows, link-click attribution, and Backoffice diagnostics/rule/conversation/execution/analytics views. The seeded Cargo rule remains disabled and in dry-run; Meta setup, permissions and App Review are not presumed complete. [MR !51](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/51).
+
+**Detailed source-backed inventory:** [November 13 implementation audit](./docs/releases/2026-11-13.md). These are merged-code findings, not proof of Production deployment or live Meta delivery.
 
 ---
 
