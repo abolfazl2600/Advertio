@@ -1,6 +1,6 @@
 # Backoffice — Gate A
 
-> UI value examples are historical snapshots from 3 Oct 2026; implementation updates below were reviewed against GitLab `master` on 20 Oct 2026.
+> UI value examples are historical snapshots from 3 Oct 2026. Current user-count semantics were updated in GitLab `master` on 10 Nov 2026; see the phone-verification update at the end. This is not a live metric export.
 
 ## Purpose
 
@@ -410,3 +410,34 @@ The selected category applies to listing-based metrics and queries so Housing, C
 Cargo and Jobs were enabled by product-owner decision before Gate A. Their presence in the selector does not mean Gate A passed. Values copied from the 3 Oct screenshots remain historical snapshots, not current counts.
 
 Source: [category-scoped Gate A implementation](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/99672dd655c3f77de463b97648a00d17f4fa4f24).
+
+
+## Current implementation update — 2026-11-10: phone-verified user counts
+
+The Web localization / identity update added the FirstPhoneVerifiedAtUtc field and changed the Gate A user-acquisition definitions. These user metrics remain platform-wide and are not scoped to the selected Housing/Cargo/Jobs category.
+
+### Total users
+
+- Counts distinct accounts with a successfully verified phone number, across the platform.
+- Includes active and disabled accounts, and admins whose phone is verified.
+- Excludes accounts with no successful phone verification, crawler publishers, and people who only joined a Telegram group.
+- It is a current snapshot, not a rolling-window count.
+
+### New users
+
+- Counts distinct accounts whose **first successful phone verification** occurred inside the selected window.
+- Creating an account, opening /start, joining a Telegram group, or receiving a chat_member update does not count as a new verified user.
+- Re-verifying a phone does not count the same account again and does not move its first-verification date into a later window.
+- The source is identity.users.FirstPhoneVerifiedAtUtc, not CreatedAtUtc.
+
+### Active users
+
+- Counts distinct real accounts with a qualifying analytics event in the selected window, or a user-created listing posted in that window.
+- A listing's crawler/system publisher is not a user account. Group-join updates are not activity.
+- This metric remains platform-wide; category selection affects listing-based metrics, not user population metrics.
+
+### Historical backfill boundary
+
+When FirstPhoneVerifiedAtUtc was introduced, an account that had verified previously retains the verification timestamp available on the account at migration time; the system does not invent an earlier date that was not stored. Later successful verifications do not move the first-verification timestamp.
+
+Source: [GitLab MR !50 — Web localization and first phone-verification metrics](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/50), [Gate A metric definitions](https://gitlab.com/advertio/platform/advertio-monorepo/-/blob/master/docs/backoffice/gate-a.md).
