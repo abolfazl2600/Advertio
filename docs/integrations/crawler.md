@@ -3,9 +3,9 @@
 **Audience:** whoever is writing the crawler.
 **Server-side status:** ✅ built and tested (ADR-0009). This document is a contract, not a proposal.
 **Journeys that accept listings:** `housing` · `passenger-cargo` · `jobs`
-**Last updated:** 2026-10-21
+**Last updated:** 2026-11-13
 
-> **Synchronization note (GitHub):** Source: [GitLab crawler contract at `e36ba877`](https://gitlab.com/advertio/platform/advertio-monorepo/-/blob/e36ba877d416cc763f2093c6d38eaf940a3a5e11/docs/CRAWLER-INTEGRATION.md). This GitHub copy also incorporates the subsequent-in-code `cargo_type` **MultiSelect** contract from [commit `448a94f5`](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/448a94f55c945efc99840a4b39453f9fab7f0ef6), which the upstream prose still calls `select`. Read [Crawler implementation reconciliation](../../09-crawler/advertio-integration-2026-10-21.md) for the operational implications. Source code/live schema takes precedence over examples here.
+> **Synchronization note (GitHub):** Rechecked against [GitLab crawler contract at master `0f40795d`](https://gitlab.com/advertio/platform/advertio-monorepo/-/blob/0f40795d64ecf50e7f2698684c70fc41b8d2189b/docs/CRAWLER-INTEGRATION.md). This GitHub copy also preserves the code-verified `cargo_type` **MultiSelect** contract from [commit `448a94f5`](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/448a94f55c945efc99840a4b39453f9fab7f0ef6). The route catalog and crawler price-currency options were expanded on October 26; current values below include all 11 route countries and eight currencies. Read [Crawler implementation reconciliation](../../09-crawler/advertio-integration-2026-10-21.md) for operational notes. Source code/live schema takes precedence over examples here.
 
 > **What changed on 2026-10-21 (cargo only).** Cargo is one pool for now: the app no longer asks
 > whether someone is travelling or sending, and the date is optional.
@@ -29,7 +29,7 @@
 >   now has no "negotiable" flag (§7.3).
 > - **New in §4:** what it means when `alreadyExisted: true` comes back for a *different* post.
 >   Cargo and jobs posts look alike much more often than housing posts do.
-> - **New in §8:** the location catalog now covers seven countries, but only cargo routes use
+> - **New in §8:** the location catalog now covers eleven countries, but only cargo routes use
 >   them.
 >
 > No backend change was needed. Ingest has always checked a listing against the schema of the
@@ -539,7 +539,7 @@ The description appears on the detail page.
 | `weight_kg` | number | 0.1–30. Shown as "up to" that weight |
 | `price` | number | **per kg** — see *Price and currency* |
 | `price_negotiable` | boolean | same rule as housing (§7.1): send it only when the post says the price is negotiable, and never together with `price` |
-| `currency` | select | `CAD` · `USD` · `EUR` · `GBP`. Send it with every `price` |
+| `currency` | select | `CAD` · `USD` · `EUR` · `GBP` · `AED` · `CNY` · `TRY` · `RUB`. Send it with every `price` |
 
 #### Route cities
 
@@ -551,8 +551,8 @@ location catalog, in the country given by the matching `*_country` attribute:
 - **Persian names are refused.** The server matches only the code and the English name, so
   `تهران` returns a `400`. Map Persian names yourself.
   `GET /api/locations/cities?countryCode=IR&limit=200` returns every city of a country with its
-  `code`, `name`, `nameFa` and `provinceCode`. The whole catalog is about 150 cities across
-  seven countries. Fetch it at startup and build a lookup keyed by **country and name**.
+  `code`, `name`, `nameFa` and `provinceCode`. The whole catalog is about 200 cities across
+  eleven countries. Fetch it at startup and build a lookup keyed by **country and name**.
 - The same name can exist in two countries: London is in Ontario and in the UK. The country has
   to come from the post. If the post doesn't say, reject the listing.
 - If a city isn't on the list, reject the listing. Don't substitute the nearest listed city.
