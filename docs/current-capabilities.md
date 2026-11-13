@@ -1,17 +1,17 @@
 # Advertio — detailed capability catalogue
 
-> **Current delta:** 2026-11-13, GitLab `master` at `0f40795d`; owner edit/performance, active-boost badges, 11-country Cargo routes, five-language Web localization, /apps routes and Instagram automation. [Full audit](./releases/2026-11-13.md). The [October 21 audit](./releases/2026-10-21.md) remains the reference for the preceding Cargo/Quick Search/pricing migration. **Baseline reviewed:** 2026-11-13. This catalogue was re-audited against the GitLab `master` code and commit history from the initial repository scaffold on 2026-07-05 through the October 2026 journey launches—not only the last two weeks. It consolidates the current `docs/` implementation notes and cross-checks the older product, monetization, category and growth specifications. It describes repository implementation, not verified Production deployment. Configuration-dependent features are marked as such; planned work and known gaps are not described as shipped.
+> **Current delta:** 2026-11-13, GitLab `master` at `0f40795d`; owner edit/performance, active-boost badges, 11-country Cargo routes, five-language Web localization, /apps routes and Instagram automation. [Full audit](./releases/2026-11-13.md). The [October 21 audit](./releases/2026-10-21.md) remains the reference for the preceding Cargo/Quick Search/pricing migration. **Baseline reviewed:** 2026-11-13. This catalogue was re-audited against the GitLab `master` code and commit history from the initial repository scaffold on 2026-07-05 through the November 13, 2026 feature merges—not only the last two weeks. It consolidates the current `docs/` implementation notes and cross-checks the older product, monetization, category and growth specifications. It describes repository implementation, not verified Production deployment. Configuration-dependent features are marked as such; planned work and known gaps are not described as shipped.
 
 ## 1. Product scope and architecture
 
 ### Live Web journeys
 - **Housing** — Canadian rental and roommate listings; canonical slug `housing`.
-- **Cargo** — traveller/sender route listings; display label Cargo, canonical slug `passenger-cargo`.
+- **Cargo** — route-based item-carrying listings in one shared pool; no public traveller/sender selector; display label Cargo, canonical slug `passenger-cargo`.
 - **Jobs** — Canadian hiring and job-seeker listings; canonical slug `jobs`.
 - Services and Social may exist in backend category definitions, but they are not registered as live Web journeys.
 
 ### Shared Mini App navigation
-- Home/Hub with cards for live journeys.
+- Public Landing page at `/` and Apps Hub at `/apps` with cards for live journeys.
 - Post chooser when the user has more than one live journey.
 - Global keyword Search.
 - Saved listings across journeys.
@@ -22,7 +22,7 @@
 
 ### Shared technical and interaction boundaries
 - Journeys are independent features and reuse a shared listing layer rather than importing another journey's UI.
-- Shared listing layer owns API interactions, contact/unlock, conversation, save, report and publisher actions.
+- Shared listing layer owns API interactions, contact/unlock, conversation, save, report, owner edit, owner performance, renew and boost actions. Active boosts show a separate Boosted badge.
 - Server validation and category policy are authoritative. Client-displayed prices or stale UI state do not override the server.
 - Current server rule: one free-slot live listing per owner/category; further concurrent native listings require configured per-category `additional_listing` charges (and a quote/confirmation), or fail closed when the extra charge is disabled. Crawled ingest is a separate supply class.
 - Code merged to GitLab `master` does not, by itself, prove Production deployment.
@@ -301,7 +301,7 @@ The older implementation history contains several capabilities that were not cal
 - A crawled listing can be claimed by a matching publisher when the Advertio account has a verified phone and a linked Telegram identity whose handle matches the recorded source contact handle.
 - The claim transfers the publisher/owner relationship but preserves the listing's Crawled supply-source classification. The source cohort therefore remains excluded from user-generated Gate A metrics, apart from the explicit supply-substitution comparison.
 - The crawler API is authenticated with a configured ingest key and supports media upload, idempotent create/update keyed by source name plus external ID, individual deactivation and source-wide deactivation.
-- The current documented ingestion contract supports Housing only. Cargo and Jobs being live Web journeys does not imply that crawler ingestion is supported for them.
+- The current crawler ingest contract supports Housing, Cargo and Jobs through the shared authenticated receiver; category-specific schema and location validation still apply.
 - Backoffice Crawled sources is an operational monitor and bulk-deactivation surface, not a crawler scheduler or editor. A Stale marker means the last ingest was more than 48 hours ago; deactivation in Advertio does not delete an external Telegram post or stop an upstream crawler.
 
 ### Server-side media processing and cleanup
