@@ -105,7 +105,7 @@ The seeded Cargo Reel - Comment to DM rule is **disabled and in dry-run**. Meta 
 
 The Web app supports Persian (fa-IR), English (en-CA), French (fr-FR), Russian (ru-RU) and Hindi (hi-IN). The locale priority is authenticated account, browser-stored choice, then the first-visit picker. Persian is RTL; the other four are LTR. Profile language selection writes the same User.Locale field used by Telegram. User-authored listing titles/descriptions are not automatically translated. See [ADR 0013](../adr/ADR-0013-web-localization.md).
 
-Public URLs now use /apps/<slug> for journeys; / is the public Landing page and /apps is the in-app directory. Old root-level journey paths are not kept as redirects. See [ADR 0014](../adr/ADR-0014-journey-apps-prefix.md).
+Public URLs now use `/apps/<slug>` for journeys; `/` is the public Landing page and `/apps` is the in-app directory. Old root-level journey paths are not kept as redirects. See [ADR 0014](../adr/ADR-0014-journey-apps-prefix.md).
 
 ## 12. Explicit non-claims
 
