@@ -1,6 +1,6 @@
 # Shared listing interactions
 
-> Current shared behavior for Housing, Cargo and Jobs. Shared listing code was extracted from Housing on 2026-10-19 so journeys reuse one contact/save/report/action path.
+> Current shared behavior for Housing, Cargo and Jobs. Updated through GitLab master 2026-11-13, including owner edit/performance actions and the active-boost badge.
 
 ## 1. Listing states and lifecycle
 
@@ -82,6 +82,37 @@ Duplicate detection runs before the create action charges coins or writes the ne
 ## 8. Trust indicators
 
 Listing detail pages can show phone-verified and identity-verified indicators from the publisher's trust data. Identity verification is separate from phone verification and is reviewed manually. The crawled-source badge/contact behavior is separate from user identity badges.
+
+## 9. Owner edit controls
+
+Native user-created listings expose owner actions instead of the public contact call to action. The owner can open **Edit** from their own listing in Housing, Cargo or Jobs.
+
+- Only the authenticated publisher can edit; another user's listing is indistinguishable from a missing listing.
+- The editable fields are title, description, category attributes, location and media. Category, publisher and supply source cannot be changed.
+- The backend validates the edited attributes against the listing's existing category schema and validates that media keys belong to the owner.
+- Editing does not charge coins and does not change the listing's category or publisher.
+- A changed Active listing is returned to PendingReview and leaves the public feed until a moderator approves it again. A changed PendingReview listing stays in review. An unchanged submission is a no-op.
+- Crawled listings cannot be edited through this flow. An expired listing must be renewed before editing; rejected/taken-down states are not editable.
+
+## 10. Owner listing performance
+
+The **Performance** page is available only to the listing owner, including for a listing whose lifecycle has ended. A non-owner receives the same not-found response as an unknown listing id.
+
+The owner can select **Since publication**, **Last 30 days** or **Last 7 days**. A requested period never starts before the listing was published.
+
+| Metric | Meaning and limit |
+|---|---|
+| Impressions | Not tracked by the current instrumentation; shown as unavailable, not zero |
+| Detail views | Distinct signed-in people who opened the listing; excludes the owner and anonymous visitors |
+| Message taps | Number of taps on “Message Advertiser”; counts taps, including signed-out taps, not unique people |
+| Contact requests | Distinct people who asked to contact the owner |
+| Contacts made | Distinct people who successfully reached the contact, whether paid or free |
+
+A daily chart plots detail views and contacts. The report reads existing events and does not create a view event by opening the report.
+
+## 11. Boost visibility
+
+While the server-reported boost window is active, listing cards show an amber **Boosted** badge with a bolt. It is deliberately distinct from the blue phone-verified shield and the red Urgent flag. The badge disappears when the boost window ends, even if the lifecycle worker has not yet cleared the stored flag. The badge is a paid-reach signal, not a trust signal.
 
 ## Related pages
 
