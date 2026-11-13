@@ -1,6 +1,6 @@
 # Advertio — detailed capability catalogue
 
-> **Current delta:** 2026-10-21, GitLab `master` at `e36ba877`; updated Cargo, Quick Search and native listing pricing below. [All changes](./releases/2026-10-21.md). **Baseline reviewed:** 2026-10-20. This catalogue was re-audited against the GitLab `master` code and commit history from the initial repository scaffold on 2026-07-05 through the October 2026 journey launches—not only the last two weeks. It consolidates the current `docs/` implementation notes and cross-checks the older product, monetization, category and growth specifications. It describes repository implementation, not verified Production deployment. Configuration-dependent features are marked as such; planned work and known gaps are not described as shipped.
+> **Current delta:** 2026-11-13, GitLab `master` at `0f40795d`; owner edit/performance, active-boost badges, 11-country Cargo routes, five-language Web localization, /apps routes and Instagram automation. [Full audit](./releases/2026-11-13.md). The [October 21 audit](./releases/2026-10-21.md) remains the reference for the preceding Cargo/Quick Search/pricing migration. **Baseline reviewed:** 2026-11-13. This catalogue was re-audited against the GitLab `master` code and commit history from the initial repository scaffold on 2026-07-05 through the October 2026 journey launches—not only the last two weeks. It consolidates the current `docs/` implementation notes and cross-checks the older product, monetization, category and growth specifications. It describes repository implementation, not verified Production deployment. Configuration-dependent features are marked as such; planned work and known gaps are not described as shipped.
 
 ## 1. Product scope and architecture
 
@@ -18,7 +18,7 @@
 - My listings across journeys.
 - Wallet and payment history.
 - Profile, sign-in, verification and sign-out.
-- Journey-specific feed, create form and listing detail routes. Current public routes include `/housing`, `/passenger-cargo`, `/jobs`; create routes end in `/new`.
+- Public Landing page at `/`, Apps Hub at `/apps`, and journey routes `/apps/<slug>`, `/apps/<slug>/new` and `/apps/<slug>/:id`.
 
 ### Shared technical and interaction boundaries
 - Journeys are independent features and reuse a shared listing layer rather than importing another journey's UI.
@@ -48,7 +48,7 @@ Detailed source: [Mini App — Housing](./mini-app/housing.md).
 - Required: catalog-validated origin and destination country/city. **Travel date is optional** and can be cleared; title is the route, plus date only when supplied.
 - `cargo_type` is **MultiSelect**, with old scalar item values read as one-item arrays. Multiple items appear on card, detail and channel post. Existing item-type saved/channel filters continue to match list membership.
 - Other optional fields: weight 0.1–30 kg, price, negotiable flag and description. New/no-role Cargo prices mean per kg; existing sender totals remain totals. The native UI derives currency from route, but crawlers must not infer a currency.
-- Seven route countries: IR, CA, US, DE, IT, GB, FR. The listing location is its origin. Local-calendar travel countdown and Telegram viewport-aware city picker improve form usability.
+- Eleven route countries: IR, CA, US, DE, IT, GB, FR, AE, CN, TR and RU. The listing location is its origin. Local-calendar travel countdown and Telegram viewport-aware city picker improve form usability.
 - Feed uses origin/destination filters, not role tabs. Trips with a known past date are hidden without expiring their stored lifecycle. Undated trips remain eligible.
 - Shared Hub/Post/Search/Saved/My listings integration, terminal `410` unavailable-detail state, and consistent back-to-Hub navigation.
 - **Crawler Cargo ingest is supported** alongside Housing and Jobs, via the same dedicated API. See [Cargo implementation](./mini-app/cargo.md), [full receiver contract](./integrations/crawler.md), and [source-backed reconciliation](../09-crawler/advertio-integration-2026-10-21.md).
@@ -355,7 +355,7 @@ See [Implementation history and legacy-spec reconciliation](./implementation-his
 
 ## 13. Known gaps — do not describe as shipped
 
-- Cargo/Jobs crawler ingestion.
+- Meta App Review, Business Verification, production credentials and live Instagram delivery are external setup steps; the seeded Cargo automation rule is disabled and in dry-run.
 - Multiple active listings per user within the same category; one-active-listing server rule remains.
 - Cargo lifecycle expiration based on travel date (past-date trips are only hidden from the feed).
 - Jobs Filled status, external application links/email and Jobs-specific Backoffice scam signals.
@@ -369,3 +369,39 @@ See [Implementation history and legacy-spec reconciliation](./implementation-his
 - National ID, GPS, social-media, financial and cargo-ticket verification flows.
 - A complete Backoffice category/schema CRUD editor is not confirmed; current code evidence supports backend category schemas/reference data and a policy/pricing UI, not a full category-definition management interface.
 - Production deployment of latest GitLab `master` is not verified by this catalogue.
+
+
+## 14. November 2026 implementation update
+
+### Owner edit and performance
+
+- Native listing owners have Edit and Performance actions across Housing, Cargo and Jobs.
+- Owners may edit their own PendingReview or Active listings. Edits are validated against the original category schema and media ownership. They do not charge coins or permit category/publisher changes. A changed live listing returns to PendingReview; expired listings must be renewed first; crawled listings are not editable.
+- Performance reports are owner-only and offer Since publication, 30-day and 7-day periods. Metrics are detail views (distinct signed-in non-owner viewers), message taps (tap count), contact requests (distinct people) and contacts made (distinct people, paid or free). Impressions are not tracked and are shown as unavailable rather than zero.
+- Active boost windows now appear as a separate amber Boosted badge, not a trust badge.
+
+### Cargo route expansion
+
+Cargo's location catalog now covers 11 route countries: Iran, Canada, United States, Germany, Italy, United Kingdom, France, United Arab Emirates, China, Turkey and Russia. The added routes support AED, CNY, TRY and RUB. Cargo feed count and past-date exclusion are server-backed; channel formatting preserves route currency and includes origin/destination plus applicable phone/identity trust labels.
+
+### Web localization and routing
+
+The Web app supports Persian, English, French, Russian and Hindi. The first-visit picker appears before the rest of the site when neither the account nor browser has a saved locale. Profile language selection persists to browser storage and, when signed in, the shared User.Locale field used by Telegram. Persian is RTL; the other locales are LTR. User-authored listing titles and descriptions are not auto-translated.
+
+The public landing page is /, the in-app category directory is /apps, and journeys live under /apps/<slug>. Legacy root-level journey URLs are not retained as redirects.
+
+### Instagram automation
+
+A Meta integration now handles signed webhook events, comment/DM rule matching, private replies, conditional public confirmation, Cargo/Housing/Jobs conversation flows, human hand-off and click-tracked Advertio redirect links. Backoffice exposes connection diagnostics, rules, conversations, executions and analytics. The default Cargo Reel - Comment to DM rule remains disabled and dry-run. Meta app configuration, credentials, permissions, Business Verification and App Review are not assumed complete; only redirect clicks are attributed, not registrations or listing creation. See [Instagram automation](./instagram-automation/ARCHITECTURE.md).
+
+### Gate A user counts and payment reliability
+
+Total users now counts accounts with a verified phone. New users counts each account's first successful phone verification in the selected window; account creation and Telegram group joins are excluded. Active users remain based on qualifying activity or a user-created listing. The identity-verification payment transition also gained bounded retries for concurrent double taps.
+
+### Source references
+
+- [MR !47 — owner tools and boost badge](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/47)
+- [MR !48 — Cargo route countries and currencies](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/48)
+- [MR !49 — identity-verification payment retry](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/49)
+- [MR !50 — Web localization and phone-verified user metrics](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/50)
+- [MR !51 — landing page, /apps/ routing and Instagram automation](https://gitlab.com/advertio/platform/advertio-monorepo/-/merge_requests/51)
