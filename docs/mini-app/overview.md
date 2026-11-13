@@ -1,6 +1,6 @@
 # Mini App — current implementation
 
-> **Updated for 2026-10-21:** simplified Cargo, unified journey navigation, Quick Search semantics, and paid additional native listings. Full [GitLab change audit](../releases/2026-10-21.md) and [Cargo details](./cargo.md). Baseline reviewed: 2026-10-20. Describes the code merged to GitLab `master`; Production deployment was not independently checked.
+> **Updated for 2026-11-13:** public landing page, /apps/ journey URLs, five-language Web localization, owner edit/performance tools and active-boost badges. See the [November 13 GitLab audit](../releases/2026-11-13.md), [landing and localization details](./landing-page.md), and [Cargo details](./cargo.md). Describes merged master code; Production deployment was not independently checked.
 
 ## 1. Live journeys and URL structure
 
@@ -12,22 +12,22 @@ The Web app uses a journey registry. The only journeys registered as live are:
 | Cargo | `passenger-cargo` | Unified route listings (optional date) |
 | Jobs | `jobs` | Canadian hiring and job-seeker listings |
 
-Public journey URLs use the slug at the root (for example, `/housing`, `/passenger-cargo`, `/jobs`). Create forms are reached at the journey's `/new` route and listing details use the listing ID under that journey. Do not rename `passenger-cargo` to `cargo` in backend routes: Cargo is the display label, while `passenger-cargo` is the canonical slug.
+The public landing page is `/`. The in-app category directory (Hub) is `/apps`. Journey URLs use `/apps/<slug>` (for example, `/apps/housing`, `/apps/passenger-cargo`, `/apps/jobs`); create forms use `/apps/<slug>/new` and listing details use `/apps/<slug>/:id`. Do not rename `passenger-cargo` to `cargo` in backend routes: Cargo is the display label, while `passenger-cargo` is the canonical slug. The old root-level journey paths are not retained as redirects.
 
 Services and Social have backend category definitions, but are deliberately absent from the live Web journey registry. Their presence in the category schema must not be described as a live Web journey.
 
 ## 2. Top-level navigation
 
-The shell's main tabs are **Home, Search, Post, Wallet and Profile**.
+The shell's main tabs are **Apps, Search, Post, Wallet and Profile**.
 
-- **Home / Hub:** category cards for the live journeys.
+- **Apps:** the category Hub at `/apps`, with cards for the live journeys. The public product introduction at `/` is a separate Landing page and does not show the tab bar.
 - **Search:** global keyword search across listings from every live journey.
 - **Post:** because three journeys are live, opens a chooser for Housing, Cargo or Jobs.
 - **Wallet:** coin balance, top-up entry points and payment history; phone verification is required.
 - **Profile:** display name, avatar, phone verification, identity verification, and links to Saved/My listings and sign-out.
 - **Saved listings** and **My listings** are separate routes linked from Profile; they are not separate items in the main tab bar.
 
-Category journey pages have their own header/back navigation. The shell's tab bar is not guaranteed to remain visible inside every journey route.
+The public Landing page and journey pages hide the tab bar. The Apps Hub and shared shell routes show it. Category journey pages have their own header/back navigation.
 
 ## 3. Browse and search
 
@@ -61,6 +61,8 @@ Global Search is separate from those feed filters. Backend keyword resolution no
 All three journeys reuse the shared listing layer for:
 
 - detail loading and category-specific card rendering;
+- owner-only Edit and Performance actions for native listings;
+- a distinct **Boosted** badge while a paid boost window is active, separate from phone/identity trust and Urgent badges;
 - save/unsave;
 - reporting a listing;
 - contact confirmation and contact unlock;
@@ -78,7 +80,7 @@ For user-created listings, the contact path may require coins according to the c
 - Phone verification is the account/transacting gate for posting and other paid/owner operations.
 - Identity verification is a separate paid, manually reviewed process: a verified phone and linked Telegram are prerequisites; the user sends a document and challenge video through the bot.
 
-See [Authentication](./authentication.md) and [Profile](./profile.md).
+See [Authentication](./authentication.md), [Profile](./profile.md), and [Landing page and localization](./landing-page.md). The Web app supports fa-IR, en-CA, fr-FR, ru-RU and hi-IN; Persian is RTL. The selected locale is shared with the Telegram bot.
 
 ## 7. Wallet and payments
 
