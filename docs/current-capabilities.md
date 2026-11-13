@@ -388,7 +388,7 @@ Cargo's location catalog now covers 11 route countries: Iran, Canada, United Sta
 
 The Web app supports Persian, English, French, Russian and Hindi. The first-visit picker appears before the rest of the site when neither the account nor browser has a saved locale. Profile language selection persists to browser storage and, when signed in, the shared User.Locale field used by Telegram. Persian is RTL; the other locales are LTR. User-authored listing titles and descriptions are not auto-translated.
 
-The public landing page is /, the in-app category directory is /apps, and journeys live under /apps/<slug>. Legacy root-level journey URLs are not retained as redirects.
+The public landing page is /, the in-app category directory is /apps, and journeys live under `/apps/<slug>`. Legacy root-level journey URLs are not retained as redirects.
 
 ### Instagram automation
 
