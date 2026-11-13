@@ -113,7 +113,6 @@ The reviewed code does not establish that:
 
 - the latest GitLab `master` has been deployed to Production;
 - Instagram automation is live against Meta, or App Review/Business Verification and production credentials are complete;
-- Cargo or Jobs crawler ingestion is implemented;
 - users can maintain multiple active listings in one category;
 - a Cargo listing lifecycle expires from travel date;
 - Jobs has a Filled state or external application methods;
