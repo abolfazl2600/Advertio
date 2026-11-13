@@ -1,6 +1,6 @@
 # Advertio Backoffice — current implementation
 
-> **Reviewed:** 2026-10-20 against the executable Backoffice in GitLab `master`. This is code-level implementation documentation, not a Production deployment audit.
+> **Reviewed:** 2026-11-13 against GitLab `master`. This is code-level implementation documentation, not a Production deployment audit.
 
 ## Navigation and feature map
 
@@ -12,6 +12,7 @@
 | Inspections | Operational inspection requests, quotes/payments, visit/evidence/report/publication workflow | [Inspections](./inspections.md) |
 | Crawled sources | Monitor ingestion freshness and deactivate a source's listings | [Crawled sources](./crawled-sources.md) |
 | Channels | Automatic publication of matching listings to Telegram channels/groups | [Channels](./channels.md) |
+| Instagram | Meta connection diagnostics, automation rules, conversations, executions and click/reply analytics | [Instagram](./instagram.md) |
 | Users | Search/filter users, inspect accounts, direct Telegram message and hand selected users to Broadcasts | [Users](./users.md) |
 | Broadcasts | One Telegram message to all, filtered or selected users, with recipient preview and delivery report | [Broadcasts](./broadcasts.md) |
 | Verifications | Review paid identity-verification requests and evidence | [Verifications](./verifications.md) |
