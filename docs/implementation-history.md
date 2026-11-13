@@ -106,7 +106,7 @@ The repository's top-level product documents are useful as design history, but s
 | Services and Social | Backend category definitions may exist, but neither is a live Web journey. |
 | Backoffice category/schema editor | Not confirmed; the reviewed Backoffice has policy/pricing controls, while category schemas/reference data are supplied by the backend. |
 | Human Connections and Peer Exchange | Design/category documents only for this status review; not live Web journeys. |
-| Crawler | Implemented ingest contract for Housing. Cargo/Jobs ingestion is not confirmed. |
+| Crawler | The authenticated ingest contract accepts Housing, Cargo and Jobs with category-specific schema/location validation. |
 | Saved filters | Telegram bot saved-search wizard is implemented; the full old Web saved-filter workflow is not confirmed. |
 | Ranking | Boost/renew actions exist. The old complete ranking formula and advanced ranking remain unverified. |
 | Early Access | Configurable paid-contact phase/policy exists. Legacy time windows conflict and are not a canonical global promise. |
