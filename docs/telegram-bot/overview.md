@@ -37,7 +37,7 @@ Supported locales are:
 - Russian (`ru`)
 - Hindi (`hi`)
 
-The language picker shows each language in its own script. Choosing a language persists the user's locale and returns to the localized Main Menu. Persian category/attribute labels are used when available; missing translations fall back to English.
+The language picker shows each language in its own script. Choosing a language persists the user's locale and returns to the localized Main Menu. The Web app now uses the same five locales and writes the same User.Locale field: a language choice in the Web Profile or Telegram bot is shared across both surfaces. Telegram's language_code seeds a locale only on first account creation; a later explicit user choice remains authoritative. Persian category/attribute labels are used when available; missing translations fall back to English.
 
 ## 4. Search
 
