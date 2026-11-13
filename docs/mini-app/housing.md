@@ -87,8 +87,8 @@ The amenities options are: Elevator, Parking, Storage Room, Balcony, Terrace, Ga
 
 ## 7. Current boundaries
 
-- The current Housing user flow is the baseline for the shared listing layer; it does not imply that every category is supported by the crawler.
-- The crawler ingestion contract currently supports `housing` only.
+- The current Housing user flow is the baseline for the shared listing layer.
+- The shared crawler ingestion contract accepts `housing`, `passenger-cargo` and `jobs`; each listing is validated against its own category schema. Housing itself remains Canada-focused.
 - The code-level default policy values are not a guarantee of the live configured values. Check Backoffice **Policy & pricing** for current settings.
 - Production deployment of the reviewed GitLab revision is not confirmed by this document.
 
