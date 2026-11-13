@@ -8,9 +8,9 @@ The Main Menu's **Create Listing** button is rendered as a Telegram Mini App/web
 
 The Mini App entry uses the configured create-listing start parameter. Once in the Mini App, the Post chooser routes to the selected live journey:
 
-- Housing → `/housing/new`
-- Cargo → `/passenger-cargo/new`
-- Jobs → `/jobs/new`
+- Housing → `/apps/housing/new`
+- Cargo → `/apps/passenger-cargo/new`
+- Jobs → `/apps/jobs/new`
 
 ## Fallback and stale keyboards
 
