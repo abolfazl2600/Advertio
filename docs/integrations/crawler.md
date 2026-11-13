@@ -677,9 +677,9 @@ Coverage today:
 | Journey | Countries |
 |---|---|
 | `housing`, `jobs` | **Canada only, but nationwide.** All 13 provinces and territories are seeded, not just the Toronto area (Toronto/GTA and Vancouver simply get featured UI treatment) |
-| `passenger-cargo` | Iran, Canada, United States, Germany, Italy, United Kingdom, France — the main cities only. See §7.2 |
+| `passenger-cargo` | Iran, Canada, United States, Germany, Italy, United Kingdom, France, United Arab Emirates, China, Turkey and Russia — the main cities only. See §7.2 |
 
-The six countries other than Canada are only for cargo routes. The server won't stop you: a
+The ten countries other than Canada are only for cargo routes. The server won't stop you: a
 housing or jobs listing in Tehran passes the location check today and shows up in the feed,
 next to Canadian listings, in front of an audience that lives in Canada. Don't send one.
 
