@@ -1,4 +1,4 @@
-> **Updated: 2026-10-21.** This historical integration/architecture path retains the full crawler API contract for compatibility with existing links. Canonical copy: [docs/integrations/crawler.md](../../docs/integrations/crawler.md); operational architecture, differences between Telclaw and Advertio, and testing: [09-crawler/advertio-integration-2026-10-21.md](../../09-crawler/advertio-integration-2026-10-21.md). The full text below is synchronized from the same GitLab `master` contract, with the code-verified Cargo MultiSelect correction.
+> **Historical snapshot:** 2026-10-21. This integration/architecture path is retained for compatibility with existing links. The canonical crawler contract is [docs/integrations/crawler.md](../../docs/integrations/crawler.md), rechecked through 2026-11-13; operational architecture and differences between Telclaw and Advertio are in [09-crawler reconciliation](../../09-crawler/advertio-integration-2026-10-21.md). The route catalog now has 11 countries and eight currencies; use the canonical copy for current values.
 
 # Advertio Ingest API — Crawler Integration Guide
 
@@ -31,7 +31,7 @@
 >   now has no "negotiable" flag (§7.3).
 > - **New in §4:** what it means when `alreadyExisted: true` comes back for a *different* post.
 >   Cargo and jobs posts look alike much more often than housing posts do.
-> - **New in §8:** the location catalog now covers seven countries, but only cargo routes use
+> - **New in §8:** the location catalog now covers eleven countries, but only cargo routes use
 >   them.
 >
 > No backend change was needed. Ingest has always checked a listing against the schema of the
@@ -541,7 +541,7 @@ The description appears on the detail page.
 | `weight_kg` | number | 0.1–30. Shown as "up to" that weight |
 | `price` | number | **per kg** — see *Price and currency* |
 | `price_negotiable` | boolean | same rule as housing (§7.1): send it only when the post says the price is negotiable, and never together with `price` |
-| `currency` | select | `CAD` · `USD` · `EUR` · `GBP`. Send it with every `price` |
+| `currency` | select | `CAD` · `USD` · `EUR` · `GBP` · `AED` · `CNY` · `TRY` · `RUB`. Send it with every `price` |
 
 #### Route cities
 
@@ -553,8 +553,8 @@ location catalog, in the country given by the matching `*_country` attribute:
 - **Persian names are refused.** The server matches only the code and the English name, so
   `تهران` returns a `400`. Map Persian names yourself.
   `GET /api/locations/cities?countryCode=IR&limit=200` returns every city of a country with its
-  `code`, `name`, `nameFa` and `provinceCode`. The whole catalog is about 150 cities across
-  seven countries. Fetch it at startup and build a lookup keyed by **country and name**.
+  `code`, `name`, `nameFa` and `provinceCode`. The whole catalog is about 200 cities across
+  eleven countries. Fetch it at startup and build a lookup keyed by **country and name**.
 - The same name can exist in two countries: London is in Ontario and in the UK. The country has
   to come from the post. If the post doesn't say, reject the listing.
 - If a city isn't on the list, reject the listing. Don't substitute the nearest listed city.
