@@ -1,6 +1,6 @@
-# Cargo — current implementation (2026-10-21)
+# Cargo — current implementation (2026-11-13)
 
-> **Reviewed against** GitLab `master` at `e36ba877`, including the October 21 Cargo schema, Mini App, matching and billing changes. Describes merged code, **not independently verified Production deployment**. For the receiving crawler contract see [crawler guide](../integrations/crawler.md) and [crawler implementation reconciliation](../../09-crawler/advertio-integration-2026-10-21.md).
+> **Reviewed against** GitLab `master` at `0f40795d`, including the October 26 route-catalog expansion and November 13 Web/Instagram changes. Describes merged code, **not independently verified Production deployment**. For the receiving crawler contract see [crawler guide](../integrations/crawler.md) and [crawler implementation reconciliation](../../09-crawler/advertio-integration-2026-10-21.md).
 
 ## Identity and purpose
 
@@ -24,7 +24,7 @@ The current user-facing create form requires **origin and destination**; a trip 
 | `price_negotiable` | Optional mutually exclusive flag where the schema accepts it |
 | `description` | Optional note shown in detail |
 
-Supported route countries: **Iran, Canada, United States, Germany, Italy, United Kingdom and France**. Origin and destination city must belong to selected countries; origin determines the listing's location. The city picker uses a visible viewport-aware sheet and a single vertically scrollable results list; Telegram expand and disabled vertical minimization mitigate partially expanded Mini App clipping. Search keyboard does not auto-open.
+Supported route countries: **Iran, Canada, United States, Germany, Italy, United Kingdom, France, United Arab Emirates, China, Turkey and Russia** (11 countries; 205 seeded cities across the catalog). The October 26 expansion added the UAE, China, Turkey and Russia. Origin and destination city must belong to selected countries; origin determines the listing's location. The city picker uses a visible viewport-aware sheet and a single vertically scrollable results list; Telegram expand and disabled vertical minimization mitigate partially expanded Mini App clipping. Search keyboard does not auto-open.
 
 Route questions have aligned, readable From/To/Date labels; **Swap** sits on the To line. Selecting a date displays the weekday and a **calendar-day countdown** (Today/Tomorrow/in N days) using local calendar days, including DST-safe transitions. A past/invalid date has no countdown.
 
@@ -34,11 +34,15 @@ The native form chooses currency from route geography: Canada CAD; US USD; UK GB
 
 Old `sender` values can still be read as **total** prices, whereas new no-role/`traveler` listings show a **per-kg** price. Do not retroactively recalculate stored amounts.
 
+Route-aware currency includes CAD, USD, EUR and GBP for the original markets, plus **AED, CNY, TRY and RUB** for the UAE, China, Turkey and Russia. The Mini App derives the currency from route geography; channel-post formatting preserves the route currency rather than falling back to CAD.
+
 ## Feed and listing detail
 
 - The feed has origin/destination selectors, Swap and paginated/infinite loading; **no role filter or side tabs**. The backend suspends stored cargo-role filters, including old channel and saved-search filters.
-- A trip with a past **specified** `travel_date` is hidden by feed filtering, without changing stored `Active` status. An undated trip is not hidden by this rule. Normal lifecycle expiration remains distinct.
-- Cards/details display route, date only if present, available weight, **all** selected item types, appropriately formatted price, notes and applicable shared actions. Legacy scalar item types remain readable after the migration.
+- A trip with a past **specified** `travel_date` is excluded by the feed API, without changing stored `Active` status. An undated trip is not hidden by this rule. Normal lifecycle expiration remains distinct.
+- The feed displays the count of trips matching the current filters.
+- Cards/details display route, date only if present, available weight, **all** selected item types, appropriately formatted price, notes and applicable shared actions.
+- Cargo channel posts include origin/destination details and the applicable phone-verified / identity-verified trust labels as separate signals. Legacy scalar item types remain readable after the migration.
 - Saving, reporting, contact, user conversations and publisher actions use the shared listing layer. **Crawled** listings link back to Telegram rather than charging for contact or claiming a verified publisher badge.
 - A previously published, now expired/deactivated listing responds to public detail with `410` and the UI shows a terminal unavailable state and a link to browse other Cargo listings. Never-public/unavailable ones remain `404`; transient server/network errors can retry.
 
@@ -60,4 +64,4 @@ Shared journey navigation (`journeyBack.ts`) takes a Cargo feed back to the Hub;
 - The bot's new `/search` is global free-text search, **not** a Cargo-only date/route chat wizard; category-specific filtering remains in the Mini App.
 - Production status, real-Telegram gesture behavior and Telegram's acceptance of WebP by URL were not independently verified here.
 
-Source commits: [Cargo simplified](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/b2ade2686d62a629f2fa2b32a31eb925f788d556), [MultiSelect](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/448a94f55c945efc99840a4b39453f9fab7f0ef6), [city picker](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/114b86ea319f95daaa508f05b1d5ffe644730fa7), [date countdown](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/40afe7a2c3b508eaa3805fc4be5ccf2dfbd3ef72), [navigation](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/0b90f0a9b0a8d4570fd87eec0aba0e080683cbe6), [ended detail](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/f8cb1f389cdfbc704ae7ded1a5bdfbf9e93dcf59), [additional listing](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/54b42f0fd5a4a2992893973eec58732e134364de).
+Source commits: [Cargo route-country expansion](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/3f68f44461dd808ac2cbd18b8c278b05102227d5), [Cargo notification formatting](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/f279fab8570f81ac3cb7f738d4cc9ee5452ed634), [Cargo simplified](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/b2ade2686d62a629f2fa2b32a31eb925f788d556), [MultiSelect](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/448a94f55c945efc99840a4b39453f9fab7f0ef6), [city picker](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/114b86ea319f95daaa508f05b1d5ffe644730fa7), [date countdown](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/40afe7a2c3b508eaa3805fc4be5ccf2dfbd3ef72), [navigation](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/0b90f0a9b0a8d4570fd87eec0aba0e080683cbe6), [ended detail](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/f8cb1f389cdfbc704ae7ded1a5bdfbf9e93dcf59), [additional listing](https://gitlab.com/advertio/platform/advertio-monorepo/-/commit/54b42f0fd5a4a2992893973eec58732e134364de).
