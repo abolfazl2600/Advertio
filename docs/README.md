@@ -1,6 +1,6 @@
 # Advertio documentation — current implementation
 
-> **Baseline reviewed:** 2026-10-20. **October 21 implementation delta:** [complete source-backed change log](./releases/2026-10-21.md) and [crawler integration reconciliation](../09-crawler/advertio-integration-2026-10-21.md). Sections carried over from the October 20 baseline are superseded wherever these newer references disagree.
+> **Current baseline reviewed:** 2026-11-13. **Latest source-backed delta:** [November 13 GitLab change audit](./releases/2026-11-13.md). The [October 21 crawler reconciliation](../09-crawler/advertio-integration-2026-10-21.md) remains the detailed ingest reference. Sections carried forward from earlier baselines are superseded wherever the newer audit or current code disagrees.
 >
 > **Previously:** 2026-10-20. This directory was re-audited against the Advertio GitLab monorepo's `master` code and commit history from the initial scaffold (2026-07-05) through the October 2026 feature launches. It is a code-level reference, not a claim that every commit has reached Production.
 
@@ -16,13 +16,13 @@
 | Area | Current implementation |
 |---|---|
 | Housing | Canadian rental and roommate listings, structured category attributes, filters, photos, detail pages and shared listing actions |
-| Cargo | One shared route pool; optional date; multi-select item types with catalog cities in Iran, Canada, the United States, Germany, Italy, the United Kingdom and France |
+| Cargo | One shared route pool; optional date; multi-select item types; catalog cities across 11 route countries, including the UAE, China, Turkey and Russia |
 | Jobs | Canada-only hiring and job-seeker listings with an 18-value job taxonomy |
-| Global Search | Searches titles and descriptions across all three live Web journeys |
+| Global Search | Searches titles, descriptions, city, province, neighborhood and resolved category/location names across all three live Web journeys |
 | Saved listings / My listings | Cross-journey saved listings and owner listing management |
 | Contact / messaging | Shared contact-unlock and conversation path for user-created listings; crawled listings link to their Telegram source/contact without coin deduction |
 | Wallet | Coin balance, configured top-up methods, payment history and eligible self-service refunds |
-| Profile / trust | Display name, avatar, phone verification and paid identity verification |
+| Profile / trust | Display name, avatar, phone verification, paid identity verification and five-language preference shared with Telegram |
 | Telegram bot | Mini App entry, global text Quick Search, saved-search alerts, locale/marketing preferences, conversation relay, payment/identity workflows and admin reporting |
 
 Only `housing`, `passenger-cargo` and `jobs` are registered as live Web journeys. Services and Social have backend category definitions, but they are not live journeys in the Web journey registry.
@@ -33,13 +33,15 @@ For the complete feature-by-feature inventory—including smaller UI behaviors, 
 
 - **[Detailed Current Capabilities](./current-capabilities.md)** — consolidated capability catalogue across Mini App, Telegram bot and Backoffice.
 - [Implementation history and legacy-spec reconciliation](./implementation-history.md) — major capability milestones from July through October 2026, with links to GitLab commits and a status matrix for older roadmap/product specifications.
-- [Repository Changelog](../CHANGELOG.md) — commit-based history of recent implementation changes (October 2026).
+- [Repository Changelog](../CHANGELOG.md) — monthly source history through November 2026.
+- [November 13 GitLab change audit](./releases/2026-11-13.md) — owner tools, Cargo countries, Web localization, landing routes and Instagram automation.
 
 The pages below provide implementation detail for each subsystem. The catalogue and linked subsystem pages describe code-level status, not guaranteed Production availability.
 
 ## Mini App
 
 - [Overview and navigation](./mini-app/overview.md)
+- [Public landing page, app directory and language behavior](./mini-app/landing-page.md)
 - [Housing — form, attributes, filters and lifecycle](./mini-app/housing.md)
 - [Cargo — route model, posting, feed and limits](./mini-app/cargo.md)
 - [Jobs — roles, taxonomy, pay and filters](./mini-app/jobs.md)
@@ -48,6 +50,17 @@ The pages below provide implementation detail for each subsystem. The catalogue 
 - [Wallet and payments](./mini-app/wallet.md)
 - [Authentication and phone verification](./mini-app/authentication.md)
 - [Shared listing interactions](./mini-app/listing-interactions.md)
+
+## Instagram automation
+
+- [Architecture](./instagram-automation/ARCHITECTURE.md)
+- [HTTP API](./instagram-automation/API.md)
+- [Configuration](./instagram-automation/CONFIGURATION.md)
+- [Meta setup and permissions](./instagram-automation/META-SETUP.md)
+- [Operations and safety gates](./instagram-automation/OPERATIONS.md)
+- [Automated tests and coverage](./instagram-automation/TESTING.md)
+
+The integration is implemented in the API, but its seeded Cargo rule is disabled and in dry-run. Do not infer live Instagram delivery or completed Meta App Review from the presence of the code.
 
 ## Telegram bot
 
@@ -63,6 +76,7 @@ The pages below provide implementation detail for each subsystem. The catalogue 
 ## Backoffice
 
 - [Backoffice overview and navigation](./backoffice/overview.md)
+- [Instagram automation operations](./backoffice/instagram.md)
 - [Gate A metrics](./backoffice/gate-a.md)
 - [Listing moderation, duplicates and user reports](./backoffice/listings.md)
 - [Users and admin actions](./backoffice/users.md)
@@ -96,6 +110,8 @@ The pages below provide implementation detail for each subsystem. The catalogue 
 
 - [Crawler ingestion contract](./integrations/crawler.md)
 - [Current platform boundaries and shared architecture](./architecture/current-platform.md)
+- [ADR 0013 — Web localization](./adr/ADR-0013-web-localization.md)
+- [ADR 0014 — Journey /apps/ URL prefix](./adr/ADR-0014-journey-apps-prefix.md)
 - [Repository changelog](../CHANGELOG.md)
 - [Telegram integration and operational boundaries](./integrations/telegram.md) — SDK, authentication, Stars, bot modes, notifications and deployment checks.
 
@@ -104,7 +120,7 @@ The pages below provide implementation detail for each subsystem. The catalogue 
 These are intentionally not presented as shipped capabilities:
 
 - Multiple active listings per user within the same category; the current server rule is one active listing per user per category.
-- Cargo and Jobs crawler ingestion.
+- Meta App Review, Business Verification, real production credentials and live Instagram delivery remain external setup/approval steps; the seeded Instagram rule is disabled and in dry-run.
 - Cargo lifecycle expiration based on the travel date; past-date trips are hidden from the Cargo feed, but the listing's lifecycle TTL remains independent.
 - A dedicated Jobs `Filled` status, external application links/email, and Jobs-specific Backoffice scam signals.
 - Scheduled Broadcast sends, rich-media/HTML/variable templates, recall/edit after sending, click/open attribution, frequency caps and A/B testing.
