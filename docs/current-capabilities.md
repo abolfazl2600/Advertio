@@ -11,13 +11,13 @@
 - Services and Social may exist in backend category definitions, but they are not registered as live Web journeys.
 
 ### Shared Mini App navigation
-- Public Landing page at `/` and Apps Hub at `/apps` with cards for live journeys.
+- Apps Hub at `/apps` with cards for live journeys.
 - Post chooser when the user has more than one live journey.
 - Global keyword Search.
 - Saved listings across journeys.
 - My listings across journeys.
 - Wallet and payment history.
-- Profile, sign-in, verification and sign-out.
+- Profile, sign-in, verification, five-language selection and sign-out.
 - Public Landing page at `/`, Apps Hub at `/apps`, and journey routes `/apps/<slug>`, `/apps/<slug>/new` and `/apps/<slug>/:id`.
 
 ### Shared technical and interaction boundaries
