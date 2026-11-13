@@ -1,6 +1,6 @@
 # Profile — current implementation
 
-> Current Web profile behavior as of 2026-10-20.
+> Current Web profile behavior as of 2026-11-13, including the five-language selector and shared account locale.
 
 ## 1. Sign-in state
 
@@ -61,7 +61,19 @@ For an authenticated user, Profile links to:
 
 These are listing bookmarks and listing ownership views, not saved-search alerts. Saved-search alerts are managed through the Telegram bot.
 
-## 6. Appearance
+## 6. Language
+
+Profile includes a language selector with five supported choices:
+
+- Persian (fa-IR) — right-to-left.
+- English (en-CA).
+- French (fr-FR).
+- Russian (ru-RU).
+- Hindi (hi-IN).
+
+The selected locale is stored in the browser for this device and, for an authenticated user, written to the account's User.Locale. The same account locale is used by the Telegram bot, so a Web language change also changes the bot's language. The initial picker appears before the site UI only when neither an account locale nor a browser-stored locale is available.
+
+## 7. Appearance
 
 The Appearance control has three choices:
 
