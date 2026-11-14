@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "target": "apps/web/src/app/App.tsx",
+      "payload": "app/App.tsx",
+      "sha256": "84057053ab74efddd73b68eb14ca1bc090755abc52602ca982719ec3ec79da2f",
+      "supersedesSha256": "b3e5b60ea138d607239497cbdce372b5bdd91f621f4f8d194c2a47f1c1886a76"
+    },
+    {
+      "target": "apps/web/src/shared/travel-sites/sites.mjs",
+      "payload": "travel-sites/sites.mjs",
+      "sha256": "a333df21696a180632405db5f7d901202f7dc54f69b5a4ab0aa3c97cc15f3922"
+    },
+    {
+      "target": "apps/web/src/shared/travel-sites/sites.d.mts",
+      "payload": "travel-sites/sites.d.mts",
+      "sha256": "bb68f891576159be4968439085f6e79253c9f8a35cdac1ec7270b5a62650228c"
+    },
+    {
+      "target": "apps/web/src/shared/travel-sites/UsefulWebsitesPage.tsx",
+      "payload": "travel-sites/UsefulWebsitesPage.tsx",
+      "sha256": "26a90fb4c8cf190e7b0e4a88ee93431444c927354ec63a47e915ae18370c6c1d"
+    },
+    {
+      "target": "apps/web/src/shared/travel-sites/sites.css",
+      "payload": "travel-sites/sites.css",
+      "sha256": "50fdc060b2521a1f220048bcfc20f902b3e147ac9a93fe23787a5625abce4032"
+    }
+  ]
+}
