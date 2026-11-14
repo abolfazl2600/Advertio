@@ -2,7 +2,7 @@
 
 این سند، محتوای فارسی پیشنهادی برای کارت‌های بخش «وب‌سایت‌های کاربردی» اپ Android Advertio را نگه‌داری می‌کند.
 
-> وضعیت: **محتوا آماده است؛ هنوز به رابط کاربری اپ متصل نشده است.** نمایش واقعی در اپ نیازمند پیاده‌سازی UI در سورس رمزنگاری‌شده Android، به‌روزرسانی امن source bundle/overlay و تست build است. پیگیری: [GitHub Issue #87](https://github.com/abolfazl2600/Advertio/issues/87).
+> وضعیت: **صفحه Android و اتصال آن در Overlay پیاده‌سازی شده و تست‌های کاتالوگ موفق‌اند؛ ساخت APK و تست روی دستگاه هنوز انجام نشده است.** این تغییر فعلاً روی شاخه `android/87-useful-travel-websites` قرار دارد و فقط پس از Merge و Build قابل مشاهده در اپ خواهد بود. پیگیری: [GitHub Issue #87](https://github.com/abolfazl2600/Advertio/issues/87).
 
 ## 1. BeWelcome
 
@@ -44,3 +44,21 @@
 ### یادداشت مسئولیت
 
 این وب‌سایت‌ها سرویس‌های مستقل و متعلق به اشخاص ثالث هستند و وابستگی یا تأیید رسمی از طرف Advertio ندارند. کاربران باید پیش از ثبت‌نام، پرداخت، ارسال اطلاعات شخصی یا توافق برای اقامت/همکاری، شرایط و سیاست‌های هر سرویس را مستقیماً بررسی کنند.
+
+## پیاده‌سازی Android در PR #88
+
+- **ورودی:** میان‌بر «وب‌سایت‌های کاربردی سفر» در Home و Hub اپ Android.
+- **مسیر داخلی:** `/travel-sites`.
+- **نمایش:** کارت Google Flights به‌همراه سه وب‌سایت جدید؛ جست‌وجو، فیلتر «همه / پرواز / اقامت / همکاری» و توضیح‌های فارسی/انگلیسی.
+- **خروجی خارجی:** `native.openExternal` با URLهای ثابت HTTPS؛ باز شدن از طریق Capacitor Browser و بدون WebView داخلی.
+- **Overlayها:** `android/mobile/overlays/app/App.tsx` و `android/mobile/overlays/travel-sites/*`؛ fragment دارای checksum: `android/mobile/overlays/manifests/zz-useful-travel-sites.json`.
+- **امنیت:** سورس مستقل Android به‌صورت رمزنگاری‌شده حفظ می‌شود؛ فقط قطعات Android-specific عمومی در PR هستند.
+
+### نتایج تأیید
+
+- PASS: چهار تست Node برای فهرست، دامنه‌های HTTPS، جست‌وجوی فارسی/انگلیسی و مدل‌ها.
+- PASS: Syntax parsing فایل‌های TS/TSX مربوط با TypeScript.
+- PASS: SHA-256 هر پنج Overlay payload با fragment مقایسه و تأیید شده است.
+- NOT RUN: `pnpm build` روی منبع رمزگشایی‌شده، Android Gradle build و تست دستگاه واقعی؛ منبع/کلید خصوصی در این محیط در دسترس نیست.
+
+این پیاده‌سازی از قالب عمومی Android Advertio استفاده می‌کند. تا زمانی که منبع مستقل Android رمزگشایی و build نشود، برابری پیکسلی با کارت‌های قبلی و وجود نهایی آن در APK تأیید نشده است.
