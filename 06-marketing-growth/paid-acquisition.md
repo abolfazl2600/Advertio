@@ -100,6 +100,20 @@ CPA داشبورد (100.00) با CPA محاسبه‌شده (147.17) متفاوت
 
 جزئیات متن خلاقه، 18 کانال هدف، ابهام واحد بودجه و سایر داده‌ها در [گزارش TG-ADS-003](./telegram-ads/003-advertio-cargo-traveler-acquisition.md) ثبت شده است.
 
+### TG-ADS-004 — Advertio Cargo / Passenger Cargo Ad (2026-11-18)
+
+- Creative: ارسال بار مسافری - Advertio
+- Destination: https://t.me/advertio_cargo
+- Status: active link in supplied screenshot
+- Telegram Ad ID: needs verification from follow-up screenshot (do not assume `0f1c8f5b`)
+- Budget: 10,000; spent: 2,149; remaining: 7,851; cost unit unknown
+- Views: 2,149; clicks: 19; memberships: 8
+- Reported CTR: 0.88%; CVR: 42.11%; CPC: 113.11; CPM: 1,000; CPA: 300.00
+- Independently calculated CPA per membership: 268.63; discrepancy must be preserved
+- View to membership rate: 0.37%
+
+Record of a screenshot observed 2026-11-18, not proof of campaign start time or final outcome. See [full report](./telegram-ads/004-advertio-cargo-passenger-cargo-ad.md). Do not merge with TG-ADS-003 without verified Ad ID.
+
 ## CAC interpretation
 
 Source CAC را هزینه جذب، Registration و Conversion به Active/Paying user تعریف می‌کند.
@@ -147,7 +161,7 @@ Initial Burn Rate includes:
 
 - Currency / cost unit
 - Campaign-by-campaign spend برای کمپین‌های تاریخی
-- Views / impressions, clicks and memberships برای TG-ADS-002 و TG-ADS-003
+- Views / impressions, clicks and memberships برای TG-ADS-002 و TG-ADS-003 و Ad ID تأییدشده TG-ADS-004
 - CTR, CVR, CPC, CPA and numeric CPM برای TG-ADS-002 و TG-ADS-003
 - CAC to registered user
 - CAC to active user
