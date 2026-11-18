@@ -15,12 +15,13 @@ Cost-per-member numbers در Source ناسازگاری محاسباتی دارن
 
 ## Telegram Ads — campaign-level records
 
-از 2026-11-13 سه تبلیغ در سطح Ad ID و تنظیمات هدف‌گیری ثبت شده‌اند:
+تا 2026-11-18 چهار رکورد در سطح تبلیغ / Snapshot ثبت شده‌اند؛ رابطه Ad ID رکورد چهارم با موارد قبلی هنوز تأیید نشده است:
 
 - [Telegram Ads Performance Log](./telegram-ads/README.md) — روش ثبت، تعاریف، CSV و معیارهای مقایسه
 - [TG-ADS-001 — Canada House / City Search](./telegram-ads/001-canada-house-city-search.md) — هدف‌گیری بر اساس عبارت‌های کشور و شهر
 - [TG-ADS-002 — Canada House / Channel Targeting](./telegram-ads/002-canada-house-channel-targeting.md) — Ad ID: `1caeba50`، هدف‌گیری 16 کانال
 - [TG-ADS-003 — Advertio Cargo / Traveler Acquisition](./telegram-ads/003-advertio-cargo-traveler-acquisition.md) — Ad ID: `0f1c8f5b`، هدف‌گیری 18 کانال
+- [TG-ADS-004 — Advertio Cargo / Passenger Cargo Ad](./telegram-ads/004-advertio-cargo-passenger-cargo-ad.md) — اسکرین‌شات 2026-11-18؛ Ad ID ارسالی در عکس تکمیلی نیازمند خواندن/تأیید
 
 ### TG-ADS-001 — Snapshot اول
 
@@ -60,6 +61,19 @@ Cost-per-member numbers در Source ناسازگاری محاسباتی دارن
 - Views / clicks / memberships: not visible in supplied screenshots
 
 این تبلیغ مسافران دارای ظرفیت خالی چمدان را برای حمل مدارک و بسته‌ها هدف می‌گیرد. هدف‌گیری شامل کانال‌های مهاجرت، جامعه ایرانیان، سفر، صرافی و سه کانال حمل بار و مدارک در آلمان، هلند و بلژیک است. جزئیات در [گزارش TG-ADS-003](./telegram-ads/003-advertio-cargo-traveler-acquisition.md) ثبت شده است.
+
+### TG-ADS-004 — Snapshot آماری 2026-11-18
+
+- Creative: ارسال بار مسافری - Advertio
+- Destination: Advertio Cargo — https://t.me/advertio_cargo
+- Telegram Ad ID: awaiting verified transcription from follow-up screenshot
+- Link status: active
+- Total budget: 10,000; spent: 2,149; remaining: 7,851 (unit unknown)
+- Views: 2,149; clicks: 19; memberships: 8
+- Reported CTR: 0.88%; CVR: 42.11%; CPC: 113.11; CPM: 1,000; CPA: 300
+- Calculated membership CPA: 268.63 — differs from reported 300
+
+**نکته انتساب:** به‌دلیل اشتراک مقصد و شباهت متن، رکورد TG-ADS-004 نباید بدون احراز Ad ID با TG-ADS-003 ادغام شود.
 
 ## Initial MVP campaign context
 
