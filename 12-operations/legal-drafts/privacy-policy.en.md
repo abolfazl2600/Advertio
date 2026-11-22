@@ -2,6 +2,8 @@
 
 **Version:** 0.1 — 22 November 2026  
 **Publication status:** **DO NOT PUBLISH** until the bracketed items, data-flow inventory and legal review are completed.  
+**Confirmed business status (22 November 2026):** The founder states Advertio has not been incorporated. No registered corporation, address, registration number or jurisdiction may be represented as established. Identify and verify the present individual/other lawful operator before publication.
+
 **Website:** https://advertio.net  
 **Operator / contracting entity:** **[FULL LEGAL NAME — UNVERIFIED]**  
 **Registered jurisdiction and service address:** **[CONFIRM]**  
